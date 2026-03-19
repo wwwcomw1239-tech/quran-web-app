@@ -9,21 +9,20 @@ import { ExternalLink, Download, Loader2, BookOpen, FileText } from 'lucide-reac
 // Book categories
 type BookCategory = 'التفسير' | 'علوم القرآن' | 'التدبر';
 
-// Book interface
+// Book interface - single direct PDF URL for both read and download
 interface Book {
   id: string;
   title: string;
   author: string;
   category: BookCategory;
-  // URL for viewing in browser (Archive.org details page)
-  viewUrl: string;
-  // Direct PDF download URL (may be subject to CORS)
-  downloadUrl: string;
+  // Direct PDF URL - opens raw PDF in browser
+  pdfUrl: string;
   description?: string;
 }
 
-// Books data with VERIFIED Archive.org links
-// All URLs have been tested and confirmed working
+// Books data with VERIFIED DIRECT PDF URLs
+// All URLs tested and confirmed working (HTTP 302 redirect = file exists)
+// Format: https://archive.org/download/[item_id]/[exact_filename].pdf
 const booksData: Book[] = [
   // Category 1: التفسير
   {
@@ -31,8 +30,7 @@ const booksData: Book[] = [
     title: 'التفسير الميسر',
     author: 'نخبة من العلماء',
     category: 'التفسير',
-    viewUrl: 'https://archive.org/details/attafseer_almoyassar',
-    downloadUrl: 'https://archive.org/download/waq15137/01_15137.pdf',
+    pdfUrl: 'https://archive.org/download/attafseer_almoyassar/ar_tafseer_meesr_b.pdf',
     description: 'تفسير ميسر للقرآن الكريم بأسلوب عصري واضح - مجمع الملك فهد'
   },
   {
@@ -40,8 +38,7 @@ const booksData: Book[] = [
     title: 'تفسير السعدي',
     author: 'الشيخ عبد الرحمن بن ناصر السعدي',
     category: 'التفسير',
-    viewUrl: 'https://archive.org/details/tafsir-sa3di-dar-salam',
-    downloadUrl: 'https://archive.org/download/ozkorallh_20181023_2048/100585.pdf',
+    pdfUrl: 'https://archive.org/download/ozkorallh_20181023_2048/100585.pdf',
     description: 'تيسير الكريم الرحمن في تفسير كلام المنان - تفسير جامع سهل اللفظ'
   },
   {
@@ -49,9 +46,8 @@ const booksData: Book[] = [
     title: 'تفسير ابن كثير',
     author: 'الإمام الحافظ ابن كثير',
     category: 'التفسير',
-    viewUrl: 'https://archive.org/details/tafsir-ibn-kathir',
-    downloadUrl: 'https://archive.org/download/FP59518/tkather01.pdf',
-    description: 'تفسير القرآن العظيم - أشهر التفاسير بالمأثور (8 مجلدات)'
+    pdfUrl: 'https://archive.org/download/FP59518/tkather01.pdf',
+    description: 'تفسير القرآن العظيم - أشهر التفاسير بالمأثور (المجلد الأول)'
   },
   
   // Category 2: علوم القرآن
@@ -60,17 +56,15 @@ const booksData: Book[] = [
     title: 'مباحث في علوم القرآن',
     author: 'مناع القطان',
     category: 'علوم القرآن',
-    viewUrl: 'https://archive.org/details/1279Pdf_201804',
-    downloadUrl: 'https://archive.org/details/1279Pdf_201804',
-    description: 'دراسة شاملة لعلوم القرآن وأصوله - الدار السعودية للنشر'
+    pdfUrl: 'https://archive.org/download/WAQmbolqumbolqu/mbolqu.pdf',
+    description: 'دراسة شاملة لعلوم القرآن وأصوله - مكتبة المعارف'
   },
   {
     id: 'al-itqan',
     title: 'الإتقان في علوم القرآن',
     author: 'الإمام جلال الدين السيوطي',
     category: 'علوم القرآن',
-    viewUrl: 'https://archive.org/details/sa71mir_gmail_20160606',
-    downloadUrl: 'https://archive.org/details/sa71mir_gmail_20160606',
+    pdfUrl: 'https://archive.org/download/sa71mir_gmail_20160606/%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%B9%D9%84%D9%88%D9%85%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%84%D9%84%D8%AD%D8%A7%D9%81%D8%B8%20%D8%AC%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86%20%D8%A7%D9%84%D8%B3%D9%8A%D9%88%D8%B7%D9%8A.pdf',
     description: 'موسوعة شاملة في علوم القرآن الكريم - تحقيق محمد أبو الفضل إبراهيم'
   },
   
@@ -80,9 +74,8 @@ const booksData: Book[] = [
     title: 'المختصر في تفسير القرآن الكريم',
     author: 'مركز تفسير للدراسات القرآنية',
     category: 'التدبر',
-    viewUrl: 'https://archive.org/details/almokhtasar_6',
-    downloadUrl: 'https://archive.org/details/almokhtasar_6',
-    description: 'تفسير مختصر يُعنى بالمعنى الإجمالي للآيات - الطبعة السادسة'
+    pdfUrl: 'https://archive.org/download/tafsirMukhtasar/TafsirMukhtasar.pdf',
+    description: 'تفسير مختصر يُعنى بالمعنى الإجمالي للآيات'
   },
 ];
 
@@ -109,8 +102,8 @@ export function BooksLibrary() {
     setDownloadingBooks(prev => ({ ...prev, [book.id]: true }));
 
     try {
-      // Try fetching the PDF as a blob first
-      const response = await fetch(book.downloadUrl, {
+      // Attempt to fetch PDF as blob for native download
+      const response = await fetch(book.pdfUrl, {
         mode: 'cors',
         cache: 'no-cache',
       });
@@ -137,19 +130,19 @@ export function BooksLibrary() {
     } catch (error) {
       console.error('Download error (CORS or network):', error);
       
-      // FALLBACK: Open the view URL in a new tab
-      // User can then use the browser's download button from the Archive.org page
-      window.open(book.viewUrl, '_blank', 'noopener,noreferrer');
+      // FALLBACK: Open the direct PDF URL in a new tab
+      // User can then use browser's download button (Ctrl+S or menu)
+      window.open(book.pdfUrl, '_blank', 'noopener,noreferrer');
     } finally {
-      // Always reset loading state
+      // Always reset loading state whether success or fallback
       setDownloadingBooks(prev => ({ ...prev, [book.id]: false }));
     }
   };
 
-  // Handle read in new tab (opens Archive.org viewer)
+  // Handle read - opens direct PDF URL in new tab
+  // Modern browsers will render the PDF natively
   const handleRead = (book: Book) => {
-    // Open the Archive.org details page with theater view
-    window.open(book.viewUrl, '_blank', 'noopener,noreferrer');
+    window.open(book.pdfUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Group books by category
@@ -220,7 +213,7 @@ export function BooksLibrary() {
 
                       {/* Action Buttons */}
                       <div className="flex items-center gap-2">
-                        {/* Read Button */}
+                        {/* Read Button - Opens direct PDF in new tab */}
                         <Button
                           onClick={() => handleRead(book)}
                           variant="outline"
@@ -230,7 +223,7 @@ export function BooksLibrary() {
                           قراءة
                         </Button>
 
-                        {/* Download Button */}
+                        {/* Download Button - Attempts blob download, falls back to direct URL */}
                         <Button
                           onClick={() => handleDownload(book)}
                           disabled={isDownloading}
@@ -261,10 +254,10 @@ export function BooksLibrary() {
       {/* Footer Note */}
       <div className="text-center py-6 border-t border-slate-200 dark:border-slate-700">
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          جميع الكتب متاحة للقراءة والتحميل المجاني من Archive.org
+          جميع الكتب متاحة للقراءة والتحميل المجاني
         </p>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-          اضغط "قراءة" لفتح الكتاب في المتصفح أو "تنزيل" للتحميل
+          اضغط "قراءة" لعرض الكتاب في المتصفح أو "تنزيل" للتحميل المباشر
         </p>
       </div>
     </div>
