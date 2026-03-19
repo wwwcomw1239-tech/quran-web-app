@@ -40,6 +40,8 @@ import {
   ExternalLink,
   User,
   Check,
+  ArrowUp,
+  Mail,
 } from 'lucide-react';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
@@ -613,6 +615,7 @@ export default function QuranWebApp() {
   const [selectedQuality, setSelectedQuality] = useState<'high' | 'medium' | 'low'>('low'); // Low quality is mandatory default
   const [reciterSearchQuery, setReciterSearchQuery] = useState('');
   const [reciterDialogOpen, setReciterDialogOpen] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -660,6 +663,25 @@ export default function QuranWebApp() {
   useEffect(() => {
     localStorage.setItem('quran-favorites', JSON.stringify(favorites));
   }, [favorites]);
+
+  // Handle scroll for Back to Top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Contact developer function - opens email client without showing email in UI
+  const handleContactDeveloper = () => {
+    window.location.href = 'mailto:almubarmaj8@gmail.com';
+  };
 
   // Stop audio when reciter changes
   useEffect(() => {
@@ -1535,11 +1557,45 @@ export default function QuranWebApp() {
         </DialogContent>
       </Dialog>
 
-      {/* Footer */}
-      <footer className={`text-center py-6 text-slate-500 dark:text-slate-400 text-sm ${currentSurah ? 'pb-36' : ''}`}>
-        <p>القرآن الكريم - استمع إلى تلاوات عطرة</p>
-        <p className="mt-1">المصدر: mp3quran.net</p>
+      {/* Enhanced Footer with Developer Attribution */}
+      <footer className={`text-center py-8 ${currentSurah ? 'pb-40' : 'pb-8'} bg-gradient-to-t from-slate-100 to-transparent dark:from-slate-900`}> 
+        <div className="container mx-auto px-4">
+          {/* Source Attribution */}
+          <div className="mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
+            <p className="text-slate-500 dark:text-slate-400 text-sm">القرآن الكريم - استمع إلى تلاوات عطرة</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">المصدر: mp3quran.net</p>
+          </div>
+          
+          {/* Developer Attribution & Contact */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {/* Developer Text */}
+            <p className="text-sm text-slate-400 dark:text-slate-500">
+              تطوير داوود الاحمدي
+            </p>
+            
+            {/* Contact Button */}
+            <Button
+              onClick={handleContactDeveloper}
+              variant="outline"
+              className="h-9 px-4 rounded-lg border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950 transition-all gap-2"
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-sm">تواصل مع المطور</span>
+            </Button>
+          </div>
+        </div>
       </footer>
+
+      {/* Back to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-24 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center z-40 transition-all duration-300 hover:from-emerald-600 hover:to-teal-700 hover:scale-110 ${
+          showBackToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+        aria-label="العودة إلى الأعلى"
+      >
+        <ArrowUp className="w-5 h-5" />
+      </button>
     </div>
   );
 }
