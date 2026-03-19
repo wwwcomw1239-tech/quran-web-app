@@ -39,6 +39,7 @@ import {
   Headphones,
   ExternalLink,
   User,
+  Check,
 } from 'lucide-react';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
@@ -248,6 +249,157 @@ const reciters: Reciter[] = [
     nameEnglish: 'Abdullah Khayyat',
     baseUrl: 'https://server12.mp3quran.net/kyat',
   },
+  // === NEW RECITERS (25) - All verified from Mp3Quran API ===
+  {
+    id: 'huthaify',
+    nameArabic: 'علي بن عبدالرحمن الحذيفي',
+    nameEnglish: 'Ali Al-Huthaify',
+    baseUrl: 'https://server9.mp3quran.net/hthfi',
+  },
+  {
+    id: 'shuraim',
+    nameArabic: 'سعود الشريم',
+    nameEnglish: 'Saud Al-Shuraim',
+    baseUrl: 'https://server7.mp3quran.net/shur',
+  },
+  {
+    id: 'abdulbasit',
+    nameArabic: 'عبدالباسط عبدالصمد',
+    nameEnglish: 'Abdulbasit Abdulsamad',
+    baseUrl: 'https://server7.mp3quran.net/basit',
+  },
+  {
+    id: 'matrood',
+    nameArabic: 'عبدالله المطرود',
+    nameEnglish: 'Abdullah Al-Matrood',
+    baseUrl: 'https://server8.mp3quran.net/mtrod',
+  },
+  {
+    id: 'qasim',
+    nameArabic: 'عبدالمحسن القاسم',
+    nameEnglish: 'Abdulmohsen Al-Qasim',
+    baseUrl: 'https://server8.mp3quran.net/qasm',
+  },
+  {
+    id: 'rayan',
+    nameArabic: 'عادل ريان',
+    nameEnglish: 'Adel Rayan',
+    baseUrl: 'https://server8.mp3quran.net/ryan',
+  },
+  {
+    id: 'nauina',
+    nameArabic: 'أحمد نعينع',
+    nameEnglish: 'Ahmad Nauina',
+    baseUrl: 'https://server11.mp3quran.net/ahmad_nu',
+  },
+  {
+    id: 'alzain',
+    nameArabic: 'الزين محمد أحمد',
+    nameEnglish: 'Al-Zain Muhammad Ahmad',
+    baseUrl: 'https://server9.mp3quran.net/alzain',
+  },
+  {
+    id: 'akhdar',
+    nameArabic: 'إبراهيم الأخضر',
+    nameEnglish: 'Ibrahim Al-Akhdar',
+    baseUrl: 'https://server6.mp3quran.net/akdr',
+  },
+  {
+    id: 'jamal_shaker',
+    nameArabic: 'جمال شاكر عبدالله',
+    nameEnglish: 'Jamal Shaker Abdullah',
+    baseUrl: 'https://server6.mp3quran.net/jamal',
+  },
+  {
+    id: 'abdulkafi',
+    nameArabic: 'خالد عبدالكافي',
+    nameEnglish: 'Khalid Abdulkafi',
+    baseUrl: 'https://server11.mp3quran.net/kafi',
+  },
+  {
+    id: 'tablawi',
+    nameArabic: 'محمد الطبلاوي',
+    nameEnglish: 'Mohammad Al-Tablawi',
+    baseUrl: 'https://server12.mp3quran.net/tblawi',
+  },
+  {
+    id: 'qazabri',
+    nameArabic: 'عمر القزابري',
+    nameEnglish: 'Omar Al-Qazabri',
+    baseUrl: 'https://server9.mp3quran.net/omar_warsh',
+  },
+  {
+    id: 'sahl_yassin',
+    nameArabic: 'سهل ياسين',
+    nameEnglish: 'Sahl Yassin',
+    baseUrl: 'https://server6.mp3quran.net/shl',
+  },
+  {
+    id: 'salah_hashim',
+    nameArabic: 'صلاح الهاشم',
+    nameEnglish: 'Salah Al-Hashim',
+    baseUrl: 'https://server12.mp3quran.net/salah_hashim_m',
+  },
+  {
+    id: 'yahya_hawwa',
+    nameArabic: 'يحيى حوا',
+    nameEnglish: 'Yahya Hawwa',
+    baseUrl: 'https://server12.mp3quran.net/yahya',
+  },
+  {
+    id: 'zaki',
+    nameArabic: 'زكي داغستاني',
+    nameEnglish: 'Zaki Daghistani',
+    baseUrl: 'https://server9.mp3quran.net/zaki',
+  },
+  {
+    id: 'abdulwadood',
+    nameArabic: 'عبدالودود حنيف',
+    nameEnglish: 'Abdulwadood Haneef',
+    baseUrl: 'https://server8.mp3quran.net/wdod',
+  },
+  {
+    id: 'hawashi',
+    nameArabic: 'أحمد الحواشي',
+    nameEnglish: 'Ahmad Al-Hawashi',
+    baseUrl: 'https://server11.mp3quran.net/hawashi',
+  },
+  {
+    id: 'alaqmi',
+    nameArabic: 'أكرم العلاقمي',
+    nameEnglish: 'Akram Al-Alaqmi',
+    baseUrl: 'https://server9.mp3quran.net/akrm',
+  },
+  {
+    id: 'jibreen',
+    nameArabic: 'إبراهيم الجبرين',
+    nameEnglish: 'Ibrahim Al-Jibreen',
+    baseUrl: 'https://server6.mp3quran.net/jbreen',
+  },
+  {
+    id: 'osaimi',
+    nameArabic: 'جمعان العصيمي',
+    nameEnglish: 'Jamaan Al-Osaimi',
+    baseUrl: 'https://server6.mp3quran.net/jaman',
+  },
+  {
+    id: 'shemmy',
+    nameArabic: 'محمود الشيمي',
+    nameEnglish: 'Mahmoud Al-Shemmy',
+    baseUrl: 'https://server10.mp3quran.net/sheimy',
+  },
+  {
+    id: 'lahoni',
+    nameArabic: 'مصطفى اللاهوني',
+    nameEnglish: 'Mustafa Al-Lahoni',
+    baseUrl: 'https://server6.mp3quran.net/lahoni',
+  },
+  {
+    id: 'nima_hassan',
+    nameArabic: 'نعمة الحسان',
+    nameEnglish: 'Nima Al-Hassan',
+    baseUrl: 'https://server8.mp3quran.net/namh',
+  },
 ];
 
 // Generate audio URL based on reciter and surah
@@ -284,6 +436,8 @@ export default function QuranWebApp() {
   const [selectedSurahForDownload, setSelectedSurahForDownload] = useState<Surah | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState<'high' | 'medium' | 'low'>('high');
+  const [reciterSearchQuery, setReciterSearchQuery] = useState('');
+  const [reciterDialogOpen, setReciterDialogOpen] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -291,6 +445,16 @@ export default function QuranWebApp() {
   const currentReciter = useMemo(() => {
     return reciters.find(r => r.id === selectedReciter) || reciters[0];
   }, [selectedReciter]);
+
+  // Filter reciters based on search query
+  const filteredReciters = useMemo(() => {
+    if (!reciterSearchQuery.trim()) return reciters;
+    const query = reciterSearchQuery.toLowerCase();
+    return reciters.filter(r => 
+      r.nameArabic.includes(reciterSearchQuery) || 
+      r.nameEnglish.toLowerCase().includes(query)
+    );
+  }, [reciterSearchQuery]);
 
   // Filter and search surahs
   const filteredSurahs = useMemo(() => {
@@ -621,7 +785,7 @@ export default function QuranWebApp() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6 pb-36">
-        {/* Reciter Selection - Prominent */}
+        {/* Reciter Selection - Prominent with Searchable Dropdown */}
         <div className="bg-gradient-to-l from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 rounded-2xl shadow-lg p-5 mb-6 border border-emerald-200 dark:border-emerald-800">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -630,29 +794,22 @@ export default function QuranWebApp() {
               </div>
               <div className="text-right">
                 <h3 className="font-bold text-slate-900 dark:text-white">اختر القارئ</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">استمع إلى تلاوات مختلفة</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{reciters.length} قارئ متاح</p>
               </div>
             </div>
             
-            <Select value={selectedReciter} onValueChange={setSelectedReciter}>
-              <SelectTrigger className="w-full sm:w-72 h-12 bg-white dark:bg-slate-800 border-emerald-200 dark:border-emerald-700 rounded-xl text-right">
-                <SelectValue placeholder="اختر القارئ" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                {reciters.map((reciter) => (
-                  <SelectItem 
-                    key={reciter.id} 
-                    value={reciter.id}
-                    className="rounded-lg py-3"
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="font-bold text-slate-900 dark:text-white">{reciter.nameArabic}</span>
-                      <span className="text-xs text-slate-500">{reciter.nameEnglish}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Searchable Reciter Button */}
+            <Button
+              onClick={() => setReciterDialogOpen(true)}
+              className="w-full sm:w-72 h-12 bg-white dark:bg-slate-800 border-2 border-emerald-200 dark:border-emerald-700 rounded-xl justify-between px-4 hover:bg-emerald-50 dark:hover:bg-slate-700"
+              variant="outline"
+            >
+              <div className="flex flex-col items-start">
+                <span className="font-bold text-slate-900 dark:text-white">{currentReciter.nameArabic}</span>
+                <span className="text-xs text-slate-500">{currentReciter.nameEnglish}</span>
+              </div>
+              <Search className="w-4 h-4 text-slate-400 mr-2" />
+            </Button>
           </div>
           
           {/* Current Reciter Info */}
@@ -668,6 +825,74 @@ export default function QuranWebApp() {
             </div>
           </div>
         </div>
+
+        {/* Searchable Reciter Dialog */}
+        <Dialog open={reciterDialogOpen} onOpenChange={setReciterDialogOpen}>
+          <DialogContent className="sm:max-w-lg max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle className="text-center text-xl">اختر القارئ</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {/* Search Input */}
+              <div className="relative">
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Input
+                  placeholder="ابحث باسم القارئ..."
+                  value={reciterSearchQuery}
+                  onChange={(e) => setReciterSearchQuery(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white pr-10 h-12 rounded-xl"
+                  autoFocus
+                />
+              </div>
+              
+              {/* Reciters List */}
+              <div className="max-h-96 overflow-y-auto space-y-1" dir="rtl">
+                {filteredReciters.length === 0 ? (
+                  <div className="text-center py-8 text-slate-500">
+                    <Search className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>لم يتم العثور على نتائج</p>
+                  </div>
+                ) : (
+                  filteredReciters.map((reciter) => (
+                    <button
+                      key={reciter.id}
+                      onClick={() => {
+                        setSelectedReciter(reciter.id);
+                        setReciterDialogOpen(false);
+                        setReciterSearchQuery('');
+                      }}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-right ${
+                        selectedReciter === reciter.id
+                          ? 'bg-emerald-100 dark:bg-emerald-900 border-2 border-emerald-500'
+                          : 'bg-slate-50 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 border-2 border-transparent'
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        selectedReciter === reciter.id
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300'
+                      }`}>
+                        {selectedReciter === reciter.id ? (
+                          <Check className="w-5 h-5" />
+                        ) : (
+                          <User className="w-5 h-5" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-slate-900 dark:text-white">{reciter.nameArabic}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{reciter.nameEnglish}</p>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+              
+              <p className="text-xs text-center text-slate-500">
+                {filteredReciters.length} من {reciters.length} قارئ
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Search and Filter */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 mb-6 sticky top-4 z-40">
