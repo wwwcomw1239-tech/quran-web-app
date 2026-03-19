@@ -858,9 +858,9 @@ export default function QuranWebApp() {
     setDownloadDialogOpen(true);
   };
 
-  // Download audio using fetch and Blob
-  // Note: Mp3Quran provides files at ~128kbps. Lower quality options fallback to the same file.
-  const downloadAudio = async (quality: 'high' | 'medium' | 'low') => {
+  // Download audio - Direct download using browser's native download manager
+  // This avoids loading large files into memory and shows native progress immediately
+  const downloadAudio = (quality: 'high' | 'medium' | 'low') => {
     if (!selectedSurahForDownload) return;
     
     setIsDownloading(true);
@@ -870,30 +870,19 @@ export default function QuranWebApp() {
     const qualityLabel = quality === 'high' ? '128kbps' : quality === 'medium' ? '64kbps' : '32kbps';
     const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}_${qualityLabel}.mp3`;
 
-    try {
-      const response = await fetch(audioUrl);
-      
-      if (!response.ok) {
-        throw new Error('Download failed');
-      }
+    // Method 1: Try direct download with hidden anchor element
+    // This triggers the browser's native download manager immediately
+    const link = document.createElement('a');
+    link.href = audioUrl;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error('Download error:', error);
-      window.open(audioUrl, '_blank');
-    } finally {
-      setIsDownloading(false);
-      setDownloadDialogOpen(false);
-    }
+    // Close dialog immediately - browser handles the rest
+    setIsDownloading(false);
+    setDownloadDialogOpen(false);
   };
 
   // Open audio in new tab
