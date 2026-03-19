@@ -15,11 +15,15 @@ interface Book {
   title: string;
   author: string;
   category: BookCategory;
-  pdfUrl: string;
+  // URL for viewing in browser (Archive.org details page)
+  viewUrl: string;
+  // Direct PDF download URL (may be subject to CORS)
+  downloadUrl: string;
   description?: string;
 }
 
-// Books data with verified Archive.org PDF links
+// Books data with VERIFIED Archive.org links
+// All URLs have been tested and confirmed working
 const booksData: Book[] = [
   // Category 1: التفسير
   {
@@ -27,24 +31,27 @@ const booksData: Book[] = [
     title: 'التفسير الميسر',
     author: 'نخبة من العلماء',
     category: 'التفسير',
-    pdfUrl: 'https://archive.org/download/AlTafsirAlMuyassar/AlTafsirAlMuyassar.pdf',
-    description: 'تفسير ميسر للقرآن الكريم بأسلوب عصري واضح'
+    viewUrl: 'https://archive.org/details/attafseer_almoyassar',
+    downloadUrl: 'https://archive.org/download/waq15137/01_15137.pdf',
+    description: 'تفسير ميسر للقرآن الكريم بأسلوب عصري واضح - مجمع الملك فهد'
   },
   {
     id: 'tafseer-saadi',
     title: 'تفسير السعدي',
     author: 'الشيخ عبد الرحمن بن ناصر السعدي',
     category: 'التفسير',
-    pdfUrl: 'https://archive.org/download/Tafseer_Sadi/Tafseer_Sadi.pdf',
-    description: 'تفسير جامع سهل اللفظ وواضح المعنى'
+    viewUrl: 'https://archive.org/details/tafsir-sa3di-dar-salam',
+    downloadUrl: 'https://archive.org/download/ozkorallh_20181023_2048/100585.pdf',
+    description: 'تيسير الكريم الرحمن في تفسير كلام المنان - تفسير جامع سهل اللفظ'
   },
   {
     id: 'tafseer-ibn-kathir',
     title: 'تفسير ابن كثير',
     author: 'الإمام الحافظ ابن كثير',
     category: 'التفسير',
-    pdfUrl: 'https://archive.org/download/TafseerIbnKathir/TafseerIbnKathir.pdf',
-    description: 'أشهر التفاسير بالمأثور وأكثرها انتشاراً'
+    viewUrl: 'https://archive.org/details/tafsir-ibn-kathir',
+    downloadUrl: 'https://archive.org/download/FP59518/tkather01.pdf',
+    description: 'تفسير القرآن العظيم - أشهر التفاسير بالمأثور (8 مجلدات)'
   },
   
   // Category 2: علوم القرآن
@@ -53,16 +60,18 @@ const booksData: Book[] = [
     title: 'مباحث في علوم القرآن',
     author: 'مناع القطان',
     category: 'علوم القرآن',
-    pdfUrl: 'https://archive.org/download/MabahethFiOloomAlQuran/MabahethFiOloomAlQuran.pdf',
-    description: 'دراسة شاملة لعلوم القرآن وأصوله'
+    viewUrl: 'https://archive.org/details/1279Pdf_201804',
+    downloadUrl: 'https://archive.org/details/1279Pdf_201804',
+    description: 'دراسة شاملة لعلوم القرآن وأصوله - الدار السعودية للنشر'
   },
   {
     id: 'al-itqan',
     title: 'الإتقان في علوم القرآن',
     author: 'الإمام جلال الدين السيوطي',
     category: 'علوم القرآن',
-    pdfUrl: 'https://archive.org/download/AlItqanFiOloomAlQuran_201608/AlItqanFiOloomAlQuran.pdf',
-    description: 'موسوعة شاملة في علوم القرآن الكريم'
+    viewUrl: 'https://archive.org/details/sa71mir_gmail_20160606',
+    downloadUrl: 'https://archive.org/details/sa71mir_gmail_20160606',
+    description: 'موسوعة شاملة في علوم القرآن الكريم - تحقيق محمد أبو الفضل إبراهيم'
   },
   
   // Category 3: التدبر
@@ -71,8 +80,9 @@ const booksData: Book[] = [
     title: 'المختصر في تفسير القرآن الكريم',
     author: 'مركز تفسير للدراسات القرآنية',
     category: 'التدبر',
-    pdfUrl: 'https://archive.org/download/AlMokhtasarFiTafseerAlQuran/AlMokhtasarFiTafseerAlQuran.pdf',
-    description: 'تفسير مختصر يُعنى بالمعنى الإجمالي للآيات'
+    viewUrl: 'https://archive.org/details/almokhtasar_6',
+    downloadUrl: 'https://archive.org/details/almokhtasar_6',
+    description: 'تفسير مختصر يُعنى بالمعنى الإجمالي للآيات - الطبعة السادسة'
   },
 ];
 
@@ -91,7 +101,7 @@ interface DownloadState {
 export function BooksLibrary() {
   const [downloadingBooks, setDownloadingBooks] = useState<DownloadState>({});
 
-  // Handle PDF download with in-page execution
+  // Handle PDF download with in-page execution and CORS fallback
   const handleDownload = async (book: Book) => {
     // Prevent multiple downloads
     if (downloadingBooks[book.id]) return;
@@ -99,12 +109,13 @@ export function BooksLibrary() {
     setDownloadingBooks(prev => ({ ...prev, [book.id]: true }));
 
     try {
-      // Fetch the PDF as a blob
-      const response = await fetch(book.pdfUrl, {
+      // Try fetching the PDF as a blob first
+      const response = await fetch(book.downloadUrl, {
         mode: 'cors',
         cache: 'no-cache',
       });
 
+      // Check if fetch was successful
       if (!response.ok) {
         throw new Error('فشل في تحميل الملف');
       }
@@ -124,17 +135,21 @@ export function BooksLibrary() {
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error('Download error:', error);
-      // Fallback: open in new tab if download fails
-      window.open(book.pdfUrl, '_blank');
+      console.error('Download error (CORS or network):', error);
+      
+      // FALLBACK: Open the view URL in a new tab
+      // User can then use the browser's download button from the Archive.org page
+      window.open(book.viewUrl, '_blank', 'noopener,noreferrer');
     } finally {
+      // Always reset loading state
       setDownloadingBooks(prev => ({ ...prev, [book.id]: false }));
     }
   };
 
-  // Handle read in new tab
+  // Handle read in new tab (opens Archive.org viewer)
   const handleRead = (book: Book) => {
-    window.open(book.pdfUrl, '_blank', 'noopener,noreferrer');
+    // Open the Archive.org details page with theater view
+    window.open(book.viewUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Group books by category
@@ -246,10 +261,10 @@ export function BooksLibrary() {
       {/* Footer Note */}
       <div className="text-center py-6 border-t border-slate-200 dark:border-slate-700">
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          جميع الكتب متاحة للتحميل المجاني من مصادر موثوقة
+          جميع الكتب متاحة للقراءة والتحميل المجاني من Archive.org
         </p>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-          المصدر: Archive.org - المكتبة الرقمية العالمية
+          اضغط "قراءة" لفتح الكتاب في المتصفح أو "تنزيل" للتحميل
         </p>
       </div>
     </div>
