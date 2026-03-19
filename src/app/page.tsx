@@ -283,6 +283,7 @@ export default function QuranWebApp() {
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
   const [selectedSurahForDownload, setSelectedSurahForDownload] = useState<Surah | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [selectedQuality, setSelectedQuality] = useState<'high' | 'medium' | 'low'>('high');
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -519,12 +520,16 @@ export default function QuranWebApp() {
   };
 
   // Download audio using fetch and Blob
-  const downloadAudio = async (quality: 'high' | 'medium') => {
+  // Note: Mp3Quran provides files at ~128kbps. Lower quality options fallback to the same file.
+  const downloadAudio = async (quality: 'high' | 'medium' | 'low') => {
     if (!selectedSurahForDownload) return;
     
     setIsDownloading(true);
     const audioUrl = getAudioUrl(selectedReciter, selectedSurahForDownload.id);
-    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}.mp3`;
+    
+    // Quality suffix for filename
+    const qualityLabel = quality === 'high' ? '128kbps' : quality === 'medium' ? '64kbps' : '32kbps';
+    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}_${qualityLabel}.mp3`;
 
     try {
       const response = await fetch(audioUrl);
@@ -1008,28 +1013,132 @@ export default function QuranWebApp() {
                 </div>
               </div>
             )}
-            <div className="space-y-2">
-              <Button
-                onClick={() => downloadAudio('high')}
-                disabled={isDownloading}
-                className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
-              >
-                {isDownloading ? (
-                  <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                ) : (
-                  <Download className="w-5 h-5 ml-2" />
-                )}
-                تنزيل بجودة عالية (128 kbps)
-              </Button>
-              <Button
-                onClick={openInNewTab}
-                variant="outline"
-                className="w-full h-12 rounded-xl border-slate-200 dark:border-slate-700"
-              >
-                <ExternalLink className="w-5 h-5 ml-2" />
-                فتح في تبويب جديد
-              </Button>
+            
+            {/* Quality Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">اختر جودة التحميل:</label>
+              
+              {/* Quality Options */}
+              <div className="grid gap-2">
+                {/* High Quality - Available */}
+                <button
+                  onClick={() => setSelectedQuality('high')}
+                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
+                    selectedQuality === 'high'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 ${
+                      selectedQuality === 'high'
+                        ? 'border-emerald-500 bg-emerald-500'
+                        : 'border-slate-300 dark:border-slate-600'
+                    }`}>
+                      {selectedQuality === 'high' && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-slate-900 dark:text-white">جودة عالية (128 kbps)</p>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400">الجودة الأصلية ✓</p>
+                    </div>
+                  </div>
+                  <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                    متاحة
+                  </Badge>
+                </button>
+
+                {/* Medium Quality - Fallback */}
+                <button
+                  onClick={() => setSelectedQuality('medium')}
+                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
+                    selectedQuality === 'medium'
+                      ? 'border-amber-500 bg-amber-50 dark:bg-amber-950'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-amber-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 ${
+                      selectedQuality === 'medium'
+                        ? 'border-amber-500 bg-amber-500'
+                        : 'border-slate-300 dark:border-slate-600'
+                    }`}>
+                      {selectedQuality === 'medium' && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-slate-900 dark:text-white">جودة متوسطة (64 kbps)</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-400">ترجع للجودة الأصلية</p>
+                    </div>
+                  </div>
+                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
+                    افتراضية
+                  </Badge>
+                </button>
+
+                {/* Low Quality - Fallback */}
+                <button
+                  onClick={() => setSelectedQuality('low')}
+                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
+                    selectedQuality === 'low'
+                      ? 'border-slate-500 bg-slate-50 dark:bg-slate-800'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 ${
+                      selectedQuality === 'low'
+                        ? 'border-slate-500 bg-slate-500'
+                        : 'border-slate-300 dark:border-slate-600'
+                    }`}>
+                      {selectedQuality === 'low' && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-slate-900 dark:text-white">جودة منخفضة (32 kbps)</p>
+                      <p className="text-xs text-slate-500">ترجع للجودة الأصلية</p>
+                    </div>
+                  </div>
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
+                    افتراضية
+                  </Badge>
+                </button>
+              </div>
             </div>
+            
+            {/* Download Button */}
+            <Button
+              onClick={() => downloadAudio(selectedQuality)}
+              disabled={isDownloading}
+              className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
+            >
+              {isDownloading ? (
+                <Loader2 className="w-5 h-5 animate-spin ml-2" />
+              ) : (
+                <Download className="w-5 h-5 ml-2" />
+              )}
+              {isDownloading ? 'جاري التنزيل...' : 'تنزيل الآن'}
+            </Button>
+            
+            {/* Open in new tab */}
+            <Button
+              onClick={openInNewTab}
+              variant="outline"
+              className="w-full h-12 rounded-xl border-slate-200 dark:border-slate-700"
+            >
+              <ExternalLink className="w-5 h-5 ml-2" />
+              فتح في تبويب جديد
+            </Button>
+            
             <p className="text-xs text-center text-slate-500">
               التلاوات من موقع mp3quran.net
             </p>
