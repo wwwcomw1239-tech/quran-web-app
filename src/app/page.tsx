@@ -13,6 +13,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Play,
   Pause,
   SkipBack,
@@ -31,27 +38,59 @@ import {
   Loader2,
   Headphones,
   ExternalLink,
+  User,
 } from 'lucide-react';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
-// Reliable Audio URL Generator for Sheikh Al-Minshawi
-// Using server10.mp3quran.net which is known to be stable
-const getAudioUrl = (surahId: number): string => {
-  const paddedNumber = surahId.toString().padStart(3, '0');
-  return `https://server10.mp3quran.net/minsh/${paddedNumber}.mp3`;
-};
+// Reciters data with their audio URLs
+interface Reciter {
+  id: string;
+  nameArabic: string;
+  nameEnglish: string;
+  baseUrl: string;
+  imageUrl?: string;
+}
 
-// Alternative servers for fallback
-const audioServers = [
-  'https://server10.mp3quran.net/minsh/',
-  'https://server8.mp3quran.net/minsh/',
-  'https://server7.mp3quran.net/minsh/',
+const reciters: Reciter[] = [
+  {
+    id: 'minshawi',
+    nameArabic: 'محمد صديق المنشاوي',
+    nameEnglish: 'Mohammed Siddiq Al-Minshawi',
+    baseUrl: 'https://server10.mp3quran.net/minsh',
+  },
+  {
+    id: 'afs',
+    nameArabic: 'مشاري راشد العفاسي',
+    nameEnglish: 'Mishary Rashed Alafasy',
+    baseUrl: 'https://server7.mp3quran.net/afs',
+  },
+  {
+    id: 'husary',
+    nameArabic: 'محمود خليل الحصري',
+    nameEnglish: 'Mahmoud Khalil Al-Husary',
+    baseUrl: 'https://server10.mp3quran.net/husary',
+  },
+  {
+    id: 'maher',
+    nameArabic: 'معروف بصوت ماهر المعيقلي',
+    nameEnglish: 'Maher Al-Muaiqly',
+    baseUrl: 'https://server7.mp3quran.net/maher',
+  },
 ];
+
+// Generate audio URL based on reciter and surah
+const getAudioUrl = (reciterId: string, surahId: number): string => {
+  const reciter = reciters.find(r => r.id === reciterId);
+  if (!reciter) return '';
+  const paddedNumber = surahId.toString().padStart(3, '0');
+  return `${reciter.baseUrl}/${paddedNumber}.mp3`;
+};
 
 export default function QuranWebApp() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
+  const [selectedReciter, setSelectedReciter] = useState<string>('minshawi');
   const [currentSurah, setCurrentSurah] = useState<Surah | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -75,6 +114,11 @@ export default function QuranWebApp() {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Get selected reciter info
+  const currentReciter = useMemo(() => {
+    return reciters.find(r => r.id === selectedReciter) || reciters[0];
+  }, [selectedReciter]);
 
   // Filter and search surahs
   const filteredSurahs = useMemo(() => {
@@ -106,9 +150,31 @@ export default function QuranWebApp() {
     localStorage.setItem('quran-favorites', JSON.stringify(favorites));
   }, [favorites]);
 
+  // Stop audio when reciter changes
+  useEffect(() => {
+    if (audioRef.current && currentSurah) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentTime(0);
+      setDuration(0);
+      
+      // Restart with new reciter
+      const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+      audioRef.current.src = audioUrl;
+      audioRef.current.load();
+      
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+          setIsLoading(false);
+        })
+        .catch(console.error);
+    }
+  }, [selectedReciter]);
+
   // Play surah function
   const playSurah = useCallback((surah: Surah) => {
-    // If same surah is playing, toggle pause/play
     if (currentSurah?.id === surah.id && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -121,13 +187,12 @@ export default function QuranWebApp() {
       return;
     }
 
-    // Play new surah
     setCurrentSurah(surah);
     setIsLoading(true);
     setAudioError(null);
 
     if (audioRef.current) {
-      const audioUrl = getAudioUrl(surah.id);
+      const audioUrl = getAudioUrl(selectedReciter, surah.id);
       console.log('Loading audio from:', audioUrl);
       
       audioRef.current.src = audioUrl;
@@ -142,13 +207,13 @@ export default function QuranWebApp() {
           })
           .catch((error) => {
             console.error('Audio play error:', error);
-            setAudioError('حدث خطأ أثناء تشغيل الصوت. جاري المحاولة مرة أخرى...');
+            setAudioError('حدث خطأ أثناء تشغيل الصوت');
             setIsLoading(false);
             setIsPlaying(false);
           });
       }
     }
-  }, [currentSurah, isPlaying]);
+  }, [currentSurah, isPlaying, selectedReciter]);
 
   // Play next surah
   const playNext = useCallback(() => {
@@ -206,7 +271,7 @@ export default function QuranWebApp() {
 
     const handleError = (e: Event) => {
       console.error('Audio error:', e);
-      setAudioError('تعذر تحميل الملف الصوتي. قد يكون هناك مشكلة في الاتصال.');
+      setAudioError('تعذر تحميل الملف الصوتي');
       setIsLoading(false);
       setIsPlaying(false);
     };
@@ -287,11 +352,10 @@ export default function QuranWebApp() {
     if (!selectedSurahForDownload) return;
     
     setIsDownloading(true);
-    const audioUrl = getAudioUrl(selectedSurahForDownload.id);
-    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}.mp3`;
+    const audioUrl = getAudioUrl(selectedReciter, selectedSurahForDownload.id);
+    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}.mp3`;
 
     try {
-      // Try to fetch the file
       const response = await fetch(audioUrl);
       
       if (!response.ok) {
@@ -310,7 +374,6 @@ export default function QuranWebApp() {
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download error:', error);
-      // Fallback: Open in new tab
       window.open(audioUrl, '_blank');
     } finally {
       setIsDownloading(false);
@@ -318,10 +381,10 @@ export default function QuranWebApp() {
     }
   };
 
-  // Open audio in new tab (fallback method)
+  // Open audio in new tab
   const openInNewTab = () => {
     if (!selectedSurahForDownload) return;
-    const audioUrl = getAudioUrl(selectedSurahForDownload.id);
+    const audioUrl = getAudioUrl(selectedReciter, selectedSurahForDownload.id);
     window.open(audioUrl, '_blank');
     setDownloadDialogOpen(false);
   };
@@ -340,12 +403,8 @@ export default function QuranWebApp() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" dir="rtl">
-      {/* Audio Element with CORS support */}
-      <audio 
-        ref={audioRef} 
-        preload="auto"
-        crossOrigin="anonymous"
-      />
+      {/* Audio Element */}
+      <audio ref={audioRef} preload="auto" crossOrigin="anonymous" />
 
       {/* Header */}
       <header className="bg-gradient-to-l from-emerald-600 via-emerald-700 to-teal-700 text-white shadow-xl">
@@ -357,7 +416,7 @@ export default function QuranWebApp() {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold">القرآن الكريم</h1>
-                <p className="text-emerald-100 text-sm">بصوت الشيخ محمد صديق المنشاوي</p>
+                <p className="text-emerald-100 text-sm">استمع إلى تلاوات عطرة</p>
               </div>
             </div>
 
@@ -386,6 +445,54 @@ export default function QuranWebApp() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6 pb-36">
+        {/* Reciter Selection - Prominent */}
+        <div className="bg-gradient-to-l from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-teal-950/50 rounded-2xl shadow-lg p-5 mb-6 border border-emerald-200 dark:border-emerald-800">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                <User className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-right">
+                <h3 className="font-bold text-slate-900 dark:text-white">اختر القارئ</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">استمع إلى تلاوات مختلفة</p>
+              </div>
+            </div>
+            
+            <Select value={selectedReciter} onValueChange={setSelectedReciter}>
+              <SelectTrigger className="w-full sm:w-72 h-12 bg-white dark:bg-slate-800 border-emerald-200 dark:border-emerald-700 rounded-xl text-right">
+                <SelectValue placeholder="اختر القارئ" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {reciters.map((reciter) => (
+                  <SelectItem 
+                    key={reciter.id} 
+                    value={reciter.id}
+                    className="rounded-lg py-3"
+                  >
+                    <div className="flex flex-col items-start">
+                      <span className="font-bold text-slate-900 dark:text-white">{reciter.nameArabic}</span>
+                      <span className="text-xs text-slate-500">{reciter.nameEnglish}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Current Reciter Info */}
+          <div className="mt-4 pt-4 border-t border-emerald-200 dark:border-emerald-800">
+            <div className="flex items-center gap-3 bg-white/50 dark:bg-slate-800/50 rounded-xl p-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
+                <Headphones className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-slate-500 dark:text-slate-400">يتم الاستماع الآن بصوت</p>
+                <p className="font-bold text-emerald-700 dark:text-emerald-400">{currentReciter.nameArabic}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Search and Filter */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 mb-6 sticky top-4 z-40">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
@@ -604,7 +711,7 @@ export default function QuranWebApp() {
                 </div>
                 <div className="min-w-0">
                   <h4 className="font-bold text-slate-900 dark:text-white truncate">{currentSurah.nameArabic}</h4>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 truncate">{currentSurah.nameEnglish}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 truncate">{currentReciter.nameArabic}</p>
                 </div>
               </div>
 
@@ -723,6 +830,11 @@ export default function QuranWebApp() {
                   {selectedSurahForDownload.nameArabic}
                 </h3>
                 <p className="text-slate-500">{selectedSurahForDownload.nameEnglish}</p>
+                <div className="mt-2 bg-emerald-50 dark:bg-emerald-950 rounded-lg p-2">
+                  <p className="text-sm text-emerald-700 dark:text-emerald-400">
+                    بصوت: {currentReciter.nameArabic}
+                  </p>
+                </div>
               </div>
             )}
             <div className="space-y-2">
@@ -748,7 +860,7 @@ export default function QuranWebApp() {
               </Button>
             </div>
             <p className="text-xs text-center text-slate-500">
-              التلاوة بصوت الشيخ محمد صديق المنشاوي رحمه الله
+              التلاوات من موقع mp3quran.net
             </p>
           </div>
         </DialogContent>
@@ -756,7 +868,7 @@ export default function QuranWebApp() {
 
       {/* Footer */}
       <footer className={`text-center py-6 text-slate-500 dark:text-slate-400 text-sm ${currentSurah ? 'pb-36' : ''}`}>
-        <p>القرآن الكريم - تلاوات الشيخ محمد صديق المنشاوي</p>
+        <p>القرآن الكريم - استمع إلى تلاوات عطرة</p>
         <p className="mt-1">المصدر: mp3quran.net</p>
       </footer>
     </div>
