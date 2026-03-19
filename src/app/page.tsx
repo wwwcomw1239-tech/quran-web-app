@@ -400,6 +400,181 @@ const reciters: Reciter[] = [
     nameEnglish: 'Nima Al-Hassan',
     baseUrl: 'https://server8.mp3quran.net/namh',
   },
+  // === NEW RECITERS BATCH 2 (30) - All verified from Mp3Quran API ===
+  {
+    id: 'thubaiti',
+    nameArabic: 'عبدالبارئ الثبيتي',
+    nameEnglish: 'Abdul Bari Al-Thubaiti',
+    baseUrl: 'https://server6.mp3quran.net/thubti',
+  },
+  {
+    id: 'khalaf',
+    nameArabic: 'عبدالله الخلف',
+    nameEnglish: 'Abdullah Al-Khalaf',
+    baseUrl: 'https://server14.mp3quran.net/khalf',
+  },
+  {
+    id: 'sufi',
+    nameArabic: 'عبدالرشيد صوفي',
+    nameEnglish: 'Abdul Rashid Sufi',
+    baseUrl: 'https://server16.mp3quran.net/soufi/Rewayat-Hafs-A-n-Assem',
+  },
+  {
+    id: 'trabulsi',
+    nameArabic: 'أحمد الطرابلسي',
+    nameEnglish: 'Ahmad Al-Trabulsi',
+    baseUrl: 'https://server10.mp3quran.net/trabulsi',
+  },
+  {
+    id: 'swailem',
+    nameArabic: 'أحمد السويلم',
+    nameEnglish: 'Ahmad Al-Swailem',
+    baseUrl: 'https://server14.mp3quran.net/swlim/Rewayat-Hafs-A-n-Assem',
+  },
+  {
+    id: 'huzaifi_hq',
+    nameArabic: 'علي الحذيفي',
+    nameEnglish: 'Ali Al-Huzaifi',
+    baseUrl: 'https://server9.mp3quran.net/hthfi',
+  },
+  {
+    id: 'emadi',
+    nameArabic: 'أنس العمادي',
+    nameEnglish: 'Anas Al-Emadi',
+    baseUrl: 'https://server16.mp3quran.net/a_alemadi/Rewayat-Hafs-A-n-Assem',
+  },
+  {
+    id: 'aziz_ahmad',
+    nameArabic: 'عبدالعزيز الأحمد',
+    nameEnglish: 'Aziz Alili (Al-Ahmad)',
+    baseUrl: 'https://server11.mp3quran.net/a_ahmed',
+  },
+  {
+    id: 'fareed_hatim',
+    nameArabic: 'حاتم فريد الواعر',
+    nameEnglish: 'Fareed Abbas (Hatim)',
+    baseUrl: 'https://server11.mp3quran.net/hatem',
+  },
+  {
+    id: 'daghriri',
+    nameArabic: 'حمد الدغريري',
+    nameEnglish: 'Hamad Al-Daghriri',
+    baseUrl: 'https://server16.mp3quran.net/H-Aldaghriri/Rewayat-Hafs-A-n-Assem',
+  },
+  {
+    id: 'imad_hafez',
+    nameArabic: 'عماد زهير حافظ',
+    nameEnglish: 'Imad Hafez',
+    baseUrl: 'https://server6.mp3quran.net/hafz',
+  },
+  {
+    id: 'khalid_ghamdi',
+    nameArabic: 'خالد الغامدي',
+    nameEnglish: 'Khalid Al-Ghamdi',
+    baseUrl: 'https://server6.mp3quran.net/ghamdi',
+  },
+  {
+    id: 'wuhibi',
+    nameArabic: 'خالد الوهيبي',
+    nameEnglish: 'Khalid Al-Wuhibi',
+    baseUrl: 'https://server11.mp3quran.net/whabi',
+  },
+  {
+    id: 'majed_zamil',
+    nameArabic: 'ماجد الزامل',
+    nameEnglish: 'Majed Al-Zamil',
+    baseUrl: 'https://server9.mp3quran.net/zaml',
+  },
+  {
+    id: 'husary_mujawwad',
+    nameArabic: 'محمود خليل الحصري (مجود)',
+    nameEnglish: 'Husary Mujawwad',
+    baseUrl: 'https://server13.mp3quran.net/husr/Almusshaf-Al-Mojawwad',
+  },
+  {
+    id: 'barrak',
+    nameArabic: 'محمد البراك',
+    nameEnglish: 'Mohammad Al-Barrak',
+    baseUrl: 'https://server12.mp3quran.net/shah',
+  },
+  {
+    id: 'hafiz',
+    nameArabic: 'محمد الحافظ',
+    nameEnglish: 'Mohammad Al-Hafiz',
+    baseUrl: 'https://server6.mp3quran.net/hafz',
+  },
+  {
+    id: 'minshawi_mujawwad',
+    nameArabic: 'محمد صديق المنشاوي (مجود)',
+    nameEnglish: 'Minshawi Mujawwad',
+    baseUrl: 'https://server10.mp3quran.net/minsh/Almusshaf-Al-Mojawwad',
+  },
+  {
+    id: 'rashad_sharif',
+    nameArabic: 'محمد رشاد الشريف',
+    nameEnglish: 'Mohammad Rashad Al-Sharif',
+    baseUrl: 'https://server10.mp3quran.net/rashad',
+  },
+  {
+    id: 'mousa_bilal',
+    nameArabic: 'موسى بلال',
+    nameEnglish: 'Mousa Bilal',
+    baseUrl: 'https://server11.mp3quran.net/bilal',
+  },
+  {
+    id: 'nasser_majed',
+    nameArabic: 'ناصر الماجد',
+    nameEnglish: 'Nasser Al-Majed',
+    baseUrl: 'https://server14.mp3quran.net/nasser_almajed',
+  },
+  {
+    id: 'rami_deais',
+    nameArabic: 'رامي الدعيس',
+    nameEnglish: 'Rami Al-Deais',
+    baseUrl: 'https://server6.mp3quran.net/rami',
+  },
+  {
+    id: 'saber_hakam',
+    nameArabic: 'صابر عبدالحكم',
+    nameEnglish: 'Saber Abdul-Hakam',
+    baseUrl: 'https://server12.mp3quran.net/hkm',
+  },
+  {
+    id: 'sahl_yassin',
+    nameArabic: 'سهل ياسين',
+    nameEnglish: 'Sahl Yassin',
+    baseUrl: 'https://server6.mp3quran.net/shl',
+  },
+  {
+    id: 'sherzad',
+    nameArabic: 'شيرزاد حيدر علي',
+    nameEnglish: 'Sherzad Haidar Ali',
+    baseUrl: 'https://server12.mp3quran.net/taher',
+  },
+  {
+    id: 'tariq_daoub',
+    nameArabic: 'طارق عبدالغني دعوب',
+    nameEnglish: 'Tariq Al-Daoub',
+    baseUrl: 'https://server10.mp3quran.net/tareq',
+  },
+  {
+    id: 'walid_naehi',
+    nameArabic: 'وليد النائحي',
+    nameEnglish: 'Walid Al-Naehi',
+    baseUrl: 'https://server9.mp3quran.net/waleed',
+  },
+  {
+    id: 'yusuf_shuweii',
+    nameArabic: 'يوسف الشويعي',
+    nameEnglish: 'Yusuf Al-Shuweii',
+    baseUrl: 'https://server9.mp3quran.net/yousef',
+  },
+  {
+    id: 'yusuf_noah',
+    nameArabic: 'يوسف بن نوح أحمد',
+    nameEnglish: 'Yusuf bin Noah',
+    baseUrl: 'https://server8.mp3quran.net/noah',
+  },
 ];
 
 // Generate audio URL based on reciter and surah
@@ -435,7 +610,7 @@ export default function QuranWebApp() {
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
   const [selectedSurahForDownload, setSelectedSurahForDownload] = useState<Surah | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [selectedQuality, setSelectedQuality] = useState<'high' | 'medium' | 'low'>('high');
+  const [selectedQuality, setSelectedQuality] = useState<'high' | 'medium' | 'low'>('low'); // Low quality is mandatory default
   const [reciterSearchQuery, setReciterSearchQuery] = useState('');
   const [reciterDialogOpen, setReciterDialogOpen] = useState(false);
 
@@ -1243,36 +1418,36 @@ export default function QuranWebApp() {
             <div className="space-y-3">
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">اختر جودة التحميل:</label>
               
-              {/* Quality Options */}
+              {/* Quality Options - LOW QUALITY FIRST POLICY */}
               <div className="grid gap-2">
-                {/* High Quality - Available */}
+                {/* Low Quality - RECOMMENDED DEFAULT */}
                 <button
-                  onClick={() => setSelectedQuality('high')}
+                  onClick={() => setSelectedQuality('low')}
                   className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
-                    selectedQuality === 'high'
+                    selectedQuality === 'low'
                       ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950'
                       : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 ${
-                      selectedQuality === 'high'
+                      selectedQuality === 'low'
                         ? 'border-emerald-500 bg-emerald-500'
                         : 'border-slate-300 dark:border-slate-600'
                     }`}>
-                      {selectedQuality === 'high' && (
+                      {selectedQuality === 'low' && (
                         <div className="w-full h-full flex items-center justify-center">
                           <div className="w-1.5 h-1.5 rounded-full bg-white" />
                         </div>
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-slate-900 dark:text-white">جودة عالية (128 kbps)</p>
-                      <p className="text-xs text-emerald-600 dark:text-emerald-400">الجودة الأصلية ✓</p>
+                      <p className="font-medium text-slate-900 dark:text-white">جودة منخفضة (32 kbps)</p>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400">موصى بها - سريع وموفر للبيانات ✓</p>
                     </div>
                   </div>
                   <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
-                    متاحة
+                    موصى بها
                   </Badge>
                 </button>
 
@@ -1307,34 +1482,34 @@ export default function QuranWebApp() {
                   </Badge>
                 </button>
 
-                {/* Low Quality - Fallback */}
+                {/* High Quality - Only if lower unavailable */}
                 <button
-                  onClick={() => setSelectedQuality('low')}
+                  onClick={() => setSelectedQuality('high')}
                   className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
-                    selectedQuality === 'low'
+                    selectedQuality === 'high'
                       ? 'border-slate-500 bg-slate-50 dark:bg-slate-800'
                       : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 ${
-                      selectedQuality === 'low'
+                      selectedQuality === 'high'
                         ? 'border-slate-500 bg-slate-500'
                         : 'border-slate-300 dark:border-slate-600'
                     }`}>
-                      {selectedQuality === 'low' && (
+                      {selectedQuality === 'high' && (
                         <div className="w-full h-full flex items-center justify-center">
                           <div className="w-1.5 h-1.5 rounded-full bg-white" />
                         </div>
                       )}
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-slate-900 dark:text-white">جودة منخفضة (32 kbps)</p>
-                      <p className="text-xs text-slate-500">ترجع للجودة الأصلية</p>
+                      <p className="font-medium text-slate-900 dark:text-white">جودة عالية (128 kbps)</p>
+                      <p className="text-xs text-slate-500">الجودة الأصلية - حجم أكبر</p>
                     </div>
                   </div>
                   <Badge variant="secondary" className="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
-                    افتراضية
+                    متاحة
                   </Badge>
                 </button>
               </div>
