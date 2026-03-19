@@ -128,6 +128,54 @@ const reciters: Reciter[] = [
     nameEnglish: 'Muhammad Ayyub',
     baseUrl: 'https://server8.mp3quran.net/ayyub',
   },
+  {
+    id: 'abkar',
+    nameArabic: 'إدريس أبكر',
+    nameEnglish: 'Idris Abkar',
+    baseUrl: 'https://server6.mp3quran.net/abkr',
+  },
+  {
+    id: 'qatami',
+    nameArabic: 'ناصر القطامي',
+    nameEnglish: 'Nasser Al Qatami',
+    baseUrl: 'https://server6.mp3quran.net/qtm',
+  },
+  {
+    id: 'yamani',
+    nameArabic: 'وديع اليمني',
+    nameEnglish: 'Wadih Al Yamani',
+    baseUrl: 'https://server6.mp3quran.net/wdee3',
+  },
+  {
+    id: 'basfar',
+    nameArabic: 'عبدالله بصفر',
+    nameEnglish: 'Abdullah Basfar',
+    baseUrl: 'https://server6.mp3quran.net/bsfr',
+  },
+  {
+    id: 'ali_jaber',
+    nameArabic: 'علي جابر',
+    nameEnglish: 'Ali Jaber',
+    baseUrl: 'https://server11.mp3quran.net/a_jbr',
+  },
+  {
+    id: 'al_banna',
+    nameArabic: 'محمود علي البنا',
+    nameEnglish: 'Mahmoud Ali Al Banna',
+    baseUrl: 'https://server8.mp3quran.net/bna',
+  },
+  {
+    id: 'bukhatir',
+    nameArabic: 'صلاح بو خاطر',
+    nameEnglish: 'Salah Bukhatir',
+    baseUrl: 'https://server8.mp3quran.net/bu_khtr',
+  },
+  {
+    id: 'jibril',
+    nameArabic: 'محمد جبريل',
+    nameEnglish: 'Muhammad Jibril',
+    baseUrl: 'https://server8.mp3quran.net/jbrl',
+  },
 ];
 
 // Generate audio URL based on reciter and surah
