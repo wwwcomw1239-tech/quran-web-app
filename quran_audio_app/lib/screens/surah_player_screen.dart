@@ -117,7 +117,9 @@ class _SurahPlayerScreenState extends State<SurahPlayerScreen>
       });
 
       // Set current surah in provider
-      context.read<QuranProvider>().setCurrentSurah(widget.surah);
+      if (mounted) {
+        context.read<QuranProvider>().setCurrentSurah(widget.surah);
+      }
 
       // Auto-play if requested
       if (widget.autoPlay) {
@@ -194,7 +196,9 @@ class _SurahPlayerScreenState extends State<SurahPlayerScreen>
   /// Seek to position
   Future<void> _seekTo(Duration position) async {
     await _audioService.seek(position);
-    context.read<QuranProvider>().updatePosition(position);
+    if (mounted) {
+      context.read<QuranProvider>().updatePosition(position);
+    }
   }
 
   /// Rewind 10 seconds

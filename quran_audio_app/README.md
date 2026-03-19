@@ -1,29 +1,16 @@
 # quran_audio_app
 
-تطبيق القرآن الكريم بصوت الشيخ محمد صديق المنشاوي
+A new Flutter project.
 
-## المميزات
+## Getting Started
 
-- 📖 قائمة كاملة بسور القرآن الكريم
-- 🎧 استماع لتلاوات الشيخ المنشاوي
-- ⬇️ تحميل السور للاستماع offline
-- 🌙 دعم الوضع الداكن
-- 🔍 البحث في السور
+This project is a starting point for a Flutter application.
 
-## المتطلبات
+A few resources to get you started if this is your first Flutter project:
 
-- Flutter SDK >= 3.22.0
-- Dart SDK >= 3.4.0
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-## التثبيت
-
-```bash
-flutter pub get
-flutter run
-```
-
-## البناء
-
-```bash
-flutter build apk --release
-```
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
