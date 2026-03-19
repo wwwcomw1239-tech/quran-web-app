@@ -5,3 +5,4 @@ export { SurahList } from './SurahList';
 export { AudioPlayerBar } from './AudioPlayerBar';
 export { DownloadDialog } from './DownloadDialog';
 export { Footer } from './Footer';
+export { BooksLibrary } from './BooksLibrary';

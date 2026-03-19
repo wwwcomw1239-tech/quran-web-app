@@ -11,7 +11,10 @@ import {
   AudioPlayerBar,
   Footer,
   DownloadDialog,
+  BooksLibrary,
 } from '@/components/quran';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Headphones, BookOpen } from 'lucide-react';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
@@ -413,35 +416,63 @@ export default function QuranWebApp() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6 pb-36">
-        {/* Reciter Selection */}
-        <ReciterSelector
-          selectedReciter={selectedReciter}
-          onSelectReciter={setSelectedReciter}
-        />
+        {/* Library Tabs */}
+        <Tabs defaultValue="audio" className="w-full mb-6">
+          <TabsList className="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-1.5 mx-auto flex justify-center mb-6">
+            <TabsTrigger 
+              value="audio" 
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all"
+            >
+              <Headphones className="w-5 h-5" />
+              <span className="font-medium">المكتبة الصوتية</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="books" 
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all"
+            >
+              <BookOpen className="w-5 h-5" />
+              <span className="font-medium">المكتبة المقروءة</span>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Search and Filter */}
-        <SearchFilter
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          filter={filter}
-          onFilterChange={setFilter}
-          showFavorites={showFavorites}
-          onToggleFavorites={() => setShowFavorites(!showFavorites)}
-          favoritesCount={favorites.length}
-          filteredCount={filteredSurahs.length}
-        />
+          {/* Audio Library Tab */}
+          <TabsContent value="audio" className="space-y-6 outline-none">
+            {/* Reciter Selection */}
+            <ReciterSelector
+              selectedReciter={selectedReciter}
+              onSelectReciter={setSelectedReciter}
+            />
 
-        {/* Surah List */}
-        <SurahList
-          surahs={filteredSurahs}
-          currentSurahId={currentSurah?.id ?? null}
-          isPlaying={isPlaying}
-          isLoading={isLoading}
-          favorites={favorites}
-          onPlay={playSurah}
-          onToggleFavorite={toggleFavorite}
-          onDownload={handleDownload}
-        />
+            {/* Search and Filter */}
+            <SearchFilter
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              filter={filter}
+              onFilterChange={setFilter}
+              showFavorites={showFavorites}
+              onToggleFavorites={() => setShowFavorites(!showFavorites)}
+              favoritesCount={favorites.length}
+              filteredCount={filteredSurahs.length}
+            />
+
+            {/* Surah List */}
+            <SurahList
+              surahs={filteredSurahs}
+              currentSurahId={currentSurah?.id ?? null}
+              isPlaying={isPlaying}
+              isLoading={isLoading}
+              favorites={favorites}
+              onPlay={playSurah}
+              onToggleFavorite={toggleFavorite}
+              onDownload={handleDownload}
+            />
+          </TabsContent>
+
+          {/* Books Library Tab */}
+          <TabsContent value="books" className="outline-none">
+            <BooksLibrary />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Footer */}
