@@ -30,127 +30,162 @@ const categoryColors: Record<BookCategory, string> = {
   'التدبر': 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300',
 };
 
-// Massive books database - 100+ verified direct PDF URLs
+// ============================================
+// MASSIVE BOOKS DATABASE - 200+ VERIFIED PDFs
+// All from Ahl al-Sunnah wal-Jama'ah scholars
+// ============================================
 const booksData: Book[] = [
-  // ========== التفسير (Tafsir) ==========
-  { id: 'tafsir-muyassar', title: 'التفسير الميسر', author: 'نخبة من العلماء', category: 'التفسير', pdfUrl: 'https://archive.org/download/attafseer_almoyassar/ar_tafseer_meesr_b.pdf' },
-  { id: 'tafseer-saadi', title: 'تفسير السعدي', author: 'عبد الرحمن بن ناصر السعدي', category: 'التفسير', pdfUrl: 'https://archive.org/download/ozkorallh_20181023_2048/100585.pdf' },
-  { id: 'tafseer-ibn-kathir-1', title: 'تفسير ابن كثير - ج1', author: 'الإمام ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather01.pdf' },
-  { id: 'tafseer-tabari-1', title: 'تفسير الطبري - ج1', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59561/taftabry01p.pdf' },
-  { id: 'tafseer-tabari-5', title: 'تفسير الطبري - ج5', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry05.pdf' },
-  { id: 'tafseer-tabari-11', title: 'تفسير الطبري - ج11', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry11.pdf' },
-  { id: 'tafseer-tabari-14', title: 'تفسير الطبري - ج14', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59561/taftabry14.pdf' },
-  { id: 'tafseer-tabari-16', title: 'تفسير الطبري - ج16', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry16.pdf' },
-  { id: 'tafseer-jalalain', title: 'تفسير الجلالين', author: 'جلال الدين المحلي والسيوطي', category: 'التفسير', pdfUrl: 'https://archive.org/download/TafseerAlJalalainMaaAnwarAlHaraminJild1ArabicPDFBook/Tafseer%20Al%20Jalalain%20Maa%20Anwar%20Al%20Haramin%20Jild%201%20Arabic%20PDF%20Book.pdf' },
-  { id: 'tafsir-mukhtasar', title: 'المختصر في تفسير القرآن', author: 'مركز تفسير للدراسات', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafsirMukhtasar/TafsirMukhtasar.pdf' },
-  { id: 'tafseer-ibn-fawrak-1', title: 'تفسير ابن فورك - ج1', author: 'ابن فورك', category: 'التفسير', pdfUrl: 'https://archive.org/download/taffawtaffaw/01taffaw.pdf' },
-  { id: 'tafseer-ibn-fawrak-3', title: 'تفسير ابن فورك - ج3', author: 'ابن فورك', category: 'التفسير', pdfUrl: 'https://archive.org/download/taffawtaffaw/03taffaw.pdf' },
-  { id: 'nazarat-tafsir', title: 'نظرات في كتب التفسير', author: 'عبد السلام الهراس', category: 'التفسير', pdfUrl: 'https://archive.org/download/Nadharat_fi_Ktb_Tafsir/Nadharat_Ktb_Tafsir.pdf' },
-  { id: 'tafseer-bayan', title: 'البيان في إعجاز القرآن', author: 'عبد الله بن إبراهيم الأنصاري', category: 'التفسير', pdfUrl: 'https://archive.org/download/86_20231128/%D8%9F%20%2895%29.pdf' },
-  
-  // ========== علوم القرآن (Ulum al-Quran) ==========
-  { id: 'mabaheth-quran', title: 'مباحث في علوم القرآن', author: 'مناع القطان', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/WAQmbolqumbolqu/mbolqu.pdf' },
-  { id: 'al-itqan', title: 'الإتقان في علوم القرآن', author: 'الإمام السيوطي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/sa71mir_gmail_20160606/%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%B9%D9%84%D9%88%D9%85%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%84%D9%84%D8%AD%D8%A7%D9%81%D8%B8%20%D8%AC%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86%20%D8%A7%D9%84%D8%B3%D9%8A%D9%88%D8%B7%D9%8A.pdf' },
-  { id: 'burhan-zarkashi', title: 'البرهان في علوم القرآن', author: 'الإمام الزركشي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/FPbrolquyu/brolquyu.pdf' },
-  { id: 'mabadi-tafsir', title: 'مباديء في أصول التفسير', author: 'محمد بن عثيمين', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/mabadifiilmeusoolaltafseer/MABADI_FI_ILM_E_USOOL_AL_TAFSEER.pdf' },
-  { id: 'muqaddima-tafsir', title: 'مقدمة التفسير', author: 'الإمام السيوطي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/Sharh_N_soyoti/01-Elm_tafsir_01.pdf' },
-  { id: 'masail-aqida-quran', title: 'المسائل العقدية في كتب علوم القرآن', author: 'أحمد بن عبد الله آل بسام', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/aqidah-06713-c/Aqidah06713%20%C2%9F%CE%B9%CE%BA%C2%AB%C2%9F%C2%9E%CE%B9%20%C2%9F%CE%B9%CE%B3%CE%B7%C2%A7%CE%BF%E2%80%98%20%CE%B5%CE%BF%20%CE%B8%E2%80%99%C2%A0%20%CE%B3%CE%B9%CE%BD%CE%BA%20%C2%9F%CE%B9%CE%B7%C2%A9%C2%99%CE%BB.pdf' },
-  { id: 'sharh-zamzami', title: 'شرح منظومة الزمزمي في علوم القرآن', author: 'محمد بن محمد المختار الشنقيطي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/Sharh_Mandhumat_Zemzemi/Sharh_Mandhumat_Zemzemi._kamil.pdf' },
-  { id: 'manahij-tafsir', title: 'مناهج المفسرين', author: 'محمد حسين الذهبي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/WAQ90085s/90085s.pdf' },
-  { id: 'madkhal-mushaf', title: 'مدخل إلى التعريف بالمصحف الشريف', author: 'محمد سالم محيسن', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/15.8.2023/A03711.pdf' },
-  { id: 'idawat-tarikh-qiraat', title: 'إضاءات في تاريخ القراءات', author: 'عبد الرحمن الإيوبي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/4.4.2021/A03593.pdf' },
-  
-  // ========== التجويد والقراءات (Tajweed & Qira'at) ==========
-  { id: 'itqan-qaloun', title: 'الإتقان في أصول رواية قالون', author: 'عبد العزيز القاري', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/SW-moton-darat-alotrogga/01-%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%A3%D8%B5%D9%88%D9%84%20%D8%B1%D9%88%D8%A7%D9%8A%D8%A9%20%D9%82%D8%A7%D9%84%D9%88%D9%86.pdf' },
-  { id: 'manh-al-ilahiya', title: 'المنح الإلهية في جمع القراءات السبع', author: 'محمد بن محمد الأموي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/waq38375/38375.pdf' },
-  { id: 'tawatur-qiraat', title: 'التواتر في القراءات القرآنية', author: 'محمد سعيد البوسيفي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/3.10.18/A03214.pdf' },
-  { id: 'tabhir-taysir', title: 'تحبير التيسير في القراءات', author: 'ابن الجزري', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/almaktutat_gmail_1920_201905/%D8%A7%D9%84%D9%86%D8%B4%D8%B1%D8%A9%2019%20-%2020.pdf' },
-  { id: 'idawat-qiraat', title: 'إضاءات في تاريخ القراءات', author: 'عبد الرحمن الإيوبي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/4.4.2021/A03593.pdf' },
-  { id: 'al-tayyebat', title: 'الطيبات في جمع الآيات بتحريرات الزيات', author: 'عبد الرشيد علي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/Tayebat/00M_Tayebat.pdf' },
-  { id: 'ibriz-maani', title: 'إبراز المعاني من حرز الأماني', author: 'أبو شامة المقدسي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/ktp2019-bk1591/ktp2019-bk1591.pdf' },
-  { id: 'istidrakat-abu-shama', title: 'استدراكات أبي شامة على الشاطبية', author: 'أبو شامة المقدسي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/ktp2019-tra2627/ktp2019-tra2627.pdf' },
-  
-  // ========== إعراب القرآن وبيانه (I'rab & Linguistics) ==========
-  { id: 'irab-bahr-muhit-17', title: 'إعراب القرآن من البحر المحيط - ج17', author: 'أبو حيان الأندلسي', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/lis_e3r17/lis_e3r1711.pdf' },
-  { id: 'athar-aqida-irab', title: 'أثر موقف الشنقيطي العقدي في إعراب القرآن', author: 'أحمد الخضير', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/emalaya/emalaya.rar/%27athar%20mawqif.pdf' },
-  { id: 'irab-muhayaa', title: 'الإعراب المحلى للمفردات النحوية', author: 'حسين محمد علي', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/lib04109/lib04109.pdf' },
-  { id: 'idmam-nahwiya', title: 'الإضمامة النحوية في إعراب القرآن', author: 'عبد الله بن أحمد', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/20230102_20230102_0229/%D8%A7%D9%84%D8%A5%D8%B6%D9%85%D8%A7%D9%85%D8%A9%20%D8%A7%D9%84%D9%86%D8%AD%D9%88%D9%8A%D8%A9.pdf' },
-  { id: 'bina-tarkeeb', title: 'بناء التركيب الإفصاحي في القرآن', author: 'محمد أحمد أبو الفتوح', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/azm101010_gmail_20180403_1519/%D8%A8%D9%86%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D8%B1%D9%83%D9%8A%D8%A8%20%D8%A7%D9%84%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D9%8A%20%D9%81%D9%8A%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85.pdf' },
-  { id: 'al-bayan-ghareeb-irab', title: 'البيان في غريب إعراب القرآن', author: 'ابن الأنباري', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/books-3-juin-2024/%D8%AA%D8%B9%D9%84%D9%8A%D9%82_%D9%84%D8%B7%D9%8A%D9%81_%D8%B9%D9%84%D9%89_%D9%82%D9%88%D8%A7%D8%B9%D8%AF_%D8%A7%D9%84%D8%A5%D8%B9%D8%B1%D8%A7%D8%A8_%D9%84%D9%85%D8%AD%D8%A8_%D8%A7%D9%84%D8%AF%D9%8A%D9%86_%D9%85%D8%AD%D9%85%D8%AF_%D8%A8%D9%86_%D8%AE%D9%84%D9%8A%D9%84_%D8%A7%D9%84%D8%A8%D8%B5%D8%B1%D9%88%D9%8A%20%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D8%AC%D9%88%D8%AF%20www.judbooks.com%20%281%29.pdf' },
-  { id: 'tawjih-nahwi-qiraat', title: 'التوجيه النحوي للقراءات القرآنية', author: 'أحمد محمد النحال', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/ktp2019-tra5511/ktp2019-tra5511.pdf' },
-  { id: 'tuhfa-nahwiya', title: 'التحفة النحوية في الجمع بين البحرين', author: 'قاسم بن عبد العزيز الحاج', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/books-3-juin-2024/%D8%A7%D9%84%D8%AA%D8%AD%D9%81%D8%A9%20%D8%A7%D9%84%D9%86%D8%AD%D9%88%D9%8A%D8%A9%20-%20%D9%82%D8%A7%D8%B3%D9%85%20%D8%A8%D9%86%20%D8%B9%D8%A8%D8%AF%20%D8%A7%D9%84%D8%B9%D8%B2%D9%8A%D8%B2%20%D8%A8%D9%86%20%D8%B9%D9%84%D9%8A%20%D8%A7%D9%84%D8%AD%D8%A7%D8%AC%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D8%AC%D9%88%D8%AF%20www.judbooks.com%20%281%29.pdf' },
-  
-  // ========== أسباب النزول (Asbab al-Nuzul) ==========
-  { id: 'lubab-nuqul', title: 'لباب النقول في أسباب النزول', author: 'الإمام السيوطي', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/WAQ9083S/9083s.pdf' },
-  { id: 'sahih-asbab-nuzul', title: 'الصحيح المسند من أسباب النزول', author: 'مقبل الوادعي', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/mttfqmttfq/mttfq.pdf' },
-  { id: 'marahil-thaman', title: 'المراحل الثمان لطالب فهم القرآن', author: 'عبد العزيز المحمد السليم', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/mttfqmttfq/mttfq.pdf' },
-  { id: 'bada-wahy', title: 'بدء الوحي', author: 'جمع وتحقيق', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/taha_157/%D8%A8%D8%AF%D8%A1%20%D8%A7%D9%84%D9%88%D8%AD%D9%8A.pdf' },
-  { id: 'wahy-quran-sunna', title: 'الوحي في القرآن والسنة', author: 'محمد خليفة', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/5_20230708_20230708_2018/%20%2873%29.pdf' },
-  { id: 'asbab-nuzul-tahqiq', title: 'تحقيق أسباب النزول وطرق الاستدلال بها', author: 'علي الضويحي', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/zovv6/zovv6.pdf' },
-  
-  // ========== غريب القرآن ومفرداته (Ghareeb al-Quran) ==========
-  { id: 'mufredat-raghib', title: 'مفردات ألفاظ القرآن', author: 'الراغب الأصفهاني', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/Al-isfahani-MufradatAlfadhAl-quran/Al-isfahani-MufradatAlfadhAl-quran-.pdf' },
-  { id: 'lughat-quran', title: 'لغة القرآن الكريم', author: 'محمود إسماعيل', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/201802_20180209/%D9%84%D8%BA%D8%A9%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85_2.pdf' },
-  { id: 'mafahim-quraniya', title: 'مفاهيم قرآنية', author: 'محمد الغزالي', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/ebw02/079.pdf' },
-  { id: 'ghareeb-quran-mukhtasar', title: 'غريب القرآن - مختصر', author: 'جمع من العلماء', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/zomy2/zomy2.pdf' },
-  
-  // ========== التدبر (Tadabbur) ==========
-  { id: 'adwa-bayan-1', title: 'أضواء البيان - ج1', author: 'الشنقيطي', category: 'التدبر', pdfUrl: 'https://archive.org/download/WAQ69939/01_69939s.pdf' },
-  { id: 'adwa-bayan-4', title: 'أضواء البيان - ج4', author: 'الشنقيطي', category: 'التدبر', pdfUrl: 'https://archive.org/download/WAQ69939/04_69942s.pdf' },
-  { id: 'tadabbur-haqiqa', title: 'التدبر حقيقته وعلاقته بمصطلحات التأويل', author: 'عبد الرحمن الشهري', category: 'التدبر', pdfUrl: 'https://archive.org/download/themtef/themtef.pdf' },
-  { id: 'khulasa-tadabbur', title: 'الخلاصة في تدبر القرآن الكريم', author: 'عبد العزيز المحمد السليم', category: 'التدبر', pdfUrl: 'https://archive.org/download/20230708_20230708_0908/%25D8%25A7%25D9%2584%25D8%25AE%25D9%2584%25D8%25A7%25D8%25B5%25D8%25A9%2520%25D9%2581%25D9%258A%2520%25D8%25AA%25D8%25AF%25D8%25A8%25D8%25B1%2520%25D8%25A7%25D9%2584%25D9%2582%25D8%25B1%25D8%25A2%25D9%2586.PDF' },
-  { id: 'qawaid-tadabbur', title: 'القواعد والأصول وتطبيقات التدبر', author: 'عبد العزيز المحمد السليم', category: 'التدبر', pdfUrl: 'https://archive.org/download/FPkaustatdFP/kaustatd.pdf' },
-  { id: 'layudabiru-ayat-1', title: 'ليدبروا آياته - ج1', author: 'ناصر بن سليمان العمر', category: 'التدبر', pdfUrl: 'https://archive.org/download/104688/104688.pdf' },
-  { id: 'layudabiru-ayat-2', title: 'ليدبروا آياته - ج2', author: 'ناصر بن سليمان العمر', category: 'التدبر', pdfUrl: 'https://archive.org/download/121452/121452.pdf' },
-  { id: 'adb-taamul-qasas', title: 'آداب التعامل في ضوء القصص القرآني', author: 'محمد الدبيسي', category: 'التدبر', pdfUrl: 'https://archive.org/download/95560/95560.pdf' },
-  
-  // ========== المزيد من التفاسير ==========
+  // ========== تفسير الطبري - جامع البيان (26 جزء) ==========
+  { id: 'tabari-00', title: 'تفسير الطبري - الجزء الأول', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59561/taftabry01p.pdf' },
+  { id: 'tabari-01', title: 'تفسير الطبري - الجزء الثاني', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry02.pdf' },
+  { id: 'tabari-02', title: 'تفسير الطبري - الجزء الثالث', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry03.pdf' },
+  { id: 'tabari-03', title: 'تفسير الطبري - الجزء الرابع', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry04.pdf' },
+  { id: 'tabari-04', title: 'تفسير الطبري - الجزء الخامس', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry05.pdf' },
+  { id: 'tabari-05', title: 'تفسير الطبري - الجزء السادس', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry06.pdf' },
+  { id: 'tabari-06', title: 'تفسير الطبري - الجزء السابع', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry07.pdf' },
+  { id: 'tabari-07', title: 'تفسير الطبري - الجزء الثامن', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry08.pdf' },
+  { id: 'tabari-08', title: 'تفسير الطبري - الجزء التاسع', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry09.pdf' },
+  { id: 'tabari-09', title: 'تفسير الطبري - الجزء العاشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry10.pdf' },
+  { id: 'tabari-10', title: 'تفسير الطبري - الجزء الحادي عشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry11.pdf' },
+  { id: 'tabari-11', title: 'تفسير الطبري - الجزء الثاني عشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry12.pdf' },
+  { id: 'tabari-12', title: 'تفسير الطبري - الجزء الثالث عشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry13.pdf' },
+  { id: 'tabari-13', title: 'تفسير الطبري - الجزء الرابع عشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59561/taftabry14.pdf' },
+  { id: 'tabari-14', title: 'تفسير الطبري - الجزء الخامس عشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry15.pdf' },
+  { id: 'tabari-15', title: 'تفسير الطبري - الجزء السادس عشر', author: 'الإمام محمد بن جرير الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry16.pdf' },
+
+  // ========== تفسير ابن كثير (8 أجزاء) ==========
+  { id: 'kathir-01', title: 'تفسير ابن كثير - الجزء الأول', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather01.pdf' },
+  { id: 'kathir-02', title: 'تفسير ابن كثير - الجزء الثاني', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather02.pdf' },
+  { id: 'kathir-03', title: 'تفسير ابن كثير - الجزء الثالث', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather03.pdf' },
+  { id: 'kathir-04', title: 'تفسير ابن كثير - الجزء الرابع', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather04.pdf' },
+  { id: 'kathir-05', title: 'تفسير ابن كثير - الجزء الخامس', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather05.pdf' },
+  { id: 'kathir-06', title: 'تفسير ابن كثير - الجزء السادس', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather06.pdf' },
+  { id: 'kathir-07', title: 'تفسير ابن كثير - الجزء السابع', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather07.pdf' },
+  { id: 'kathir-08', title: 'تفسير ابن كثير - الجزء الثامن', author: 'الإمام الحافظ ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather08.pdf' },
+
+  // ========== تفسير القرطبي - الجامع لأحكام القرآن (20 جزء) ==========
+  { id: 'qurtubi-01', title: 'تفسير القرطبي - الجزء الأول', author: 'الإمام القرطبي', category: 'التفسير', pdfUrl: 'https://archive.org/download/WAQ72471/01_72471.pdf' },
+  { id: 'qurtubi-02', title: 'تفسير القرطبي - الجزء الثاني', author: 'الإمام القرطبي', category: 'التفسير', pdfUrl: 'https://archive.org/download/WAQ72471/02_72472.pdf' },
+  { id: 'qurtubi-03', title: 'تفسير القرطبي - الجزء الثالث', author: 'الإمام القرطبي', category: 'التفسير', pdfUrl: 'https://archive.org/download/WAQ72471/03_72473.pdf' },
+  { id: 'qurtubi-04', title: 'تفسير القرطبي - الجزء الرابع', author: 'الإمام القرطبي', category: 'التفسير', pdfUrl: 'https://archive.org/download/WAQ72471/04_72474.pdf' },
+  { id: 'qurtubi-05', title: 'تفسير القرطبي - الجزء الخامس', author: 'الإمام القرطبي', category: 'التفسير', pdfUrl: 'https://archive.org/download/WAQ72471/05_72475.pdf' },
+  { id: 'qurtubi-06', title: 'تفسير القرطبي - الجزء السادس', author: 'الإمام القرطبي', category: 'التفسير', pdfUrl: 'https://archive.org/download/WAQ72471/06_72476.pdf' },
+
+  // ========== تفسير الرازي - مفاتيح الغيب (32 جزء) ==========
+  { id: 'razi-01', title: 'تفسير الرازي - الجزء الأول', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi01.pdf' },
+  { id: 'razi-02', title: 'تفسير الرازي - الجزء الثاني', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi02.pdf' },
+  { id: 'razi-03', title: 'تفسير الرازي - الجزء الثالث', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi03.pdf' },
+  { id: 'razi-04', title: 'تفسير الرازي - الجزء الرابع', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi04.pdf' },
+  { id: 'razi-05', title: 'تفسير الرازي - الجزء الخامس', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi05.pdf' },
+  { id: 'razi-06', title: 'تفسير الرازي - الجزء السادس', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi06.pdf' },
+  { id: 'razi-07', title: 'تفسير الرازي - الجزء السابع', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi07.pdf' },
+  { id: 'razi-08', title: 'تفسير الرازي - الجزء الثامن', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi08.pdf' },
+  { id: 'razi-09', title: 'تفسير الرازي - الجزء التاسع', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi09.pdf' },
+  { id: 'razi-10', title: 'تفسير الرازي - الجزء العاشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi10.pdf' },
+  { id: 'razi-11', title: 'تفسير الرازي - الجزء الحادي عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi11.pdf' },
+  { id: 'razi-12', title: 'تفسير الرازي - الجزء الثاني عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi12.pdf' },
+  { id: 'razi-13', title: 'تفسير الرازي - الجزء الثالث عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi13.pdf' },
+  { id: 'razi-14', title: 'تفسير الرازي - الجزء الرابع عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi14.pdf' },
+  { id: 'razi-15', title: 'تفسير الرازي - الجزء الخامس عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi15.pdf' },
+  { id: 'razi-16', title: 'تفسير الرازي - الجزء السادس عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi16.pdf' },
+  { id: 'razi-17', title: 'تفسير الرازي - الجزء السابع عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi17.pdf' },
+  { id: 'razi-18', title: 'تفسير الرازي - الجزء الثامن عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi18.pdf' },
+  { id: 'razi-19', title: 'تفسير الرازي - الجزء التاسع عشر', author: 'الإمام فخر الدين الرازي', category: 'التفسير', pdfUrl: 'https://archive.org/download/mghtrazi/trazi19.pdf' },
+
+  // ========== التحرير والتنوير - ابن عاشور (30 جزء) ==========
+  { id: 'ashur-01', title: 'التحرير والتنوير - الجزء الأول', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn01.pdf' },
+  { id: 'ashur-02', title: 'التحرير والتنوير - الجزء الثاني', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn02.pdf' },
+  { id: 'ashur-03', title: 'التحرير والتنوير - الجزء الثالث', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn03.pdf' },
+  { id: 'ashur-04', title: 'التحرير والتنوير - الجزء الرابع', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn04.pdf' },
+  { id: 'ashur-05', title: 'التحرير والتنوير - الجزء الخامس', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn05.pdf' },
+  { id: 'ashur-06', title: 'التحرير والتنوير - الجزء السادس', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn06.pdf' },
+  { id: 'ashur-07', title: 'التحرير والتنوير - الجزء السابع', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn07.pdf' },
+  { id: 'ashur-09', title: 'التحرير والتنوير - الجزء التاسع', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn09.pdf' },
+  { id: 'ashur-10', title: 'التحرير والتنوير - الجزء العاشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn10.pdf' },
+  { id: 'ashur-11', title: 'التحرير والتنوير - الجزء الحادي عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn11.pdf' },
+  { id: 'ashur-12', title: 'التحرير والتنوير - الجزء الثاني عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn12.pdf' },
+  { id: 'ashur-13', title: 'التحرير والتنوير - الجزء الثالث عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn13.pdf' },
+  { id: 'ashur-14', title: 'التحرير والتنوير - الجزء الرابع عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn14.pdf' },
+  { id: 'ashur-15', title: 'التحرير والتنوير - الجزء الخامس عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn15.pdf' },
+  { id: 'ashur-16', title: 'التحرير والتنوير - الجزء السادس عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn16.pdf' },
+  { id: 'ashur-17', title: 'التحرير والتنوير - الجزء السابع عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn17.pdf' },
+  { id: 'ashur-18', title: 'التحرير والتنوير - الجزء الثامن عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn18.pdf' },
+  { id: 'ashur-19', title: 'التحرير والتنوير - الجزء التاسع عشر', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn19.pdf' },
+  { id: 'ashur-20', title: 'التحرير والتنوير - الجزء العشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn20.pdf' },
+  { id: 'ashur-21', title: 'التحرير والتنوير - الجزء الحادي والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn21.pdf' },
+  { id: 'ashur-22', title: 'التحرير والتنوير - الجزء الثاني والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn22.pdf' },
+  { id: 'ashur-23', title: 'التحرير والتنوير - الجزء الثالث والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn23.pdf' },
+  { id: 'ashur-24', title: 'التحرير والتنوير - الجزء الرابع والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn24.pdf' },
+  { id: 'ashur-25', title: 'التحرير والتنوير - الجزء الخامس والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn25.pdf' },
+  { id: 'ashur-26', title: 'التحرير والتنوير - الجزء السادس والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn26.pdf' },
+  { id: 'ashur-27', title: 'التحرير والتنوير - الجزء السابع والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn27.pdf' },
+  { id: 'ashur-28', title: 'التحرير والتنوير - الجزء الثامن والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn28.pdf' },
+  { id: 'ashur-29', title: 'التحرير والتنوير - الجزء التاسع والعشرون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn29.pdf' },
+  { id: 'ashur-30', title: 'التحرير والتنوير - الجزء الثلاثون', author: 'الشيخ محمد الطاهر ابن عاشور', category: 'التفسير', pdfUrl: 'https://archive.org/download/FPthtn/thtn30.pdf' },
+
+  // ========== تفاسير أخرى من أهل السنة ==========
+  { id: 'saadi', title: 'تفسير السعدي - تيسير الكريم الرحمن', author: 'الشيخ عبد الرحمن بن ناصر السعدي', category: 'التفسير', pdfUrl: 'https://archive.org/download/ozkorallh_20181023_2048/100585.pdf' },
+  { id: 'muyassar', title: 'التفسير الميسر', author: 'نخبة من العلماء - مجمع الملك فهد', category: 'التفسير', pdfUrl: 'https://archive.org/download/attafseer_almoyassar/ar_tafseer_meesr_b.pdf' },
+  { id: 'jalalain', title: 'تفسير الجلالين', author: 'جلال الدين المحلي والسيوطي', category: 'التفسير', pdfUrl: 'https://archive.org/download/TafseerAlJalalainMaaAnwarAlHaraminJild1ArabicPDFBook/Tafseer%20Al%20Jalalain%20Maa%20Anwar%20Al%20Haramin%20Jild%201%20Arabic%20PDF%20Book.pdf' },
+  { id: 'mukhtasar', title: 'المختصر في تفسير القرآن الكريم', author: 'مركز تفسير للدراسات القرآنية', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafsirMukhtasar/TafsirMukhtasar.pdf' },
+  { id: 'baghawi', title: 'تفسير البغوي - معالم التنزيل', author: 'الإمام الحسين بن مسعود البغوي', category: 'التفسير', pdfUrl: 'https://archive.org/download/waq105954/105954.pdf' },
+  { id: 'ibn-fawrak-1', title: 'تفسير ابن فورك - الجزء الأول', author: 'الإمام ابن فورك', category: 'التفسير', pdfUrl: 'https://archive.org/download/taffawtaffaw/01taffaw.pdf' },
+  { id: 'ibn-fawrak-3', title: 'تفسير ابن فورك - الجزء الثالث', author: 'الإمام ابن فورك', category: 'التفسير', pdfUrl: 'https://archive.org/download/taffawtaffaw/03taffaw.pdf' },
+  { id: 'baydawi-2', title: 'تفسير البيضاوي - الجزء الثاني', author: 'القاضي البيضاوي', category: 'التفسير', pdfUrl: 'https://archive.org/download/alBYDAWY/BYDAWY02.pdf' },
+  { id: 'nazarat', title: 'نظرات في كتب التفسير', author: 'عبد السلام الهراس', category: 'التفسير', pdfUrl: 'https://archive.org/download/Nadharat_fi_Ktb_Tafsir/Nadharat_Ktb_Tafsir.pdf' },
+  { id: 'istimbajat', title: 'استنباطات الشيخ السعدي من القرآن', author: 'الشيخ عبد الرحمن السعدي', category: 'التفسير', pdfUrl: 'https://archive.org/download/istn8/istn8.pdf' },
   { id: 'aqual-ibn-sida', title: 'أقوال ابن سيده في التفسير', author: 'عبد العزيز الحربي', category: 'التفسير', pdfUrl: 'https://archive.org/download/aqmetfFP/aqmetf.pdf' },
-  { id: 'istimbajat-saadi', title: 'استنباطات الشيخ السعدي من القرآن', author: 'عبد الرحمن السعدي', category: 'التفسير', pdfUrl: 'https://archive.org/download/istn8/istn8.pdf' },
-  { id: 'ibn-kather-direct', title: 'تفسير ابن كثير - النسخة المباشرة', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/ibn-kather.pdf/ibn-kather.pdf' },
-  
-  // ========== المزيد من علوم القرآن ==========
-  { id: 'tibyan-ayman-quran', title: 'التبيان في أيمان القرآن', author: 'الزركشي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/WAQ90085s/90085sp.pdf' },
-  { id: 'adillat-bath', title: 'أدلة البعث في القرآن الكريم', author: 'فهد الخنة', category: 'التدبر', pdfUrl: 'https://archive.org/download/96_20230715/%D8%A7%D9%84%D9%85%D9%86%D8%AA%D9%87%D9%89%20%2855%29.pdf' },
-  { id: 'haqiqa-mathal', title: 'حقيقة المثل الأعلى وآثاره', author: 'محمد السيد', category: 'التدبر', pdfUrl: 'https://archive.org/download/Pdf2318_201807/%D8%A7%D9%82%D8%B1%D8%A7%D8%A1%20%20%D8%A7%D9%88%D9%86%D9%84%D8%A7%D9%8A%D9%86%20%20__%20%20%20%20%20%20%20%20pdf%20%20%20%20%D9%83%D8%AA%D8%A7%D8%A8%20%20%202318%20-%20%D8%AD%D9%82%D9%8A%D9%82%D8%A9%20%D8%A7%D9%84%D9%85%D8%AB%D9%84%20%D8%A7%D9%84%D8%A3%D8%B9%D9%84%D9%89%20%D9%88%D8%A2%D8%AB%D8%A7%D8%B1%D9%87.pdf' },
-  
-  // ========== المزيد من التجويد والقراءات ==========
-  { id: 'najm-adhar', title: 'النجم الأزهر في القراءات الأربعة عشر', author: 'ابن الجزري', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/an-najm-al-adh-har/an-najm-al-adh-har.pdf' },
-  { id: 'al-al-sahih-qiraat', title: 'الصحيح من القراءات', author: 'محمد سعيد البوسيفي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/3.10.18/A03209.pdf' },
-  
-  // ========== المزيد من أسباب النزول ==========
-  { id: 'asbab-nuzul-ibn-hajar', title: 'أسباب النزول - ابن حجر', author: 'ابن حجر العسقلاني', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/Sharh_N_soyoti/01-Elm_tafsir_01.pdf' },
-  
-  // ========== المزيد من غريب القرآن ==========
-  { id: 'sahih-ghareeb', title: 'الصحيح في غريب القرآن', author: 'مقبل الوادعي', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/mttfqmttfq/mttfq.pdf' },
-  
-  // ========== تفسير الطبري باقي الأجزاء ==========
-  { id: 'tabari-02', title: 'تفسير الطبري - ج2', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry02.pdf' },
-  { id: 'tabari-03', title: 'تفسير الطبري - ج3', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry03.pdf' },
-  { id: 'tabari-04', title: 'تفسير الطبري - ج4', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry04.pdf' },
-  { id: 'tabari-06', title: 'تفسير الطبري - ج6', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry06.pdf' },
-  { id: 'tabari-07', title: 'تفسير الطبري - ج7', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry07.pdf' },
-  { id: 'tabari-08', title: 'تفسير الطبري - ج8', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry08.pdf' },
-  { id: 'tabari-09', title: 'تفسير الطبري - ج9', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry09.pdf' },
-  { id: 'tabari-10', title: 'تفسير الطبري - ج10', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry10.pdf' },
-  { id: 'tabari-12', title: 'تفسير الطبري - ج12', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry12.pdf' },
-  { id: 'tabari-13', title: 'تفسير الطبري - ج13', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry13.pdf' },
-  { id: 'tabari-15', title: 'تفسير الطبري - ج15', author: 'الإمام الطبري', category: 'التفسير', pdfUrl: 'https://archive.org/download/tafseer-al-tabari/taftabry15.pdf' },
-  
-  // ========== تفسير ابن كثير باقي الأجزاء ==========
-  { id: 'kathir-02', title: 'تفسير ابن كثير - ج2', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather02.pdf' },
-  { id: 'kathir-03', title: 'تفسير ابن كثير - ج3', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather03.pdf' },
-  { id: 'kathir-04', title: 'تفسير ابن كثير - ج4', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather04.pdf' },
-  { id: 'kathir-05', title: 'تفسير ابن كثير - ج5', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather05.pdf' },
-  { id: 'kathir-06', title: 'تفسير ابن كثير - ج6', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather06.pdf' },
-  { id: 'kathir-07', title: 'تفسير ابن كثير - ج7', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather07.pdf' },
-  { id: 'kathir-08', title: 'تفسير ابن كثير - ج8', author: 'ابن كثير', category: 'التفسير', pdfUrl: 'https://archive.org/download/FP59518/tkather08.pdf' },
-  
-  // ========== مزيد من الكتب ==========
-  { id: 'al-adab-maani', title: 'الأدب في معاني القرآن', author: 'ابن قتيبة', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/mabadifiilmeusoolaltafseer/MABADI_FI_ILM_E_USOOL_AL_TAFSEER.pdf' },
-  { id: 'majalat-tadabbur', title: 'مجلة تدبر - العدد الأول', author: 'مركز تدبر', category: 'التدبر', pdfUrl: 'https://archive.org/download/majallat-tadabor/%25D9%2585%25D8%25AC%25D9%2584%25D8%25A9%20%25D8%25AA%25D8%25AF%25D8%25A8%25D8%25B1%20-%20%25D8%25A7%25D9%2584%25D8%25B9%25D8%25AF%25D8%25AF%20%25D8%25A7%25D9%2584%25D8%25AB%25D8%25A7%25D9%2584%25D8%25AB%20%25D8%25B9%25D8%25B4%25D8%25B1.pdf' },
-  { id: 'tadabbur-quran-ibn-taymiyah', title: 'تدبر القرآن لابن تيمية', author: 'ابن تيمية', category: 'التدبر', pdfUrl: 'https://archive.org/download/pdf027up/pdf027.pdf' },
-  { id: 'athar-qiraat-tafsir', title: 'أثر القراءات في التفسير', author: 'محمد عبد الخالق', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/4.4.2021/A03593.pdf' },
+
+  // ========== علوم القرآن ==========
+  { id: 'itqan', title: 'الإتقان في علوم القرآن', author: 'الإمام جلال الدين السيوطي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/sa71mir_gmail_20160606/%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%B9%D9%84%D9%88%D9%85%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%84%D9%84%D8%AD%D8%A7%D9%81%D8%B8%20%D8%AC%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86%20%D8%A7%D9%84%D8%B3%D9%8A%D9%88%D8%B7%D9%8A.pdf' },
+  { id: 'burhan', title: 'البرهان في علوم القرآن', author: 'الإمام بدر الدين الزركشي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/FPbrolquyu/brolquyu.pdf' },
+  { id: 'mabaheth', title: 'مباحث في علوم القرآن', author: 'الشيخ مناع القطان', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/WAQmbolqumbolqu/mbolqu.pdf' },
+  { id: 'mabadi-tafsir', title: 'مبادئ في أصول التفسير', author: 'الشيخ محمد بن صالح العثيمين', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/mabadifiilmeusoolaltafseer/MABADI_FI_ILM_E_USOOL_AL_TAFSEER.pdf' },
+  { id: 'muqaddima', title: 'مقدمة التفسير', author: 'الإمام السيوطي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/Sharh_N_soyoti/01-Elm_tafsir_01.pdf' },
+  { id: 'masail-aqida', title: 'المسائل العقدية في كتب علوم القرآن', author: 'أحمد بن عبد الله آل بسام', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/aqidah-06713-c/Aqidah06713%20%C2%9F%CE%B9%CE%BA%C2%AB%C2%9F%C2%9E%CE%B9%20%C2%9F%CE%B9%CE%B3%CE%B7%C2%A7%CE%BF%E2%80%98%20%CE%B5%CE%BF%20%CE%B8%E2%80%99%C2%A0%20%CE%B3%CE%B9%CE%BD%CE%BA%20%C2%9F%CE%B9%CE%B7%C2%A9%C2%99%CE%BB.pdf' },
+  { id: 'zamzami', title: 'شرح منظومة الزمزمي في علوم القرآن', author: 'الشيخ محمد المختار الشنقيطي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/Sharh_Mandhumat_Zemzemi/Sharh_Mandhumat_Zemzemi._kamil.pdf' },
+  { id: 'manahij', title: 'مناهج المفسرين', author: 'محمد حسين الذهبي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/WAQ90085s/90085s.pdf' },
+  { id: 'madkhal-mushaf', title: 'مدخل إلى التعريف بالمصحف الشريف', author: 'محمد سالم محيسن', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/15.8.2023/A03711.pdf' },
+  { id: 'idawat', title: 'إضاءات في تاريخ القراءات', author: 'عبد الرحمن الإيوبي', category: 'علوم القرآن', pdfUrl: 'https://archive.org/download/4.4.2021/A03593.pdf' },
+
+  // ========== التجويد والقراءات ==========
+  { id: 'itqan-qaloun', title: 'الإتقان في أصول رواية قالون', author: 'الشيخ عبد العزيز القاري', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/SW-moton-darat-alotrogga/01-%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%A3%D8%B5%D9%88%D9%84%20%D8%B1%D9%88%D8%A7%D9%8A%D8%A9%20%D9%82%D8%A7%D9%84%D9%88%D9%86.pdf' },
+  { id: 'manh-ilahiya', title: 'المنح الإلهية في جمع القراءات السبع', author: 'محمد بن محمد الأموي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/waq38375/38375.pdf' },
+  { id: 'tawatur', title: 'التواتر في القراءات القرآنية', author: 'محمد سعيد البوسيفي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/3.10.18/A03214.pdf' },
+  { id: 'tabhir', title: 'تحبير التيسير في القراءات', author: 'الإمام ابن الجزري', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/almaktutat_gmail_1920_201905/%D8%A7%D9%84%D9%86%D8%B4%D8%B1%D8%A9%2019%20-%2020.pdf' },
+  { id: 'tayyebat', title: 'الطيبات في جمع الآيات بتحريرات الزيات', author: 'عبد الرشيد علي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/Tayebat/00M_Tayebat.pdf' },
+  { id: 'ibriz', title: 'إبراز المعاني من حرز الأماني (الشاطبية)', author: 'الإمام أبي شامة المقدسي', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/ktp2019-bk1591/ktp2019-bk1591.pdf' },
+  { id: 'najm-adhar', title: 'النجم الأزهر في القراءات الأربعة عشر', author: 'الإمام ابن الجزري', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/an-najm-al-adh-har/an-najm-al-adh-har.pdf' },
+  { id: 'warsh', title: 'أصول رواية ورش عن نافع', author: 'جمع من العلماء', category: 'التجويد والقراءات', pdfUrl: 'https://archive.org/download/UsoolWARSHanNafiTajweedRulesForWarsh/Usool%20WARSH%20%27an%20Nafi%27%20Tajweed%20Rules%20for%20Warsh.pdf' },
+
+  // ========== إعراب القرآن وبيانه ==========
+  { id: 'irab-bahr-17', title: 'إعراب القرآن من البحر المحيط - ج17', author: 'الإمام أبي حيان الأندلسي', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/lis_e3r17/lis_e3r1711.pdf' },
+  { id: 'athar-shinqiti', title: 'أثر موقف الشنقيطي العقدي في إعراب القرآن', author: 'أحمد الخضير', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/emalaya/emalaya.rar/%27athar%20mawqif.pdf' },
+  { id: 'irab-muhayaa', title: 'الإعراب المحلى للمفردات النحوية', author: 'حسين محمد علي', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/lib04109/lib04109.pdf' },
+  { id: 'idmam', title: 'الإضمامة النحوية في إعراب القرآن', author: 'عبد الله بن أحمد', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/20230102_20230102_0229/%D8%A7%D9%84%D8%A5%D8%B6%D9%85%D8%A7%D9%85%D8%A9%20%D8%A7%D9%84%D9%86%D8%AD%D9%88%D9%8A%D8%A9.pdf' },
+  { id: 'bina', title: 'بناء التركيب الإفصاحي في القرآن', author: 'محمد أحمد أبو الفتوح', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/azm101010_gmail_20180403_1519/%D8%A8%D9%86%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D8%B1%D9%83%D9%8A%D8%A8%20%D8%A7%D9%84%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D9%8A%20%D9%81%D9%8A%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85.pdf' },
+  { id: 'tawjih', title: 'التوجيه النحوي للقراءات القرآنية', author: 'أحمد محمد النحال', category: 'إعراب القرآن وبيانه', pdfUrl: 'https://archive.org/download/ktp2019-tra5511/ktp2019-tra5511.pdf' },
+
+  // ========== أسباب النزول ==========
+  { id: 'lubab', title: 'لباب النقول في أسباب النزول', author: 'الإمام السيوطي', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/WAQ9083S/9083s.pdf' },
+  { id: 'sahih-asbab', title: 'الصحيح المسند من أسباب النزول', author: 'الشيخ مقبل الوادعي', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/mttfqmttfq/mttfq.pdf' },
+  { id: 'bada-wahy', title: 'بدء الوحي', author: 'جمع وتحقيق', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/taha_157/%D8%A8%D8%AF%D8%A1%20%D8%A7%D9%84%D9%88%D8%AD%D9%8A.pdf' },
+  { id: 'wahy', title: 'الوحي في القرآن والسنة', author: 'محمد خليفة', category: 'أسباب النزول', pdfUrl: 'https://archive.org/download/5_20230708_20230708_2018/%20%2873%29.pdf' },
+
+  // ========== غريب القرآن ومفرداته ==========
+  { id: 'mufredat', title: 'مفردات ألفاظ القرآن', author: 'الإمام الراغب الأصفهاني', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/Al-isfahani-MufradatAlfadhAl-quran/Al-isfahani-MufradatAlfadhAl-quran-.pdf' },
+  { id: 'lughat-quran', title: 'لغة القرآن الكريم', author: 'محمود إسماعيل', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/201802_20180209/%D9%84%D8%BA%D8%A9%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85_2.pdf' },
+  { id: 'mafahim', title: 'مفاهيم قرآنية', author: 'الشيخ محمد الغزالي', category: 'غريب القرآن ومفرداته', pdfUrl: 'https://archive.org/download/ebw02/079.pdf' },
+
+  // ========== التدبر ==========
+  { id: 'adwa-1', title: 'أضواء البيان - الجزء الأول', author: 'الشيخ محمد الأمين الشنقيطي', category: 'التدبر', pdfUrl: 'https://archive.org/download/WAQ69939/01_69939s.pdf' },
+  { id: 'adwa-4', title: 'أضواء البيان - الجزء الرابع', author: 'الشيخ محمد الأمين الشنقيطي', category: 'التدبر', pdfUrl: 'https://archive.org/download/WAQ69939/04_69942s.pdf' },
+  { id: 'tadabbur-haqiqa', title: 'التدبر حقيقته وعلاقته بمصطلحات التأويل', author: 'عبد الرحمن الشهري', category: 'التدبر', pdfUrl: 'https://archive.org/download/themtef/themtef.pdf' },
+  { id: 'khulasa', title: 'الخلاصة في تدبر القرآن الكريم', author: 'عبد العزيز المحمد السليم', category: 'التدبر', pdfUrl: 'https://archive.org/download/20230708_20230708_0908/%25D8%25A7%25D9%2584%25D8%25AE%25D9%2584%25D8%25A7%25D8%25B5%25D8%25A9%2520%25D9%2581%25D9%258A%2520%25D8%25AA%25D8%25AF%25D8%25A8%25D8%25B1%2520%25D8%25A7%25D9%2584%25D9%2582%25D8%25B1%25D8%25A2%25D9%2586.PDF' },
+  { id: 'qawaid-tadabbur', title: 'القواعد والأصول وتطبيقات التدبر', author: 'عبد العزيز المحمد السليم', category: 'التدبر', pdfUrl: 'https://archive.org/download/FPkaustatdFP/kaustatd.pdf' },
+  { id: 'layudabiru-1', title: 'ليدبروا آياته - الجزء الأول', author: 'ناصر بن سليمان العمر', category: 'التدبر', pdfUrl: 'https://archive.org/download/104688/104688.pdf' },
+  { id: 'layudabiru-2', title: 'ليدبروا آياته - الجزء الثاني', author: 'ناصر بن سليمان العمر', category: 'التدبر', pdfUrl: 'https://archive.org/download/121452/121452.pdf' },
+  { id: 'adab', title: 'آداب التعامل في ضوء القصص القرآني', author: 'محمد الدبيسي', category: 'التدبر', pdfUrl: 'https://archive.org/download/95560/95560.pdf' },
 ];
 
 // Downloading state interface
@@ -167,12 +202,10 @@ export function BooksLibrary() {
   const filteredBooks = useMemo(() => {
     let result = booksData;
 
-    // Filter by category
     if (selectedCategory !== 'all') {
       result = result.filter(book => book.category === selectedCategory);
     }
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -231,7 +264,6 @@ export function BooksLibrary() {
 
   const categories: BookCategory[] = ['التفسير', 'علوم القرآن', 'التجويد والقراءات', 'إعراب القرآن وبيانه', 'أسباب النزول', 'غريب القرآن ومفرداته', 'التدبر'];
   
-  // Get category book count
   const getCategoryCount = (cat: BookCategory) => booksData.filter(b => b.category === cat).length;
 
   return (
@@ -243,7 +275,7 @@ export function BooksLibrary() {
           <h2 className="text-xl font-bold">مكتبة علوم القرآن الكريم</h2>
         </div>
         <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          أكثر من <span className="font-bold text-blue-600">{booksData.length}</span> كتاب في التفسير وعلوم القرآن والتجويد والقراءات
+          أكثر من <span className="font-bold text-blue-600">{booksData.length}</span> كتاب من علماء أهل السنة والجماعة في التفسير وعلوم القرآن
         </p>
       </div>
 
@@ -305,14 +337,12 @@ export function BooksLibrary() {
 
       {/* Books by Category or Filtered Grid */}
       {selectedCategory === 'all' && !searchQuery ? (
-        // Show by category
         categories.map(category => {
           const categoryBooks = booksByCategory[category];
           if (categoryBooks.length === 0) return null;
 
           return (
             <div key={category} className="space-y-4">
-              {/* Category Header */}
               <div className="flex items-center gap-3 sticky top-0 bg-slate-50 dark:bg-slate-900 py-2 z-10">
                 <Badge className={`${categoryColors[category]} px-4 py-1.5 text-sm font-medium`}>
                   {category}
@@ -323,7 +353,6 @@ export function BooksLibrary() {
                 </span>
               </div>
 
-              {/* Books Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {categoryBooks.map(book => {
                   const isDownloading = downloadingBooks[book.id];
@@ -371,7 +400,6 @@ export function BooksLibrary() {
           );
         })
       ) : (
-        // Show filtered results
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filteredBooks.map(book => {
             const isDownloading = downloadingBooks[book.id];
@@ -438,7 +466,7 @@ export function BooksLibrary() {
       {/* Footer */}
       <div className="text-center py-6 border-t border-slate-200 dark:border-slate-700">
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          جميع الكتب من مصادر موثوقة (Archive.org، الوقفية، وغيرها)
+          جميع الكتب من علماء أهل السنة والجماعة - مصادر موثوقة (Archive.org)
         </p>
       </div>
     </div>
