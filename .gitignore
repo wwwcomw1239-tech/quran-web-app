@@ -50,3 +50,9 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# PWA build artifacts (auto-generated during build)
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*.js
+/public/workbox-*.js.map
