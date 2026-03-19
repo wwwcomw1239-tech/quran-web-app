@@ -1537,8 +1537,8 @@ export default function QuranWebApp() {
                   )}
                 </div>
               </div>
-            )
-            
+            )}
+
             {/* Quality Selection */}
             <div className="space-y-3">
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">اختر جودة التحميل:</label>
