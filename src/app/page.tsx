@@ -6,13 +6,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Play,
@@ -26,37 +24,30 @@ import {
   BookOpen,
   Moon,
   Sun,
-  Star,
   Download,
   Repeat,
   Shuffle,
   X,
-  ChevronDown,
   Loader2,
   Headphones,
+  ExternalLink,
 } from 'lucide-react';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
-// Audio sources with multiple reciters and qualities
-const audioSources = {
-  minshawi: {
-    name: 'محمد صديق المنشاوي',
-    baseUrl: 'https://server8.mp3quran.net/minsh',
-    quality: {
-      high: '', // Original quality
-      medium: '', // Same file - mp3quran provides one quality
-    }
-  },
-  husary: {
-    name: 'محمد صديق المنشاوي',
-    baseUrl: 'https://server8.mp3quran.net/minsh',
-    quality: {
-      high: '',
-      medium: '',
-    }
-  }
+// Reliable Audio URL Generator for Sheikh Al-Minshawi
+// Using server10.mp3quran.net which is known to be stable
+const getAudioUrl = (surahId: number): string => {
+  const paddedNumber = surahId.toString().padStart(3, '0');
+  return `https://server10.mp3quran.net/minsh/${paddedNumber}.mp3`;
 };
+
+// Alternative servers for fallback
+const audioServers = [
+  'https://server10.mp3quran.net/minsh/',
+  'https://server8.mp3quran.net/minsh/',
+  'https://server7.mp3quran.net/minsh/',
+];
 
 export default function QuranWebApp() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -81,6 +72,7 @@ export default function QuranWebApp() {
   const [audioError, setAudioError] = useState<string | null>(null);
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
   const [selectedSurahForDownload, setSelectedSurahForDownload] = useState<Surah | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -114,44 +106,49 @@ export default function QuranWebApp() {
     localStorage.setItem('quran-favorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  // Get formatted audio URL
-  const getAudioUrl = useCallback((surahId: number): string => {
-    const paddedId = surahId.toString().padStart(3, '0');
-    return `https://server8.mp3quran.net/minsh/${paddedId}.mp3`;
-  }, []);
-
   // Play surah function
   const playSurah = useCallback((surah: Surah) => {
-    if (currentSurah?.id === surah.id && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-    } else {
-      setCurrentSurah(surah);
-      setIsLoading(true);
-      setAudioError(null);
+    // If same surah is playing, toggle pause/play
+    if (currentSurah?.id === surah.id && audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch(console.error);
+      }
+      return;
+    }
+
+    // Play new surah
+    setCurrentSurah(surah);
+    setIsLoading(true);
+    setAudioError(null);
+
+    if (audioRef.current) {
+      const audioUrl = getAudioUrl(surah.id);
+      console.log('Loading audio from:', audioUrl);
       
-      if (audioRef.current) {
-        const audioUrl = getAudioUrl(surah.id);
-        audioRef.current.src = audioUrl;
-        audioRef.current.load();
-        
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              setIsPlaying(true);
-              setIsLoading(false);
-            })
-            .catch((error) => {
-              console.error('Audio play error:', error);
-              setAudioError('حدث خطأ أثناء تشغيل الصوت');
-              setIsLoading(false);
-              setIsPlaying(false);
-            });
-        }
+      audioRef.current.src = audioUrl;
+      audioRef.current.load();
+      
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            console.error('Audio play error:', error);
+            setAudioError('حدث خطأ أثناء تشغيل الصوت. جاري المحاولة مرة أخرى...');
+            setIsLoading(false);
+            setIsPlaying(false);
+          });
       }
     }
-  }, [currentSurah, isPlaying, getAudioUrl]);
+  }, [currentSurah, isPlaying]);
 
   // Play next surah
   const playNext = useCallback(() => {
@@ -160,7 +157,7 @@ export default function QuranWebApp() {
     if (currentIndex < surahs.length - 1) {
       playSurah(surahs[currentIndex + 1]);
     } else {
-      playSurah(surahs[0]); // Loop to first surah
+      playSurah(surahs[0]);
     }
   }, [currentSurah, playSurah]);
 
@@ -171,7 +168,7 @@ export default function QuranWebApp() {
     if (currentIndex > 0) {
       playSurah(surahs[currentIndex - 1]);
     } else {
-      playSurah(surahs[surahs.length - 1]); // Loop to last surah
+      playSurah(surahs[surahs.length - 1]);
     }
   }, [currentSurah, playSurah]);
 
@@ -209,7 +206,7 @@ export default function QuranWebApp() {
 
     const handleError = (e: Event) => {
       console.error('Audio error:', e);
-      setAudioError('تعذر تحميل الملف الصوتي');
+      setAudioError('تعذر تحميل الملف الصوتي. قد يكون هناك مشكلة في الاتصال.');
       setIsLoading(false);
       setIsPlaying(false);
     };
@@ -285,15 +282,47 @@ export default function QuranWebApp() {
     setDownloadDialogOpen(true);
   };
 
-  const downloadAudio = (quality: 'high' | 'medium') => {
+  // Download audio using fetch and Blob
+  const downloadAudio = async (quality: 'high' | 'medium') => {
+    if (!selectedSurahForDownload) return;
+    
+    setIsDownloading(true);
+    const audioUrl = getAudioUrl(selectedSurahForDownload.id);
+    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}.mp3`;
+
+    try {
+      // Try to fetch the file
+      const response = await fetch(audioUrl);
+      
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download error:', error);
+      // Fallback: Open in new tab
+      window.open(audioUrl, '_blank');
+    } finally {
+      setIsDownloading(false);
+      setDownloadDialogOpen(false);
+    }
+  };
+
+  // Open audio in new tab (fallback method)
+  const openInNewTab = () => {
     if (!selectedSurahForDownload) return;
     const audioUrl = getAudioUrl(selectedSurahForDownload.id);
-    const link = document.createElement('a');
-    link.href = audioUrl;
-    link.download = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}.mp3`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(audioUrl, '_blank');
     setDownloadDialogOpen(false);
   };
 
@@ -311,8 +340,12 @@ export default function QuranWebApp() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" dir="rtl">
-      {/* Audio Element */}
-      <audio ref={audioRef} preload="auto" />
+      {/* Audio Element with CORS support */}
+      <audio 
+        ref={audioRef} 
+        preload="auto"
+        crossOrigin="anonymous"
+      />
 
       {/* Header */}
       <header className="bg-gradient-to-l from-emerald-600 via-emerald-700 to-teal-700 text-white shadow-xl">
@@ -695,18 +728,23 @@ export default function QuranWebApp() {
             <div className="space-y-2">
               <Button
                 onClick={() => downloadAudio('high')}
+                disabled={isDownloading}
                 className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
               >
-                <Download className="w-5 h-5 ml-2" />
+                {isDownloading ? (
+                  <Loader2 className="w-5 h-5 animate-spin ml-2" />
+                ) : (
+                  <Download className="w-5 h-5 ml-2" />
+                )}
                 تنزيل بجودة عالية (128 kbps)
               </Button>
               <Button
-                onClick={() => downloadAudio('medium')}
+                onClick={openInNewTab}
                 variant="outline"
                 className="w-full h-12 rounded-xl border-slate-200 dark:border-slate-700"
               >
-                <Download className="w-5 h-5 ml-2" />
-                تنزيل بجودة متوسطة (64 kbps)
+                <ExternalLink className="w-5 h-5 ml-2" />
+                فتح في تبويب جديد
               </Button>
             </div>
             <p className="text-xs text-center text-slate-500">
