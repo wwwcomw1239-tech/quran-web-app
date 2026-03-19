@@ -197,3 +197,12 @@ Use 'kill 5029' to stop it.
 ✓ Starting...
 ✓ Ready in 930ms
  GET / 200 in 1564ms (compile: 1254ms, render: 311ms)
+ GET / 200 in 173ms (compile: 4ms, render: 169ms)
+⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+▲ Next.js 16.1.3 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://21.0.3.141:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 880ms

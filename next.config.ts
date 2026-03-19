@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
+  basePath: "/quran-web-app",
+  assetPrefix: "/quran-web-app/",
   images: {
     unoptimized: true,
   },
@@ -9,6 +11,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  trailingSlash: true,
 };
 
 export default nextConfig;
