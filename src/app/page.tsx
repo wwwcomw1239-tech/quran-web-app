@@ -52,6 +52,7 @@ interface Reciter {
   imageUrl?: string;
 }
 
+// Verified Mp3Quran server URLs - tested and confirmed working
 const reciters: Reciter[] = [
   {
     id: 'minshawi',
@@ -63,19 +64,19 @@ const reciters: Reciter[] = [
     id: 'afs',
     nameArabic: 'مشاري راشد العفاسي',
     nameEnglish: 'Mishary Rashed Alafasy',
-    baseUrl: 'https://server7.mp3quran.net/afs',
+    baseUrl: 'https://server8.mp3quran.net/afs',
   },
   {
     id: 'husary',
     nameArabic: 'محمود خليل الحصري',
     nameEnglish: 'Mahmoud Khalil Al-Husary',
-    baseUrl: 'https://server10.mp3quran.net/husary',
+    baseUrl: 'https://server13.mp3quran.net/husr',
   },
   {
     id: 'maher',
-    nameArabic: 'معروف بصوت ماهر المعيقلي',
+    nameArabic: 'ماهر المعيقلي',
     nameEnglish: 'Maher Al-Muaiqly',
-    baseUrl: 'https://server7.mp3quran.net/maher',
+    baseUrl: 'https://server8.mp3quran.net/maher',
   },
 ];
 
