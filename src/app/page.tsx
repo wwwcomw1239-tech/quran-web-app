@@ -37,10 +37,10 @@ import {
   X,
   Loader2,
   Headphones,
-  ExternalLink,
   User,
   Check,
   ArrowUp,
+  ArrowDown,
   Mail,
 } from 'lucide-react';
 
@@ -616,8 +616,12 @@ export default function QuranWebApp() {
   const [reciterSearchQuery, setReciterSearchQuery] = useState('');
   const [reciterDialogOpen, setReciterDialogOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [fileSize, setFileSize] = useState<number | null>(null);
+  const [isLoadingFileSize, setIsLoadingFileSize] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
 
   // Get selected reciter info
   const currentReciter = useMemo(() => {
@@ -678,9 +682,49 @@ export default function QuranWebApp() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Contact developer function - opens email client without showing email in UI
+  // Scroll to bottom function (footer)
+  const scrollToBottom = () => {
+    footerRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Format file size for display
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  // Fetch file size using HEAD request
+  const fetchFileSize = async (url: string): Promise<number | null> => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      const contentLength = response.headers.get('content-length');
+      return contentLength ? parseInt(contentLength, 10) : null;
+    } catch (error) {
+      console.error('Error fetching file size:', error);
+      return null;
+    }
+  };
+
+  // Contact developer function - opens email client with Gmail optimization
   const handleContactDeveloper = () => {
-    window.location.href = 'mailto:almubarmaj8@gmail.com';
+    const email = 'almubarmaj8@gmail.com';
+    const subject = encodeURIComponent('تواصل من تطبيق القرآن الكريم');
+    // Primary: Try Gmail app deep link (works on mobile)
+    const gmailUrl = `googlegmail://co?to=${email}&subject=${subject}`;
+    // Fallback: Standard mailto
+    const mailtoUrl = `mailto:${email}?subject=${subject}`;
+    
+    // Try Gmail app first (mobile), fall back to mailto
+    const start = Date.now();
+    window.location.href = gmailUrl;
+    
+    // If still on page after 500ms, Gmail app not installed, use mailto
+    setTimeout(() => {
+      if (Date.now() - start < 1000) {
+        window.location.href = mailtoUrl;
+      }
+    }, 500);
   };
 
   // Stop audio when reciter changes
@@ -875,44 +919,90 @@ export default function QuranWebApp() {
     playSurah(surahs[randomIndex]);
   };
 
-  const handleDownload = (surah: Surah) => {
+  const handleDownload = async (surah: Surah) => {
     setSelectedSurahForDownload(surah);
+    setFileSize(null);
+    setIsLoadingFileSize(true);
     setDownloadDialogOpen(true);
+    
+    // Fetch file size
+    const audioUrl = getAudioUrl(selectedReciter, surah.id);
+    const size = await fetchFileSize(audioUrl);
+    setFileSize(size);
+    setIsLoadingFileSize(false);
   };
 
-  // Download audio - Direct download using browser's native download manager
-  // This avoids loading large files into memory and shows native progress immediately
-  const downloadAudio = (quality: 'high' | 'medium' | 'low') => {
+  // Download audio - Fetch blob and trigger download
+  // Required for cross-origin files where download attribute doesn't work
+  const downloadAudio = async (quality: 'high' | 'medium' | 'low') => {
     if (!selectedSurahForDownload) return;
     
     setIsDownloading(true);
+    setDownloadProgress(0);
     const audioUrl = getAudioUrl(selectedReciter, selectedSurahForDownload.id);
     
     // Quality suffix for filename
     const qualityLabel = quality === 'high' ? '128kbps' : quality === 'medium' ? '64kbps' : '32kbps';
     const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}_${qualityLabel}.mp3`;
 
-    // Method 1: Try direct download with hidden anchor element
-    // This triggers the browser's native download manager immediately
-    const link = document.createElement('a');
-    link.href = audioUrl;
-    link.download = fileName;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // Close dialog immediately - browser handles the rest
-    setIsDownloading(false);
-    setDownloadDialogOpen(false);
-  };
-
-  // Open audio in new tab
-  const openInNewTab = () => {
-    if (!selectedSurahForDownload) return;
-    const audioUrl = getAudioUrl(selectedReciter, selectedSurahForDownload.id);
-    window.open(audioUrl, '_blank');
-    setDownloadDialogOpen(false);
+    try {
+      // Fetch the file with progress tracking
+      const response = await fetch(audioUrl);
+      
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+      
+      const contentLength = response.headers.get('content-length');
+      const total = contentLength ? parseInt(contentLength, 10) : 0;
+      
+      // Read the stream with progress
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('Cannot read response body');
+      }
+      
+      const chunks: Uint8Array[] = [];
+      let receivedLength = 0;
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        
+        chunks.push(value);
+        receivedLength += value.length;
+        
+        if (total > 0) {
+          setDownloadProgress(Math.round((receivedLength / total) * 100));
+        }
+      }
+      
+      // Create blob from chunks
+      const blob = new Blob(chunks, { type: 'audio/mpeg' });
+      const blobUrl = URL.createObjectURL(blob);
+      
+      // Create download link and trigger download
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up blob URL
+      URL.revokeObjectURL(blobUrl);
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      // Fallback: Open in new tab as last resort
+      window.open(audioUrl, '_blank');
+    } finally {
+      setIsDownloading(false);
+      setDownloadProgress(0);
+      setDownloadDialogOpen(false);
+    }
   };
 
   const closePlayer = () => {
@@ -965,6 +1055,15 @@ export default function QuranWebApp() {
                 <div className="text-xs text-emerald-100">مدنية</div>
               </div>
             </div>
+            
+            {/* Scroll to Bottom Button */}
+            <button
+              onClick={scrollToBottom}
+              className="mt-6 w-12 h-12 mx-auto rounded-full bg-white/20 hover:bg-white/30 backdrop-blur text-white shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+              aria-label="الانتقال إلى الأسفل"
+            >
+              <ArrowDown className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </header>
@@ -1422,8 +1521,23 @@ export default function QuranWebApp() {
                     بصوت: {currentReciter.nameArabic}
                   </p>
                 </div>
+                {/* File Size Display */}
+                <div className="mt-2 bg-slate-50 dark:bg-slate-800 rounded-lg p-2 flex items-center justify-center gap-2">
+                  {isLoadingFileSize ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                  ) : fileSize ? (
+                    <>
+                      <Download className="w-4 h-4 text-emerald-600" />
+                      <span className="text-sm text-slate-600 dark:text-slate-300">
+                        حجم الملف: <strong className="text-emerald-600">{formatFileSize(fileSize)}</strong>
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-xs text-slate-400">تعذر تحديد حجم الملف</span>
+                  )}
+                </div>
               </div>
-            )}
+            )
             
             {/* Quality Selection */}
             <div className="space-y-3">
@@ -1526,28 +1640,31 @@ export default function QuranWebApp() {
               </div>
             </div>
             
-            {/* Download Button */}
+            {/* Download Button with Progress */}
             <Button
               onClick={() => downloadAudio(selectedQuality)}
               disabled={isDownloading}
-              className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
+              className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl relative overflow-hidden"
             >
-              {isDownloading ? (
-                <Loader2 className="w-5 h-5 animate-spin ml-2" />
-              ) : (
-                <Download className="w-5 h-5 ml-2" />
+              {isDownloading && downloadProgress > 0 && (
+                <div 
+                  className="absolute inset-0 bg-emerald-500/30 transition-all duration-300"
+                  style={{ width: `${downloadProgress}%` }}
+                />
               )}
-              {isDownloading ? 'جاري التنزيل...' : 'تنزيل الآن'}
-            </Button>
-            
-            {/* Open in new tab */}
-            <Button
-              onClick={openInNewTab}
-              variant="outline"
-              className="w-full h-12 rounded-xl border-slate-200 dark:border-slate-700"
-            >
-              <ExternalLink className="w-5 h-5 ml-2" />
-              فتح في تبويب جديد
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {isDownloading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    {downloadProgress > 0 ? `${downloadProgress}%` : 'جاري التحميل...'}
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5" />
+                    تنزيل الآن
+                  </>
+                )}
+              </span>
             </Button>
             
             <p className="text-xs text-center text-slate-500">
@@ -1558,7 +1675,7 @@ export default function QuranWebApp() {
       </Dialog>
 
       {/* Enhanced Footer with Developer Attribution */}
-      <footer className={`text-center py-8 ${currentSurah ? 'pb-40' : 'pb-8'} bg-gradient-to-t from-slate-100 to-transparent dark:from-slate-900`}> 
+      <footer ref={footerRef} className={`text-center py-8 ${currentSurah ? 'pb-40' : 'pb-8'} bg-gradient-to-t from-slate-100 to-transparent dark:from-slate-900`}> 
         <div className="container mx-auto px-4">
           {/* Source Attribution */}
           <div className="mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
