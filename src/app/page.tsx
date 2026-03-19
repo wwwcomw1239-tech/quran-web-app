@@ -176,6 +176,78 @@ const reciters: Reciter[] = [
     nameEnglish: 'Muhammad Jibril',
     baseUrl: 'https://server8.mp3quran.net/jbrl',
   },
+  {
+    id: 'luhaidan',
+    nameArabic: 'محمد اللحيدان',
+    nameEnglish: 'Muhammad Al-Luhaidan',
+    baseUrl: 'https://server8.mp3quran.net/lhdan',
+  },
+  {
+    id: 'juhany',
+    nameArabic: 'عبدالله عواد الجهني',
+    nameEnglish: 'Abdullah Awad Al-Juhany',
+    baseUrl: 'https://server13.mp3quran.net/jhn',
+  },
+  {
+    id: 'hani_rifai',
+    nameArabic: 'هاني الرفاعي',
+    nameEnglish: 'Hani Ar-Rifai',
+    baseUrl: 'https://server8.mp3quran.net/hani',
+  },
+  {
+    id: 'qahtani',
+    nameArabic: 'خالد القحطاني',
+    nameEnglish: 'Khaled Al-Qahtani',
+    baseUrl: 'https://server10.mp3quran.net/qht',
+  },
+  {
+    id: 'arkani',
+    nameArabic: 'عبدالمجيد الأركاني',
+    nameEnglish: 'Abdul Wali Al Arkani',
+    baseUrl: 'https://server6.mp3quran.net/arkani',
+  },
+  {
+    id: 'sayegh',
+    nameArabic: 'توفيق الصايغ',
+    nameEnglish: 'Tawfiq As-Sayegh',
+    baseUrl: 'https://server6.mp3quran.net/twfeeq',
+  },
+  {
+    id: 'tunaiji',
+    nameArabic: 'خليفة الطنيجي',
+    nameEnglish: 'Khalifa Al Tunaiji',
+    baseUrl: 'https://server12.mp3quran.net/tnjy',
+  },
+  {
+    id: 'budair',
+    nameArabic: 'صلاح البدير',
+    nameEnglish: 'Salah Al Budair',
+    baseUrl: 'https://server6.mp3quran.net/s_bud',
+  },
+  {
+    id: 'mustafa',
+    nameArabic: 'مصطفى إسماعيل',
+    nameEnglish: 'Mustafa Ismail',
+    baseUrl: 'https://server8.mp3quran.net/mustafa',
+  },
+  {
+    id: 'baleela',
+    nameArabic: 'بندر بليلة',
+    nameEnglish: 'Bandar Baleela',
+    baseUrl: 'https://server6.mp3quran.net/balilah',
+  },
+  {
+    id: 'nabil_rifai',
+    nameArabic: 'نبيل الرفاعي',
+    nameEnglish: 'Nabil Ar-Rifai',
+    baseUrl: 'https://server9.mp3quran.net/nabil',
+  },
+  {
+    id: 'khayyat',
+    nameArabic: 'عبدالله خياط',
+    nameEnglish: 'Abdullah Khayyat',
+    baseUrl: 'https://server12.mp3quran.net/kyat',
+  },
 ];
 
 // Generate audio URL based on reciter and surah
