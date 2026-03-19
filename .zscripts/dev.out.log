@@ -196,3 +196,4 @@ Use 'kill 5029' to stop it.
 
 ✓ Starting...
 ✓ Ready in 930ms
+ GET / 200 in 1564ms (compile: 1254ms, render: 311ms)
