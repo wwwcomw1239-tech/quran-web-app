@@ -52,7 +52,9 @@ interface Reciter {
   imageUrl?: string;
 }
 
-// Verified Mp3Quran server URLs - tested and confirmed working
+// Verified Mp3Quran server URLs - ALL URLs fetched from official API and tested
+// Source: https://mp3quran.net/api/v3/reciters
+// Every URL has been verified with HTTP 200 response
 const reciters: Reciter[] = [
   {
     id: 'minshawi',
@@ -76,7 +78,55 @@ const reciters: Reciter[] = [
     id: 'maher',
     nameArabic: 'ماهر المعيقلي',
     nameEnglish: 'Maher Al-Muaiqly',
-    baseUrl: 'https://server8.mp3quran.net/maher',
+    baseUrl: 'https://server12.mp3quran.net/maher',
+  },
+  {
+    id: 'fares_abbad',
+    nameArabic: 'فارس عباد',
+    nameEnglish: 'Fares Abbad',
+    baseUrl: 'https://server8.mp3quran.net/frs_a',
+  },
+  {
+    id: 'sudais',
+    nameArabic: 'عبد الرحمن السديس',
+    nameEnglish: 'Abdul Rahman Al-Sudais',
+    baseUrl: 'https://server11.mp3quran.net/sds',
+  },
+  {
+    id: 'ghamdi',
+    nameArabic: 'سعد الغامدي',
+    nameEnglish: 'Saad Al-Ghamdi',
+    baseUrl: 'https://server7.mp3quran.net/s_gmd',
+  },
+  {
+    id: 'shatri',
+    nameArabic: 'أبو بكر الشاطري',
+    nameEnglish: 'Abu Bakr Al-Shatri',
+    baseUrl: 'https://server11.mp3quran.net/shatri',
+  },
+  {
+    id: 'dosari',
+    nameArabic: 'ياسر الدوسري',
+    nameEnglish: 'Yasser Al-Dosari',
+    baseUrl: 'https://server11.mp3quran.net/yasser',
+  },
+  {
+    id: 'jalil',
+    nameArabic: 'خالد الجليل',
+    nameEnglish: 'Khalid Al-Jalil',
+    baseUrl: 'https://server10.mp3quran.net/jleel',
+  },
+  {
+    id: 'ajmi',
+    nameArabic: 'أحمد بن علي العجمي',
+    nameEnglish: 'Ahmad Bin Ali Al-Ajmi',
+    baseUrl: 'https://server10.mp3quran.net/ajm',
+  },
+  {
+    id: 'ayyub',
+    nameArabic: 'محمد أيوب',
+    nameEnglish: 'Muhammad Ayyub',
+    baseUrl: 'https://server8.mp3quran.net/ayyub',
   },
 ];
 
