@@ -612,7 +612,7 @@ export default function QuranWebApp() {
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
   const [selectedSurahForDownload, setSelectedSurahForDownload] = useState<Surah | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [selectedQuality, setSelectedQuality] = useState<'high' | 'medium' | 'low'>('low'); // Low quality is mandatory default
+  const [selectedQuality, setSelectedQuality] = useState<'original'>('original'); // Original quality only - Mp3Quran provides one quality per reciter
   const [reciterSearchQuery, setReciterSearchQuery] = useState('');
   const [reciterDialogOpen, setReciterDialogOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -934,16 +934,16 @@ export default function QuranWebApp() {
 
   // Download audio - Fetch blob and trigger download
   // Required for cross-origin files where download attribute doesn't work
-  const downloadAudio = async (quality: 'high' | 'medium' | 'low') => {
+  // Note: Mp3Quran provides one quality per reciter (typically 128kbps)
+  const downloadAudio = async () => {
     if (!selectedSurahForDownload) return;
     
     setIsDownloading(true);
     setDownloadProgress(0);
     const audioUrl = getAudioUrl(selectedReciter, selectedSurahForDownload.id);
     
-    // Quality suffix for filename
-    const qualityLabel = quality === 'high' ? '128kbps' : quality === 'medium' ? '64kbps' : '32kbps';
-    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}_${qualityLabel}.mp3`;
+    // Filename with original quality
+    const fileName = `${selectedSurahForDownload.id.toString().padStart(3, '0')}_${selectedSurahForDownload.nameArabic}_${currentReciter.nameArabic}_original.mp3`;
 
     try {
       // Fetch the file with progress tracking
@@ -1539,110 +1539,27 @@ export default function QuranWebApp() {
               </div>
             )}
 
-            {/* Quality Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">اختر جودة التحميل:</label>
-              
-              {/* Quality Options - LOW QUALITY FIRST POLICY */}
-              <div className="grid gap-2">
-                {/* Low Quality - RECOMMENDED DEFAULT */}
-                <button
-                  onClick={() => setSelectedQuality('low')}
-                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
-                    selectedQuality === 'low'
-                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-emerald-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                      selectedQuality === 'low'
-                        ? 'border-emerald-500 bg-emerald-500'
-                        : 'border-slate-300 dark:border-slate-600'
-                    }`}>
-                      {selectedQuality === 'low' && (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-slate-900 dark:text-white">جودة منخفضة (32 kbps)</p>
-                      <p className="text-xs text-emerald-600 dark:text-emerald-400">موصى بها - سريع وموفر للبيانات ✓</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
-                    موصى بها
-                  </Badge>
-                </button>
-
-                {/* Medium Quality - Fallback */}
-                <button
-                  onClick={() => setSelectedQuality('medium')}
-                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
-                    selectedQuality === 'medium'
-                      ? 'border-amber-500 bg-amber-50 dark:bg-amber-950'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-amber-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                      selectedQuality === 'medium'
-                        ? 'border-amber-500 bg-amber-500'
-                        : 'border-slate-300 dark:border-slate-600'
-                    }`}>
-                      {selectedQuality === 'medium' && (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-slate-900 dark:text-white">جودة متوسطة (64 kbps)</p>
-                      <p className="text-xs text-amber-600 dark:text-amber-400">ترجع للجودة الأصلية</p>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
-                    افتراضية
-                  </Badge>
-                </button>
-
-                {/* High Quality - Only if lower unavailable */}
-                <button
-                  onClick={() => setSelectedQuality('high')}
-                  className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${
-                    selectedQuality === 'high'
-                      ? 'border-slate-500 bg-slate-50 dark:bg-slate-800'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                      selectedQuality === 'high'
-                        ? 'border-slate-500 bg-slate-500'
-                        : 'border-slate-300 dark:border-slate-600'
-                    }`}>
-                      {selectedQuality === 'high' && (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-slate-900 dark:text-white">جودة عالية (128 kbps)</p>
-                      <p className="text-xs text-slate-500">الجودة الأصلية - حجم أكبر</p>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400">
-                    متاحة
-                  </Badge>
-                </button>
+            {/* Quality Info - Single Original Quality */}
+            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-xl p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center">
+                  <Check className="w-4 h-4" />
+                </div>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400">الجودة الأصلية</span>
+              </div>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                سيتم تحميل الملف بالجودة الأصلية كما هو متوفر من المصدر
+              </p>
+              <div className="mt-3 flex items-center justify-center gap-4 text-xs text-slate-500">
+                <span>Format: MP3</span>
+                <span>•</span>
+                <span>Quality: Original</span>
               </div>
             </div>
             
             {/* Download Button with Progress */}
             <Button
-              onClick={() => downloadAudio(selectedQuality)}
+              onClick={downloadAudio}
               disabled={isDownloading}
               className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl relative overflow-hidden"
             >

@@ -208,3 +208,10 @@ Use 'kill 5029' to stop it.
 ✓ Ready in 880ms
  GET / 404 in 1721ms (compile: 1580ms, render: 141ms)
  GET / 404 in 47ms (compile: 6ms, render: 41ms)
+ GET / 404 in 52ms (compile: 10ms, render: 43ms)
+ GET / 404 in 40ms (compile: 6ms, render: 34ms)
+ GET / 404 in 38ms (compile: 6ms, render: 32ms)
+ GET / 404 in 31ms (compile: 5ms, render: 25ms)
+ GET / 404 in 40ms (compile: 8ms, render: 31ms)
+ GET / 404 in 35ms (compile: 6ms, render: 29ms)
+ GET / 404 in 43ms (compile: 15ms, render: 28ms)
