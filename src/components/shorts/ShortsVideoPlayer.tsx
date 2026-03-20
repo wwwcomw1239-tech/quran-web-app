@@ -139,9 +139,11 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
           <span className={cn("px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm", video.type === 'quran' ? "bg-emerald-500/30 text-emerald-300 border border-emerald-500/30" : "bg-blue-500/30 text-blue-300 border border-blue-500/30")}>
             {video.type === 'quran' ? 'تلاوة Quran' : 'خطبة Sermon'}
           </span>
-          <span className="px-2 py-1 rounded-full text-[10px] bg-white/10 text-white/70 backdrop-blur-sm">
-            {formatDuration(video.duration)}
-          </span>
+          {video.duration > 0 && (
+            <span className="px-2 py-1 rounded-full text-[10px] bg-white/10 text-white/70 backdrop-blur-sm">
+              {formatDuration(video.duration)}
+            </span>
+          )}
         </div>
         <h3 className="text-white font-bold text-lg leading-tight line-clamp-2 drop-shadow-lg">{video.title}</h3>
         <p className="text-white/70 text-sm mt-1 drop-shadow-lg">{video.author}</p>

@@ -1,141 +1,109 @@
 /**
  * Video data source for Shorts
- * Primary: Local JSON file (reliable)
- * Fallback: Internet Archive API (dynamic)
+ * 
+ * Primary: Cloudflare Worker API (https://quran-proxy.wwwcomw1239.workers.dev/api/shorts)
+ * Fallback: Local shorts.json
  */
-
-// Local video data (imported at build time)
-import localShortsData from '@/data/shorts.json';
 
 // Video interface
 export interface ShortsVideo {
   id: string;
-  identifier?: string;
   title: string;
   author: string;
   videoUrl: string;
   thumbnail?: string;
   duration: number;
-  format?: string;
   type: 'quran' | 'sermon';
 }
 
-// Archive.org API base URL
-const ARCHIVE_API_BASE = 'https://archive.org/advancedsearch.php';
-const CORS_PROXY = 'https://quran-proxy.wwwcomw1239.workers.dev/cors';
+// Local fallback data (used when Worker is unavailable)
+const LOCAL_VIDEOS: ShortsVideo[] = [
+  {
+    id: 'quran-1',
+    title: 'سورة الأنبياء - تلاوة خاشعة',
+    author: 'الشيخ عبدالباسط عبدالصمد',
+    videoUrl: 'https://archive.org/download/a0251204aaaaaaaaaaa/%C2%AB%20%D8%A3%D9%8E%D8%A5%D9%8B%D9%84%D9%8E%D9%B0%D9%87%D9%8C%20%D9%85%D9%8E%D9%91%D8%B9%D9%8E%20%D8%A7%D9%84%D9%84%D9%8E%D9%91%D9%87%D9%8B%20%C2%BB%20%D8%AA%D9%84%D8%A7%D9%88%D8%A9%20%D8%AE%D8%A7%D8%B4%D8%B9%D8%A9%20%D8%AC%D8%AF%D8%A7%D9%8B%20%D8%A8%D8%B5%D9%88%D8%AA%20%D8%A7%D9%84%D8%B4%D9%8A%D8%AE%20%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D8%A8%D8%A7%D8%B3%D8%B7%20%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D8%B5%D9%85%D8%AF.mp4',
+    thumbnail: '/icons/icon-512x512.png',
+    duration: 60,
+    type: 'quran',
+  },
+  {
+    id: 'quran-2',
+    title: 'ألم نجعل له عينين - مرئيات',
+    author: 'الشيخ عبدالباسط عبدالصمد',
+    videoUrl: 'https://archive.org/download/a0251204aaaaaaaaaaa/%C2%AB%20%D8%A3%D9%8E%D9%84%D9%8E%D9%85%D9%92%20%D9%86%D9%8E%D8%AC%D9%8E%D8%B9%D9%8E%D9%84%D9%92%20%D9%84%D9%8E%D9%87%D9%8F%20%D8%B9%D9%8E%D9%8A%D9%92%D9%86%D9%8E%D9%8A%D9%92%D9%86%D9%8E%20%D9%88%D9%8E%D9%84%D9%90%D8%B3%D9%8E%D8%A7%D9%86%D9%8B%D8%A7%20%D9%88%D9%8E%D8%B4%D9%8E%D9%81%D9%8E%D8%AA%D9%8E%D9%8A%D9%92%D9%86%D9%8E%20%C2%BB%20%D9%85%D9%86%20%D8%A3%D8%AC%D9%85%D9%84%20%D9%85%D8%B1%D8%A6%D9%8A%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B4%D9%8A%D8%AE%20%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D8%A8%D8%A7%D8%B3%D8%B7%20%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D8%B5%D9%85%D8%AF.mp4',
+    thumbnail: '/icons/icon-512x512.png',
+    duration: 60,
+    type: 'quran',
+  },
+];
 
-/**
- * Get videos from local JSON file (most reliable)
- */
-export function getLocalVideos(): ShortsVideo[] {
-  return localShortsData as ShortsVideo[];
+// Worker API URL
+const WORKER_API_URL = 'https://quran-proxy.wwwcomw1239.workers.dev/api/shorts';
+
+// Worker API response interface
+interface WorkerAPIResponse {
+  success: boolean;
+  count: number;
+  videos: ShortsVideo[];
+  source: string;
 }
 
 /**
- * Fetch with CORS proxy fallback
+ * Get videos from Worker API (primary) with local fallback
  */
-async function fetchWithCors(url: string, timeout: number = 15000): Promise<Response> {
+export async function getVideos(): Promise<ShortsVideo[]> {
   try {
-    const response = await fetch(url, {
-      signal: AbortSignal.timeout(timeout),
-    });
-    if (response.ok) return response;
-  } catch (e) {
-    console.log('[Archive] Direct fetch failed, trying CORS proxy');
-  }
-
-  try {
-    const proxyUrl = `${CORS_PROXY}?url=${encodeURIComponent(url)}`;
-    return fetch(proxyUrl, {
-      signal: AbortSignal.timeout(timeout),
-    });
-  } catch (e) {
-    throw new Error('Both direct and proxy fetch failed');
-  }
-}
-
-/**
- * Robust duration parser
- */
-function parseDurationToSeconds(length: unknown): number {
-  if (length === null || length === undefined) return 0;
-  if (Array.isArray(length)) return length.length > 0 ? parseDurationToSeconds(length[0]) : 0;
-  if (typeof length === 'number') return Math.round(length);
-  if (typeof length === 'string') {
-    const numValue = parseFloat(length);
-    if (!isNaN(numValue) && numValue > 0) return Math.round(numValue);
-    const timeParts = length.split(':').map(p => parseInt(p, 10));
-    if (timeParts.length === 3 && !timeParts.some(isNaN)) return timeParts[0] * 3600 + timeParts[1] * 60 + timeParts[2];
-    if (timeParts.length === 2 && !timeParts.some(isNaN)) return timeParts[0] * 60 + timeParts[1];
-  }
-  return 0;
-}
-
-/**
- * Fetch from Internet Archive (with fallback)
- */
-async function fetchArchiveVideos(maxResults: number = 20): Promise<ShortsVideo[]> {
-  const queries = [
-    '(title:"Quran" OR title:"Islamic") AND mediatype:(movies)',
-    'mediatype:(movies) AND collection:(shortfilms)',
-  ];
-
-  for (const query of queries) {
-    try {
-      const params = new URLSearchParams({
-        q: query,
-        fl: 'identifier,title,creator,format,length',
-        output: 'json',
-        rows: maxResults.toString(),
-      });
-
-      const response = await fetchWithCors(`${ARCHIVE_API_BASE}?${params}`, 20000);
-      if (!response.ok) continue;
-
-      const data = await response.json();
-      const docs = data.response?.docs || [];
-      
-      if (docs.length === 0) continue;
-
-      const videos: ShortsVideo[] = [];
-      for (const doc of docs) {
-        const duration = parseDurationToSeconds(doc.length);
-        if (duration > 0 && duration <= 300) {
-          const videoUrl = `https://archive.org/download/${doc.identifier}/${doc.identifier}.mp4`;
-          videos.push({
-            id: doc.identifier,
-            identifier: doc.identifier,
-            title: doc.title || 'Untitled',
-            author: Array.isArray(doc.creator) ? doc.creator.join(', ') : doc.creator || 'Unknown',
-            videoUrl,
-            thumbnail: `https://archive.org/services/img/${doc.identifier}`,
-            duration,
-            format: 'MP4',
-            type: determineContentType(doc.title || ''),
-          });
-        }
+    // Check sessionStorage cache first (5 minutes)
+    const cached = sessionStorage.getItem('shorts-videos-cache');
+    if (cached) {
+      const { videos, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < 5 * 60 * 1000 && videos.length > 0) {
+        console.log('[Shorts] Using cached videos');
+        return videos;
       }
-
-      if (videos.length > 0) return shuffleArray(videos);
-    } catch (e) {
-      console.error('[Archive] Query failed:', e);
-      continue;
     }
+
+    // Fetch from Worker API
+    console.log('[Shorts] Fetching from Worker API...');
+    const response = await fetch(WORKER_API_URL, {
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (response.ok) {
+      const data: WorkerAPIResponse = await response.json();
+      
+      if (data.success && data.videos && data.videos.length > 0) {
+        console.log(`[Shorts] Got ${data.videos.length} videos from ${data.source}`);
+        
+        // Cache the result
+        sessionStorage.setItem('shorts-videos-cache', JSON.stringify({
+          videos: data.videos,
+          timestamp: Date.now(),
+        }));
+
+        return shuffleArray(data.videos);
+      }
+    }
+  } catch (error) {
+    console.warn('[Shorts] Worker API failed, using local fallback:', error);
   }
 
-  return [];
+  // Return local videos as fallback
+  console.log('[Shorts] Using local fallback videos');
+  return shuffleArray(LOCAL_VIDEOS);
 }
 
 /**
- * Determine content type
+ * Get download URL (through proxy for CORS bypass)
  */
-function determineContentType(title: string): 'quran' | 'sermon' {
-  const quranKeywords = ['quran', 'surah', 'recitation', 'قرآن', 'سورة', 'تلاوة'];
-  return quranKeywords.some(k => title.toLowerCase().includes(k)) ? 'quran' : 'sermon';
+export function getDownloadUrl(videoUrl: string): string {
+  // Route through Worker proxy for CORS bypass
+  return `https://quran-proxy.wwwcomw1239.workers.dev/download?url=${encodeURIComponent(videoUrl)}`;
 }
 
 /**
- * Shuffle array
+ * Shuffle array (Fisher-Yates)
  */
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -144,45 +112,4 @@ function shuffleArray<T>(array: T[]): T[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
-}
-
-/**
- * Main function: Get videos (local first, then Archive)
- */
-export async function getVideos(): Promise<ShortsVideo[]> {
-  // Always start with local videos (guaranteed to work)
-  const localVideos = getLocalVideos();
-  
-  // Try to fetch additional videos from Archive (in background)
-  try {
-    const archiveVideos = await fetchArchiveVideos(10);
-    if (archiveVideos.length > 0) {
-      // Combine local + archive, remove duplicates
-      const allVideos = [...localVideos];
-      const localIds = new Set(localVideos.map(v => v.id));
-      
-      for (const video of archiveVideos) {
-        if (!localIds.has(video.id)) {
-          allVideos.push(video);
-        }
-      }
-      
-      return shuffleArray(allVideos);
-    }
-  } catch (e) {
-    console.log('[Archive] Using local videos only');
-  }
-
-  return shuffleArray(localVideos);
-}
-
-/**
- * Get download URL (through proxy for CORS)
- */
-export function getDownloadUrl(videoUrl: string): string {
-  // Route through proxy for CORS bypass
-  if (videoUrl.includes('archive.org') || videoUrl.includes('w3schools') || videoUrl.includes('sample-videos')) {
-    return `https://quran-proxy.wwwcomw1239.workers.dev/download?url=${encodeURIComponent(videoUrl)}`;
-  }
-  return videoUrl;
 }

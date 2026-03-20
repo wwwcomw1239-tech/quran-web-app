@@ -40,32 +40,16 @@ export default function ShortsPage() {
     }
   }, [likedVideos]);
 
-  // Load videos
+  // Load videos from Worker API
   const loadVideos = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Check sessionStorage cache (5 minutes)
-      const cached = sessionStorage.getItem('shorts-videos-cache');
-      if (cached) {
-        const { videos: cachedVideos, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp < 5 * 60 * 1000 && cachedVideos.length > 0) {
-          setVideos(cachedVideos);
-          setLoading(false);
-          return;
-        }
-      }
-
-      // Get videos (local + archive fallback)
       const fetchedVideos = await getVideos();
       
       if (fetchedVideos.length > 0) {
         setVideos(fetchedVideos);
-        sessionStorage.setItem('shorts-videos-cache', JSON.stringify({
-          videos: fetchedVideos,
-          timestamp: Date.now(),
-        }));
       } else {
         setError('لم يتم العثور على فيديوهات');
       }
@@ -90,7 +74,7 @@ export default function ShortsPage() {
     });
   }, []);
 
-  // Intersection Observer
+  // Intersection Observer for auto-play
   useEffect(() => {
     if (observerRef.current) {
       observerRef.current.disconnect();
@@ -141,12 +125,13 @@ export default function ShortsPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeIndex, videos.length]);
 
-  // Loading state
+  // Loading skeleton
   if (loading && videos.length === 0) {
     return (
       <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
         <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-4" />
         <p className="text-white/70 text-lg">جاري تحميل الفيديوهات...</p>
+        <p className="text-white/40 text-sm mt-2">من قاعدة البيانات</p>
       </div>
     );
   }
