@@ -1,11 +1,12 @@
 'use client';
 
 import { surahs, totalVerses, makkiCount, madaniCount } from '@/data/surahs';
-import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2 } from 'lucide-react';
+import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2, Download } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface HeaderProps {
   onScrollToBottom: () => void;
@@ -65,8 +66,14 @@ export function Header({ onScrollToBottom }: HeaderProps) {
               </Button>
             )}
 
-            {/* Spacer for centering */}
-            <div className="flex-1" />
+            {/* Downloads Link - Center */}
+            <Link
+              href="/downloads"
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white rounded-full px-4 py-2 text-sm font-medium backdrop-blur transition-all duration-300"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">{isRTL ? 'تنزيلاتي' : 'Downloads'}</span>
+            </Link>
 
             {/* Language Switcher - Right Side */}
             <Button

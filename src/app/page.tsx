@@ -409,7 +409,7 @@ function QuranWebAppContent() {
 
     if (isCached) {
       // Remove from cache
-      const success = await removeAudioFromCache(audioUrl, selectedReciter, currentSurah.id);
+      const success = await removeAudioFromCache(selectedReciter, currentSurah.id);
       if (success) {
         setIsCached(false);
         // Clean up blob URL
@@ -430,6 +430,10 @@ function QuranWebAppContent() {
         audioUrl,
         selectedReciter,
         currentSurah.id,
+        currentSurah.nameArabic,
+        currentSurah.nameEnglish,
+        currentReciter.nameArabic,
+        currentReciter.nameEnglish,
         (progress) => setCacheProgress(progress)
       );
 
@@ -458,7 +462,7 @@ function QuranWebAppContent() {
         alert(errorMessage);
       }
     }
-  }, [currentSurah, selectedReciter, isCached, isCaching, cacheSupported, cachedBlobUrl, isRTL]);
+  }, [currentSurah, selectedReciter, isCached, isCaching, cacheSupported, cachedBlobUrl, isRTL, currentReciter]);
 
   const handleDownload = async (surah: Surah) => {
     setSelectedSurahForDownload(surah);

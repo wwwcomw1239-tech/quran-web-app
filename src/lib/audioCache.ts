@@ -3,6 +3,8 @@
  * 
  * Uses the Cache API to store audio files on the user's device
  * All fetch requests go through the Cloudflare Worker CORS proxy
+ * 
+ * Files are stored FOREVER until manually deleted by the user
  */
 
 import { getProxiedUrl, shouldProxy } from './proxy';
@@ -10,38 +12,39 @@ import { getProxiedUrl, shouldProxy } from './proxy';
 // Cache name for audio files
 const CACHE_NAME = 'quran-audio-cache-v1';
 
-// Cache expiration time (30 days in milliseconds)
-const CACHE_EXPIRATION = 30 * 24 * 60 * 60 * 1000;
-
-// Maximum cache size (500MB)
-const MAX_CACHE_SIZE = 500 * 1024 * 1024;
+// Metadata key in localStorage
+const CACHE_META_KEY = 'quran-audio-cache-meta';
 
 /**
  * Interface for cached audio metadata
  */
-interface CachedAudioMeta {
+export interface CachedAudioMeta {
   url: string;
   id: string;
   timestamp: number;
   size: number;
   surahId: number;
+  surahNameArabic: string;
+  surahNameEnglish: string;
   reciterId: string;
+  reciterNameArabic: string;
+  reciterNameEnglish: string;
 }
 
 /**
  * Generate a unique cache key for an audio file
  */
-function getCacheKey(audioUrl: string, reciterId: string, surahId: number): string {
+export function getCacheKey(reciterId: string, surahId: number): string {
   return `${reciterId}-${surahId}`;
 }
 
 /**
  * Get the cache metadata store from localStorage
  */
-function getCacheMetadata(): CachedAudioMeta[] {
+export function getAllCachedAudio(): CachedAudioMeta[] {
   if (typeof window === 'undefined') return [];
   try {
-    const stored = localStorage.getItem('quran-audio-cache-meta');
+    const stored = localStorage.getItem(CACHE_META_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch {
     return [];
@@ -54,46 +57,10 @@ function getCacheMetadata(): CachedAudioMeta[] {
 function saveCacheMetadata(metadata: CachedAudioMeta[]): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem('quran-audio-cache-meta', JSON.stringify(metadata));
+    localStorage.setItem(CACHE_META_KEY, JSON.stringify(metadata));
   } catch (error) {
     console.error('Failed to save cache metadata:', error);
   }
-}
-
-/**
- * Get the current cache size
- */
-async function getCacheSize(): Promise<number> {
-  const metadata = getCacheMetadata();
-  return metadata.reduce((total, item) => total + item.size, 0);
-}
-
-/**
- * Clean up old cache entries if size exceeds limit
- */
-async function cleanupCache(): Promise<void> {
-  const metadata = getCacheMetadata();
-  const currentSize = await getCacheSize();
-  
-  if (currentSize <= MAX_CACHE_SIZE) return;
-  
-  // Sort by timestamp (oldest first)
-  const sorted = [...metadata].sort((a, b) => a.timestamp - b.timestamp);
-  
-  const cache = await caches.open(CACHE_NAME);
-  let freedSize = 0;
-  const toRemove: CachedAudioMeta[] = [];
-  
-  for (const item of sorted) {
-    if (currentSize - freedSize <= MAX_CACHE_SIZE * 0.8) break;
-    await cache.delete(item.url);
-    freedSize += item.size;
-    toRemove.push(item);
-  }
-  
-  // Update metadata
-  const remaining = metadata.filter(item => !toRemove.includes(item));
-  saveCacheMetadata(remaining);
 }
 
 /**
@@ -108,25 +75,10 @@ export async function checkAudioInCache(
   
   try {
     const cache = await caches.open(CACHE_NAME);
-    const key = getCacheKey(audioUrl, reciterId, surahId);
+    const key = getCacheKey(reciterId, surahId);
     const response = await cache.match(key);
     
-    if (response) {
-      // Check if cache entry is expired
-      const metadata = getCacheMetadata();
-      const meta = metadata.find(m => m.id === key);
-      
-      if (meta && Date.now() - meta.timestamp < CACHE_EXPIRATION) {
-        return true;
-      } else {
-        // Remove expired entry
-        await cache.delete(key);
-        const newMeta = metadata.filter(m => m.id !== key);
-        saveCacheMetadata(newMeta);
-      }
-    }
-    
-    return false;
+    return !!response;
   } catch (error) {
     console.error('Error checking cache:', error);
     return false;
@@ -145,7 +97,7 @@ export async function getAudioFromCache(
   
   try {
     const cache = await caches.open(CACHE_NAME);
-    const key = getCacheKey(audioUrl, reciterId, surahId);
+    const key = getCacheKey(reciterId, surahId);
     const response = await cache.match(key);
     
     if (response) {
@@ -163,11 +115,17 @@ export async function getAudioFromCache(
 /**
  * Save audio to cache for offline listening
  * CRITICAL: All fetch requests go through CORS proxy
+ * 
+ * @throws QuotaExceededError when storage is full
  */
 export async function saveAudioOffline(
   audioUrl: string,
   reciterId: string,
   surahId: number,
+  surahNameArabic: string,
+  surahNameEnglish: string,
+  reciterNameArabic: string,
+  reciterNameEnglish: string,
   onProgress?: (progress: number) => void
 ): Promise<{ success: boolean; error?: string }> {
   if (typeof window === 'undefined' || !('caches' in window)) {
@@ -240,35 +198,32 @@ export async function saveAudioOffline(
       },
     });
     
-    // Store in cache
+    // Store in cache - let browser handle quota
     const cache = await caches.open(CACHE_NAME);
-    const key = getCacheKey(audioUrl, reciterId, surahId);
+    const key = getCacheKey(reciterId, surahId);
     
     try {
       await cache.put(key, cachedResponse);
     } catch (cacheError: any) {
       if (cacheError.name === 'QuotaExceededError') {
-        // Try to clean up and retry
-        await cleanupCache();
-        try {
-          await cache.put(key, cachedResponse.clone());
-        } catch {
-          return { success: false, error: 'storage_full' };
-        }
-      } else {
-        throw cacheError;
+        return { success: false, error: 'storage_full' };
       }
+      throw cacheError;
     }
     
     // Update metadata
-    const metadata = getCacheMetadata();
+    const metadata = getAllCachedAudio();
     const newMeta: CachedAudioMeta = {
       url: audioUrl,
       id: key,
       timestamp: Date.now(),
       size: blob.size,
       surahId,
+      surahNameArabic,
+      surahNameEnglish,
       reciterId,
+      reciterNameArabic,
+      reciterNameEnglish,
     };
     
     // Remove old entry for same key if exists
@@ -291,7 +246,6 @@ export async function saveAudioOffline(
  * Remove audio from cache
  */
 export async function removeAudioFromCache(
-  audioUrl: string,
   reciterId: string,
   surahId: number
 ): Promise<boolean> {
@@ -299,12 +253,12 @@ export async function removeAudioFromCache(
   
   try {
     const cache = await caches.open(CACHE_NAME);
-    const key = getCacheKey(audioUrl, reciterId, surahId);
+    const key = getCacheKey(reciterId, surahId);
     
     const deleted = await cache.delete(key);
     
     // Update metadata
-    const metadata = getCacheMetadata();
+    const metadata = getAllCachedAudio();
     const filteredMeta = metadata.filter(m => m.id !== key);
     saveCacheMetadata(filteredMeta);
     
@@ -316,13 +270,6 @@ export async function removeAudioFromCache(
 }
 
 /**
- * Get all cached audio metadata
- */
-export function getCachedAudioList(): CachedAudioMeta[] {
-  return getCacheMetadata();
-}
-
-/**
  * Get cache statistics
  */
 export async function getCacheStats(): Promise<{
@@ -330,7 +277,7 @@ export async function getCacheStats(): Promise<{
   totalSize: number;
   formattedSize: string;
 }> {
-  const metadata = getCacheMetadata();
+  const metadata = getAllCachedAudio();
   const totalSize = metadata.reduce((sum, item) => sum + item.size, 0);
   
   return {
@@ -348,7 +295,7 @@ export async function clearAudioCache(): Promise<void> {
   
   try {
     await caches.delete(CACHE_NAME);
-    localStorage.removeItem('quran-audio-cache-meta');
+    localStorage.removeItem(CACHE_META_KEY);
   } catch (error) {
     console.error('Error clearing cache:', error);
   }

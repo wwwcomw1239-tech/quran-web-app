@@ -171,15 +171,15 @@ export function AudioPlayerBar({
 
           {/* Secondary Controls */}
           <div className="flex items-center gap-1">
-            {/* Offline Download Button */}
+            {/* Offline Download/Delete Button */}
             {onToggleCache && (
               <Button
                 onClick={onToggleCache}
-                variant={isCached ? 'default' : 'ghost'}
+                variant={isCached ? 'destructive' : 'ghost'}
                 disabled={isCaching}
                 className={`h-8 w-8 p-0 rounded-full relative ${
                   isCached
-                    ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                    ? 'bg-red-500 text-white hover:bg-red-600'
                     : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
                 title={isCached 
@@ -205,7 +205,7 @@ export function AudioPlayerBar({
                     </svg>
                   </>
                 ) : isCached ? (
-                  <Check className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" />
                 ) : (
                   <Download className="w-4 h-4" />
                 )}
