@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -132,12 +133,13 @@ export default function RootLayout({
         <meta name="msapplication-wide310x150logo" content="/icons/icon-192x192.png" />
         <meta name="msapplication-square310x310logo" content="/icons/icon-512x512.png" />
 
-        {/* Script to set direction based on saved language preference - prevents flickering */}
+        {/* Script to set direction and theme based on saved preferences - prevents flickering */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
+                  // Language direction
                   var lang = localStorage.getItem('quran-language');
                   if (lang === 'en') {
                     document.documentElement.setAttribute('dir', 'ltr');
@@ -145,6 +147,14 @@ export default function RootLayout({
                   } else {
                     document.documentElement.setAttribute('dir', 'rtl');
                     document.documentElement.setAttribute('lang', 'ar');
+                  }
+                  
+                  // Theme - prevent flash
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
                   }
                 } catch (e) {}
               })();
@@ -156,7 +166,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
         style={{ fontFamily: "'Cairo', 'Tajawal', 'Amiri', sans-serif" }}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
