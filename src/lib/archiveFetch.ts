@@ -1,7 +1,7 @@
 /**
  * Video data source for Shorts
  * 
- * Primary: Cloudflare Worker API (https://quran-proxy.wwwcomw1239.workers.dev/api/shorts)
+ * Primary: Cloudflare Worker API (https://quran-shorts-api.wwwcomw1239.workers.dev/api/shorts)
  * Fallback: Local shorts.json
  */
 
@@ -38,8 +38,8 @@ const LOCAL_VIDEOS: ShortsVideo[] = [
   },
 ];
 
-// Worker API URL
-const WORKER_API_URL = 'https://quran-proxy.wwwcomw1239.workers.dev/api/shorts';
+// Worker API URL (updated to new Worker with /api/shorts endpoint)
+const WORKER_API_URL = 'https://quran-shorts-api.wwwcomw1239.workers.dev/api/shorts';
 
 // Worker API response interface
 interface WorkerAPIResponse {
@@ -99,7 +99,7 @@ export async function getVideos(): Promise<ShortsVideo[]> {
  */
 export function getDownloadUrl(videoUrl: string): string {
   // Route through Worker proxy for CORS bypass
-  return `https://quran-proxy.wwwcomw1239.workers.dev/download?url=${encodeURIComponent(videoUrl)}`;
+  return `https://quran-shorts-api.wwwcomw1239.workers.dev/download?url=${encodeURIComponent(videoUrl)}`;
 }
 
 /**

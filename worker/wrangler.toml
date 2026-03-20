@@ -12,5 +12,5 @@ ENVIRONMENT = "production"
 
 # Routes
 routes = [
-  { pattern = "quran-proxy.wwwcomw1239.workers.dev/api/*", zone_name = "wwwcomw1239.workers.dev" },
+  { pattern = "quran-shorts-api.wwwcomw1239.workers.dev/api/*", zone_name = "wwwcomw1239.workers.dev" },
 ]

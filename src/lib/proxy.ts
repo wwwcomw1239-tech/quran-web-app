@@ -3,8 +3,8 @@
  * Cloudflare Worker Proxy for archive.org and mp3quran.net URLs
  */
 
-// The deployed Cloudflare Worker proxy URL
-const PROXY_URL = 'https://quran-proxy.wwwcomw1239.workers.dev/';
+// The deployed Cloudflare Worker proxy URL (updated to new Worker)
+const PROXY_URL = 'https://quran-shorts-api.wwwcomw1239.workers.dev/cors';
 
 // Domains that need to be proxied (blocked in some regions)
 const PROXIED_DOMAINS = [
