@@ -412,8 +412,8 @@ function QuranWebAppContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" dir={direction}>
-      {/* Audio Element */}
-      <audio ref={audioRef} preload="auto" crossOrigin="anonymous" />
+      {/* Audio Element - Optimized for streaming with minimal preload */}
+      <audio ref={audioRef} preload="metadata" crossOrigin="anonymous" />
 
       {/* Header */}
       <Header onScrollToBottom={scrollToBottom} />
