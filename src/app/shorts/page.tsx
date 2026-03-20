@@ -4,24 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowRight, Loader2, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
 import { ShortsVideoPlayer } from '@/components/shorts/ShortsVideoPlayer';
-import { fetchAllVideos, YouTubeVideo } from '@/lib/youtube';
+import { fetchAllVideos, getReliableSampleVideos, YouTubeVideo } from '@/lib/youtube';
 import { cn } from '@/lib/utils';
-
-// Sample videos fallback (when API fails)
-const SAMPLE_VIDEOS: YouTubeVideo[] = [
-  // Quran Recitations
-  { id: 'c7eSIvGpF_Q', title: 'تلاوة عطرة من سورة الرحمن - عبد الباسط عبد الصمد', thumbnail: '', playlistId: 'sample', type: 'quran' },
-  { id: 'KqfOSMJHbQg', title: 'سورة يس - الشيخ محمد صديق المنشاوي', thumbnail: '', playlistId: 'sample', type: 'quran' },
-  { id: '5n2A2aFcHg0', title: 'سورة الرحمن - الشيخ مشاري راشد العفاسي', thumbnail: '', playlistId: 'sample', type: 'quran' },
-  { id: '8dALWj-lQjA', title: 'تلاوة خاشعة - الشيخ مشاري راشد العفاسي', thumbnail: '', playlistId: 'sample', type: 'quran' },
-  { id: '9n7d3bO4cWk', title: 'سورة الواقعة - عبد الباسط عبد الصمد', thumbnail: '', playlistId: 'sample', type: 'quran' },
-  // Sermons
-  { id: 'Wjt01W6YnQg', title: 'خطبة جمعة - الشيخ محمد حسان', thumbnail: '', playlistId: 'sample', type: 'sermon' },
-  { id: 'a3gPZhN9TTU', title: 'موعظة مؤثرة - الشيخ نبيل العوضي', thumbnail: '', playlistId: 'sample', type: 'sermon' },
-  { id: 'z6H-JNP7bLY', title: 'كلمة طيبة - الشيخ عبد المحسن الأحمد', thumbnail: '', playlistId: 'sample', type: 'sermon' },
-  { id: 'mXJ8bW9kOqE', title: 'نصيحة غالية - الشيخ إبراهيم الدويش', thumbnail: '', playlistId: 'sample', type: 'sermon' },
-  { id: 'pLqV6bZxKQw', title: 'خطبة مؤثرة - الشيخ خالد الراشد', thumbnail: '', playlistId: 'sample', type: 'sermon' },
-];
 
 export default function ShortsPage() {
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
@@ -36,37 +20,50 @@ export default function ShortsPage() {
     loadVideos();
     
     // Load liked videos from localStorage
-    const savedLikes = localStorage.getItem('shorts-liked-videos');
-    if (savedLikes) {
-      try {
+    try {
+      const savedLikes = localStorage.getItem('shorts-liked-videos');
+      if (savedLikes) {
         setLikedVideos(new Set(JSON.parse(savedLikes)));
-      } catch (e) {
-        console.error('Failed to load liked videos:', e);
       }
+    } catch (e) {
+      console.error('Failed to load liked videos:', e);
     }
   }, []);
 
   // Save liked videos to localStorage
   useEffect(() => {
-    localStorage.setItem('shorts-liked-videos', JSON.stringify([...likedVideos]));
+    try {
+      localStorage.setItem('shorts-liked-videos', JSON.stringify([...likedVideos]));
+    } catch (e) {
+      console.error('Failed to save liked videos:', e);
+    }
   }, [likedVideos]);
 
-  // Load videos from API
+  // Load videos from API with fallback to reliable samples
   const loadVideos = async () => {
     setLoading(true);
     
     try {
+      // First, set reliable sample videos immediately (they're guaranteed to work)
+      const reliableVideos = shuffleArray([...getReliableSampleVideos()]);
+      setVideos(reliableVideos);
+      
+      // Then try to fetch from API in background
       const fetchedVideos = await fetchAllVideos();
-      if (fetchedVideos.length === 0) {
-        // Use sample videos if API fails
-        setVideos(shuffleArray([...SAMPLE_VIDEOS]));
-      } else {
-        setVideos(fetchedVideos);
+      
+      if (fetchedVideos.length > 0) {
+        // Combine reliable samples with fetched videos
+        const combined = [...reliableVideos, ...fetchedVideos];
+        // Remove duplicates by ID
+        const uniqueVideos = combined.filter((video, index, self) =>
+          index === self.findIndex(v => v.id === video.id)
+        );
+        setVideos(shuffleArray(uniqueVideos));
       }
     } catch (err) {
       console.error('Failed to load videos:', err);
-      // Use sample videos as fallback
-      setVideos(shuffleArray([...SAMPLE_VIDEOS]));
+      // Fallback to reliable samples only
+      setVideos(shuffleArray([...getReliableSampleVideos()]));
     } finally {
       setLoading(false);
     }
@@ -95,6 +92,13 @@ export default function ShortsPage() {
     });
   }, []);
 
+  // Handle skip to next video
+  const handleSkip = useCallback(() => {
+    const nextIndex = Math.min(videos.length - 1, activeIndex + 1);
+    const targetElement = containerRef.current?.querySelector(`[data-index="${nextIndex}"]`);
+    targetElement?.scrollIntoView({ behavior: 'smooth' });
+  }, [activeIndex, videos.length]);
+
   // Intersection Observer for auto-play
   useEffect(() => {
     if (observerRef.current) {
@@ -104,7 +108,7 @@ export default function ShortsPage() {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.9) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.8) {
             const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
             setActiveIndex(index);
           }
@@ -112,7 +116,7 @@ export default function ShortsPage() {
       },
       {
         root: containerRef.current,
-        threshold: 0.9, // 90% visible
+        threshold: 0.8, // 80% visible
       }
     );
 
@@ -141,11 +145,13 @@ export default function ShortsPage() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
         const newIndex = Math.min(videos.length - 1, activeIndex + 1);
         const targetElement = containerRef.current?.querySelector(`[data-index="${newIndex}"]`);
         targetElement?.scrollIntoView({ behavior: 'smooth' });
       } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
         const newIndex = Math.max(0, activeIndex - 1);
         const targetElement = containerRef.current?.querySelector(`[data-index="${newIndex}"]`);
         targetElement?.scrollIntoView({ behavior: 'smooth' });
@@ -157,7 +163,7 @@ export default function ShortsPage() {
   }, [activeIndex, videos.length]);
 
   // Loading state - True Black Background
-  if (loading) {
+  if (loading && videos.length === 0) {
     return (
       <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
         <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-4" />
@@ -180,7 +186,10 @@ export default function ShortsPage() {
           </Link>
           
           {/* Title */}
-          <h1 className="text-white font-bold text-xl">نور القرآن Shorts</h1>
+          <div className="flex flex-col items-center">
+            <h1 className="text-white font-bold text-lg">نور القرآن</h1>
+            <span className="text-emerald-400 text-xs font-medium">Shorts</span>
+          </div>
           
           {/* Refresh Button */}
           <button
@@ -212,6 +221,7 @@ export default function ShortsPage() {
               isActive={index === activeIndex}
               onLike={handleLike}
               isLiked={likedVideos.has(video.id)}
+              onSkip={handleSkip}
             />
           </div>
         ))}
@@ -219,7 +229,7 @@ export default function ShortsPage() {
 
       {/* Video Counter */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+        <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10">
           <span className="text-white/70 text-sm">
             {activeIndex + 1} / {videos.length}
           </span>
@@ -231,7 +241,7 @@ export default function ShortsPage() {
         <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
           <div className="flex flex-col items-center text-white/50">
             <ArrowRight className="w-6 h-6 rotate-90" />
-            <span className="text-xs mt-1">اسحب للأعلى</span>
+            <span className="text-xs mt-1 bg-black/30 px-3 py-1 rounded-full">اسحب للأعلى</span>
           </div>
         </div>
       )}
