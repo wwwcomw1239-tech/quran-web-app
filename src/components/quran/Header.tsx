@@ -1,11 +1,12 @@
 'use client';
 
 import { surahs, totalVerses, makkiCount, madaniCount } from '@/data/surahs';
-import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2 } from 'lucide-react';
+import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2, Play } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface HeaderProps {
   onScrollToBottom: () => void;
@@ -64,6 +65,15 @@ export function Header({ onScrollToBottom }: HeaderProps) {
                 )}
               </Button>
             )}
+
+            {/* Shorts Link - Center */}
+            <Link
+              href="/shorts"
+              className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-full px-4 py-2 text-sm font-medium backdrop-blur transition-all duration-300 shadow-lg"
+            >
+              <Play className="w-4 h-4 fill-current" />
+              <span className="hidden sm:inline">Shorts</span>
+            </Link>
 
             {/* Language Switcher - Right Side */}
             <Button
