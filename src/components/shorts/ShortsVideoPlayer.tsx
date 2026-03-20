@@ -3,20 +3,10 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Heart, Share2, Download, Volume2, VolumeX, Play, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-// Video interface for native HTML5 video
-export interface ShortsVideo {
-  id: string;
-  title: string;
-  author: string;
-  videoUrl: string;
-  thumbnail?: string;
-  type: 'quran' | 'sermon';
-  duration?: number;
-}
+import { ArchiveVideo, getArchiveDownloadUrl } from '@/lib/archiveFetch';
 
 interface ShortsVideoPlayerProps {
-  video: ShortsVideo;
+  video: ArchiveVideo;
   isActive: boolean;
   onLike?: (videoId: string) => void;
   isLiked?: boolean;
@@ -24,11 +14,13 @@ interface ShortsVideoPlayerProps {
 
 export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: ShortsVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const bgVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
   const [showPlayButton, setShowPlayButton] = useState(false);
+  const [videoOrientation, setVideoOrientation] = useState<'vertical' | 'horizontal'>('vertical');
 
   // Reset state when video changes
   useEffect(() => {
@@ -36,9 +28,10 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
     setShowPlayButton(false);
   }, [video.id]);
 
-  // Handle auto-play when video becomes active using IntersectionObserver
+  // Handle auto-play when video becomes active
   useEffect(() => {
     const videoElement = videoRef.current;
+    const bgVideoElement = bgVideoRef.current;
     if (!videoElement) return;
 
     if (isActive) {
@@ -47,6 +40,11 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
       videoElement.play().then(() => {
         setIsMuted(true);
         setIsLoaded(true);
+        // Sync background video if exists
+        if (bgVideoElement) {
+          bgVideoElement.muted = true;
+          bgVideoElement.play().catch(() => {});
+        }
       }).catch((error) => {
         console.warn('Autoplay prevented:', error);
         setShowPlayButton(true);
@@ -54,10 +52,25 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
     } else {
       // Pause video when not active to save bandwidth
       videoElement.pause();
-      videoElement.currentTime = 0; // Reset to beginning
+      videoElement.currentTime = 0;
+      if (bgVideoElement) {
+        bgVideoElement.pause();
+        bgVideoElement.currentTime = 0;
+      }
       setIsLoaded(false);
     }
   }, [isActive]);
+
+  // Detect video orientation on loaded metadata
+  const handleVideoLoadedMetadata = useCallback(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    const { videoWidth, videoHeight } = videoElement;
+    // If width > height, it's horizontal (16:9), otherwise vertical (9:16)
+    const isHorizontal = videoWidth > videoHeight;
+    setVideoOrientation(isHorizontal ? 'horizontal' : 'vertical');
+  }, []);
 
   // Toggle mute/unmute
   const toggleMute = useCallback(() => {
@@ -85,19 +98,22 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
 
   // Share to WhatsApp
   const handleShare = useCallback(() => {
-    const text = `${video.title}\n-${ video.author}\n\nمن تطبيق نور القرآن`;
+    const text = `${video.title}\n- ${video.creator}\n\nمن تطبيق نور القرآن`;
     const shareUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(shareUrl, '_blank');
   }, [video]);
 
-  // Download video - direct download from videoUrl
+  // Download video - route through Cloudflare proxy for CORS bypass
   const handleDownload = useCallback(async () => {
     setIsDownloading(true);
     try {
+      // Use proxy for download (mandatory low-quality option)
+      const downloadUrl = getArchiveDownloadUrl(video.videoUrl, 'low');
+      
       // Create a temporary anchor element for download
       const link = document.createElement('a');
-      link.href = video.videoUrl;
-      link.download = `${video.title}.mp4`;
+      link.href = downloadUrl;
+      link.download = `${video.title.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_')}.mp4`;
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();
@@ -124,7 +140,7 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full bg-black flex items-center justify-center"
+      className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden"
     >
       {/* Loading Skeleton - True Black Background */}
       {!isLoaded && !showPlayButton && (
@@ -138,7 +154,20 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
         </div>
       )}
 
-      {/* Native HTML5 Video Player */}
+      {/* Blurred Background Video (for horizontal videos) */}
+      {videoOrientation === 'horizontal' && (
+        <video
+          ref={bgVideoRef}
+          src={video.videoUrl}
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-60"
+          style={{ filter: 'blur(20px)' }}
+        />
+      )}
+
+      {/* Main Video Player */}
       <video
         ref={videoRef}
         src={video.videoUrl}
@@ -146,14 +175,20 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
         playsInline
         webkit-playsinline="true"
         preload="metadata"
-        className="w-full h-full object-cover"
+        className={cn(
+          "relative z-[1]",
+          videoOrientation === 'horizontal'
+            ? "h-full w-auto max-w-full object-contain"
+            : "w-full h-full object-cover"
+        )}
+        onLoadedMetadata={handleVideoLoadedMetadata}
         onLoadedData={handleVideoLoaded}
         onError={handleVideoError}
         poster={video.thumbnail}
       />
 
       {/* Gradient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none z-[2]" />
 
       {/* Video Info - Bottom */}
       <div className="absolute bottom-20 left-4 right-20 z-20 pointer-events-none">
@@ -166,12 +201,16 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
           )}>
             {video.type === 'quran' ? 'تلاوة Quran' : 'خطبة Sermon'}
           </span>
+          {/* Duration badge */}
+          <span className="px-2 py-1 rounded-full text-[10px] font-medium bg-white/10 text-white/70 backdrop-blur-sm">
+            {formatDuration(video.duration)}
+          </span>
         </div>
         <h3 className="text-white font-bold text-lg leading-tight line-clamp-2 drop-shadow-lg">
           {video.title}
         </h3>
         <p className="text-white/70 text-sm mt-1 drop-shadow-lg">
-          {video.author}
+          {video.creator}
         </p>
       </div>
 
@@ -269,4 +308,20 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
       )}
     </div>
   );
+}
+
+/**
+ * Format duration in seconds to MM:SS or HH:MM:SS
+ */
+function formatDuration(seconds: number): string {
+  if (!seconds || seconds <= 0) return '0:00';
+  
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }

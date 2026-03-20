@@ -1,17 +1,23 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, Loader2, RefreshCw, Home } from 'lucide-react';
+import { ArrowRight, Loader2, RefreshCw, Home, WifiOff } from 'lucide-react';
 import Link from 'next/link';
-import { ShortsVideoPlayer, ShortsVideo } from '@/components/shorts/ShortsVideoPlayer';
-import shortsData from '@/data/shorts.json';
+import { ShortsVideoPlayer } from '@/components/shorts/ShortsVideoPlayer';
+import { 
+  fetchArchiveVideos, 
+  getCachedArchiveVideos, 
+  cacheArchiveVideos,
+  ArchiveVideo 
+} from '@/lib/archiveFetch';
 import { cn } from '@/lib/utils';
 
 export default function ShortsPage() {
-  const [videos, setVideos] = useState<ShortsVideo[]>([]);
+  const [videos, setVideos] = useState<ArchiveVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -39,28 +45,36 @@ export default function ShortsPage() {
     }
   }, [likedVideos]);
 
-  // Load videos from local JSON data
-  const loadVideos = useCallback(() => {
+  // Load videos from Internet Archive API
+  const loadVideos = useCallback(async () => {
     setLoading(true);
+    setError(null);
 
-    // Simulate brief loading for smooth UX
-    setTimeout(() => {
-      // Shuffle the videos array
-      const shuffled = shuffleArray([...shortsData] as ShortsVideo[]);
-      setVideos(shuffled);
+    try {
+      // Check cache first
+      const cached = getCachedArchiveVideos();
+      if (cached && cached.length > 0) {
+        setVideos(cached);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch from Internet Archive API
+      const fetchedVideos = await fetchArchiveVideos(50);
+      
+      if (fetchedVideos.length > 0) {
+        setVideos(fetchedVideos);
+        cacheArchiveVideos(fetchedVideos);
+      } else {
+        setError('لم يتم العثور على فيديوهات');
+      }
+    } catch (err) {
+      console.error('Failed to load videos:', err);
+      setError('فشل في تحميل الفيديوهات. يرجى المحاولة مرة أخرى.');
+    } finally {
       setLoading(false);
-    }, 300);
-  }, []);
-
-  // Fisher-Yates shuffle
-  const shuffleArray = <T,>(array: T[]): T[] => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    return shuffled;
-  };
+  }, []);
 
   // Handle like
   const handleLike = useCallback((videoId: string) => {
@@ -151,6 +165,36 @@ export default function ShortsPage() {
       <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
         <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-4" />
         <p className="text-white/70 text-lg">جاري تحميل الفيديوهات...</p>
+        <p className="text-white/50 text-sm mt-2">من أرشيف الإنترنت</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && videos.length === 0) {
+    return (
+      <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50 px-6">
+        <WifiOff className="w-16 h-16 text-red-500 mb-4" />
+        <p className="text-white text-lg font-bold mb-2">حدث خطأ</p>
+        <p className="text-white/70 text-sm text-center mb-6">{error}</p>
+        
+        <div className="flex gap-4">
+          <button
+            onClick={loadVideos}
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 py-3 font-medium transition-all"
+          >
+            <RefreshCw className="w-5 h-5" />
+            <span>إعادة المحاولة</span>
+          </button>
+          
+          <Link
+            href="/"
+            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white rounded-full px-6 py-3 font-medium transition-all"
+          >
+            <Home className="w-5 h-5" />
+            <span>الرئيسية</span>
+          </Link>
+        </div>
       </div>
     );
   }
