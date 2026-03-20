@@ -33,6 +33,16 @@ export const translations = {
     repeat: 'تكرار',
     random: 'عشوائي',
     close: 'إغلاق',
+    
+    // Offline Cache
+    saveOffline: 'حفظ للاستماع بدون إنترنت',
+    savedOffline: 'محفوظ للاستماع بدون إنترنت',
+    removeOffline: 'إزالة من الذاكرة',
+    caching: 'جاري الحفظ...',
+    offlineReady: 'متاح بدون إنترنت',
+    storageFull: 'مساحة التخزين ممتلئة',
+    cacheError: 'حدث خطأ أثناء الحفظ',
+    cachedSurahs: 'سورة محفوظة',
 
     // Download Dialog
     download: 'تحميل',
@@ -109,6 +119,16 @@ export const translations = {
     repeat: 'Repeat',
     random: 'Random',
     close: 'Close',
+    
+    // Offline Cache
+    saveOffline: 'Save for offline listening',
+    savedOffline: 'Saved for offline listening',
+    removeOffline: 'Remove from offline',
+    caching: 'Saving...',
+    offlineReady: 'Available offline',
+    storageFull: 'Storage is full',
+    cacheError: 'Error saving audio',
+    cachedSurahs: 'surahs cached',
 
     // Download Dialog
     download: 'Download',

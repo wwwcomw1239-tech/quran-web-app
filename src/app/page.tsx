@@ -17,6 +17,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Headphones, BookOpen } from 'lucide-react';
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
+import {
+  checkAudioInCache,
+  getAudioFromCache,
+  saveAudioOffline,
+  removeAudioFromCache,
+  getCacheStats,
+  formatFileSize,
+  isCacheApiSupported,
+} from '@/lib/audioCache';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
@@ -52,6 +61,14 @@ function QuranWebAppContent() {
   const [fileSize, setFileSize] = useState<number | null>(null);
   const [isLoadingFileSize, setIsLoadingFileSize] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+
+  // Offline cache state
+  const [isCached, setIsCached] = useState(false);
+  const [isCaching, setIsCaching] = useState(false);
+  const [cacheProgress, setCacheProgress] = useState(0);
+  const [cacheStats, setCacheStats] = useState({ count: 0, totalSize: 0, formattedSize: '0 B' });
+  const [cacheSupported, setCacheSupported] = useState(true);
+  const [cachedBlobUrl, setCachedBlobUrl] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const footerRef = useRef<HTMLElement | null>(null);
@@ -91,6 +108,18 @@ function QuranWebAppContent() {
     localStorage.setItem('quran-favorites', JSON.stringify(favorites));
   }, [favorites]);
 
+  // Check if Cache API is supported
+  useEffect(() => {
+    setCacheSupported(isCacheApiSupported());
+  }, []);
+
+  // Load cache stats on mount
+  useEffect(() => {
+    if (cacheSupported) {
+      getCacheStats().then(setCacheStats);
+    }
+  }, [cacheSupported]);
+
   // Handle scroll for Back to Top button visibility
   useEffect(() => {
     const handleScroll = () => {
@@ -99,6 +128,26 @@ function QuranWebAppContent() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Check cache status when surah or reciter changes
+  useEffect(() => {
+    if (!currentSurah || !cacheSupported) {
+      setIsCached(false);
+      return;
+    }
+
+    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+    checkAudioInCache(audioUrl, selectedReciter, currentSurah.id).then(setIsCached);
+  }, [currentSurah, selectedReciter, cacheSupported]);
+
+  // Clean up blob URL on unmount or surah change
+  useEffect(() => {
+    return () => {
+      if (cachedBlobUrl) {
+        URL.revokeObjectURL(cachedBlobUrl);
+      }
+    };
+  }, [cachedBlobUrl]);
 
   // Scroll functions
   const scrollToTop = () => {
@@ -147,6 +196,12 @@ function QuranWebAppContent() {
       setCurrentTime(0);
       setDuration(0);
 
+      // Clean up old blob URL
+      if (cachedBlobUrl) {
+        URL.revokeObjectURL(cachedBlobUrl);
+        setCachedBlobUrl(null);
+      }
+
       const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
       audioRef.current.src = audioUrl;
       audioRef.current.load();
@@ -160,8 +215,9 @@ function QuranWebAppContent() {
     }
   }, [selectedReciter]);
 
-  // Play surah function
-  const playSurah = useCallback((surah: Surah) => {
+  // Play surah function - CHECKS CACHE FIRST
+  const playSurah = useCallback(async (surah: Surah) => {
+    // Toggle play/pause if same surah
     if (currentSurah?.id === surah.id && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -178,11 +234,34 @@ function QuranWebAppContent() {
     setIsLoading(true);
     setAudioError(null);
 
+    // Clean up old blob URL
+    if (cachedBlobUrl) {
+      URL.revokeObjectURL(cachedBlobUrl);
+      setCachedBlobUrl(null);
+    }
+
     if (audioRef.current) {
       const audioUrl = getAudioUrl(selectedReciter, surah.id);
-      console.log('Loading audio from:', audioUrl);
+      let playUrl = audioUrl;
 
-      audioRef.current.src = audioUrl;
+      // CHECK CACHE FIRST
+      if (cacheSupported) {
+        const inCache = await checkAudioInCache(audioUrl, selectedReciter, surah.id);
+        setIsCached(inCache);
+
+        if (inCache) {
+          const blobUrl = await getAudioFromCache(audioUrl, selectedReciter, surah.id);
+          if (blobUrl) {
+            playUrl = blobUrl;
+            setCachedBlobUrl(blobUrl);
+            console.log('[Audio] Playing from cache:', surah.id);
+          }
+        } else {
+          console.log('[Audio] Playing from network:', surah.id);
+        }
+      }
+
+      audioRef.current.src = playUrl;
       audioRef.current.load();
 
       const playPromise = audioRef.current.play();
@@ -200,7 +279,7 @@ function QuranWebAppContent() {
           });
       }
     }
-  }, [currentSurah, isPlaying, selectedReciter, t]);
+  }, [currentSurah, isPlaying, selectedReciter, t, cacheSupported, cachedBlobUrl]);
 
   // Play next surah
   const playNext = useCallback(() => {
@@ -322,6 +401,65 @@ function QuranWebAppContent() {
     playSurah(surahs[randomIndex]);
   };
 
+  // Toggle cache for current surah
+  const toggleCache = useCallback(async () => {
+    if (!currentSurah || !cacheSupported || isCaching) return;
+
+    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+
+    if (isCached) {
+      // Remove from cache
+      const success = await removeAudioFromCache(audioUrl, selectedReciter, currentSurah.id);
+      if (success) {
+        setIsCached(false);
+        // Clean up blob URL
+        if (cachedBlobUrl) {
+          URL.revokeObjectURL(cachedBlobUrl);
+          setCachedBlobUrl(null);
+        }
+        // Update stats
+        const stats = await getCacheStats();
+        setCacheStats(stats);
+      }
+    } else {
+      // Save to cache
+      setIsCaching(true);
+      setCacheProgress(0);
+
+      const result = await saveAudioOffline(
+        audioUrl,
+        selectedReciter,
+        currentSurah.id,
+        (progress) => setCacheProgress(progress)
+      );
+
+      setIsCaching(false);
+      setCacheProgress(0);
+
+      if (result.success) {
+        setIsCached(true);
+        // Update stats
+        const stats = await getCacheStats();
+        setCacheStats(stats);
+      } else {
+        // Show error alert
+        let errorMessage = isRTL ? 'حدث خطأ أثناء الحفظ' : 'Error saving audio';
+        
+        if (result.error === 'storage_full') {
+          errorMessage = isRTL 
+            ? 'مساحة التخزين ممتلئة. احذف بعض الملفات المحفوظة.' 
+            : 'Storage is full. Please remove some cached files.';
+        } else if (result.error === 'Cache API not supported') {
+          errorMessage = isRTL 
+            ? 'متصفحك لا يدعم التخزين المؤقت' 
+            : 'Your browser does not support offline caching';
+        }
+        
+        alert(errorMessage);
+      }
+    }
+  }, [currentSurah, selectedReciter, isCached, isCaching, cacheSupported, cachedBlobUrl, isRTL]);
+
   const handleDownload = async (surah: Surah) => {
     setSelectedSurahForDownload(surah);
     setFileSize(null);
@@ -403,15 +541,21 @@ function QuranWebAppContent() {
       audioRef.current.pause();
       audioRef.current.src = '';
     }
+    // Clean up blob URL
+    if (cachedBlobUrl) {
+      URL.revokeObjectURL(cachedBlobUrl);
+      setCachedBlobUrl(null);
+    }
     setCurrentSurah(null);
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
     setDuration(0);
+    setIsCached(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" dir={direction}>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-black dark:to-black" dir={direction}>
       {/* Audio Element - Optimized for streaming with minimal preload */}
       <audio ref={audioRef} preload="metadata" crossOrigin="anonymous" />
 
@@ -427,7 +571,7 @@ function QuranWebAppContent() {
       <main className="container mx-auto px-4 py-6 pb-36">
         {/* Library Tabs */}
         <Tabs defaultValue="audio" className="w-full mb-6">
-          <TabsList className="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-1.5 mx-auto flex justify-center mb-6">
+          <TabsList className="bg-white dark:bg-slate-900 shadow-lg rounded-2xl p-1.5 mx-auto flex justify-center mb-6 border border-slate-200 dark:border-slate-800">
             <TabsTrigger
               value="audio"
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
@@ -463,6 +607,18 @@ function QuranWebAppContent() {
               favoritesCount={favorites.length}
               filteredCount={filteredSurahs.length}
             />
+
+            {/* Cache Stats - Show if there are cached files */}
+            {cacheStats.count > 0 && (
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg px-4 py-2">
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  {isRTL 
+                    ? `${cacheStats.count} سورة محفوظة (${cacheStats.formattedSize})`
+                    : `${cacheStats.count} surahs cached (${cacheStats.formattedSize})`
+                  }
+                </span>
+              </div>
+            )}
 
             {/* Surah List */}
             <SurahList
@@ -504,6 +660,9 @@ function QuranWebAppContent() {
         isMuted={isMuted}
         isRepeat={isRepeat}
         reciterName={currentReciter.nameArabic}
+        isCached={isCached}
+        isCaching={isCaching}
+        cacheProgress={cacheProgress}
         onTogglePlay={togglePlay}
         onPrevious={playPrevious}
         onNext={playNext}
@@ -513,6 +672,7 @@ function QuranWebAppContent() {
         onToggleRepeat={() => setIsRepeat(!isRepeat)}
         onRandom={playRandom}
         onClose={closePlayer}
+        onToggleCache={cacheSupported ? toggleCache : undefined}
       />
 
       {/* Download Dialog */}
