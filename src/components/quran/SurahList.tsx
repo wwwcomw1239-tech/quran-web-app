@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Play, Pause, Heart, Download, Loader2 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
+import { useLanguage } from '@/lib/i18n';
 
 interface SurahListProps {
   surahs: Surah[];
@@ -27,6 +28,8 @@ export function SurahList({
   onToggleFavorite,
   onDownload,
 }: SurahListProps) {
+  const { t, isRTL } = useLanguage();
+
   if (surahs.length === 0) {
     return (
       <div className="text-center py-16">
@@ -34,10 +37,10 @@ export function SurahList({
           <span className="text-4xl">📖</span>
         </div>
         <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-2">
-          لا توجد نتائج
+          {t('noResults')}
         </h3>
         <p className="text-slate-500 dark:text-slate-400">
-          جرب تغيير معايير البحث أو الفلترة
+          {t('tryDifferent')}
         </p>
       </div>
     );
@@ -49,6 +52,10 @@ export function SurahList({
         const isCurrentSurah = currentSurahId === surah.id;
         const isFavorite = favorites.includes(surah.id);
 
+        // Get display names based on language
+        const displayName = isRTL ? surah.nameArabic : surah.nameEnglish;
+        const displayType = surah.type === 'مكية' ? t('makki') : t('madani');
+
         return (
           <Card
             key={surah.id}
@@ -59,10 +66,10 @@ export function SurahList({
             }`}
           >
             <CardContent className="p-4">
-              {/* Surah Header */}
-              <div className="flex items-center gap-3 mb-3">
-                {/* Surah Number */}
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg ${
+              {/* Surah Header - New Layout */}
+              <div className="flex items-center justify-between mb-3 min-h-[52px]">
+                {/* Surah Number - Far Right */}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0 ${
                   isCurrentSurah
                     ? 'bg-emerald-500 text-white'
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
@@ -70,19 +77,24 @@ export function SurahList({
                   {surah.id}
                 </div>
 
-                {/* Surah Info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-slate-900 dark:text-white truncate">
-                    {surah.nameArabic}
+                {/* Surah Info - Centered */}
+                <div className="flex-1 min-w-0 flex flex-col items-center justify-center px-2">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-center truncate text-lg">
+                    {displayName}
                   </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
-                    {surah.nameEnglish}
-                  </p>
+                  {isRTL && (
+                    <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                      {surah.nameEnglish}
+                    </p>
+                  )}
                 </div>
+
+                {/* Spacer for balance - Left side */}
+                <div className="w-12 h-12 flex-shrink-0" />
               </div>
 
               {/* Surah Meta */}
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center justify-center gap-2 mb-3">
                 <Badge
                   variant="secondary"
                   className={`text-xs ${
@@ -91,10 +103,10 @@ export function SurahList({
                       : 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
                   }`}
                 >
-                  {surah.type}
+                  {displayType}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  {surah.versesCount} آية
+                  {surah.versesCount} {t('verse')}
                 </Badge>
               </div>
 

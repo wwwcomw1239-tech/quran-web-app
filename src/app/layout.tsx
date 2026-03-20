@@ -25,9 +25,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "القرآن الكريم - استمع إلى تلاوات عطرة",
-  description: "تطبيق القرآن الكريم - استمع إلى تلاوات عطرة واقرأ الكتب الإسلامية. جميع السور الـ 114 متاحة للاستماع المباشر والتحميل.",
-  keywords: ["القرآن الكريم", "استماع القرآن", "تلاوات", "محمد صديق المنشاوي", "Quran", "Islamic", "PWA"],
+  title: "القرآن الكريم - The Holy Quran",
+  description: "تطبيق القرآن الكريم - استمع إلى تلاوات عطرة واقرأ الكتب الإسلامية. Listen to beautiful Quran recitations and read Islamic books.",
+  keywords: ["القرآن الكريم", "استماع القرآن", "تلاوات", "Quran", "Islamic", "PWA", "Recitation"],
   authors: [{ name: "Quran Web App" }],
   manifest: "/manifest.json",
   icons: {
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "القرآن الكريم",
+    title: "القرآن الكريم - The Holy Quran",
     description: "استمع إلى تلاوات القرآن الكريم بصوت أشهر القراء واقرأ الكتب الإسلامية",
     type: "website",
     images: [
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "القرآن الكريم",
+    title: "القرآن الكريم - The Holy Quran",
     description: "استمع إلى تلاوات القرآن الكريم بصوت أشهر القراء واقرأ الكتب الإسلامية",
     images: ["/icons/icon-512x512.png"],
   },
@@ -106,7 +106,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-        
+
         {/* PWA Meta Tags */}
         <meta name="application-name" content="القرآن الكريم" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -117,20 +117,40 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#10b981" />
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        
+
         {/* Favicon for various platforms */}
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png" />
         <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
         <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
-        
+
         {/* Windows tiles */}
         <meta name="msapplication-square70x70logo" content="/icons/icon-72x72.png" />
         <meta name="msapplication-square144x144logo" content="/icons/icon-144x144.png" />
         <meta name="msapplication-square150x150logo" content="/icons/icon-152x152.png" />
         <meta name="msapplication-wide310x150logo" content="/icons/icon-192x192.png" />
         <meta name="msapplication-square310x310logo" content="/icons/icon-512x512.png" />
+
+        {/* Script to set direction based on saved language preference - prevents flickering */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var lang = localStorage.getItem('quran-language');
+                  if (lang === 'en') {
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.documentElement.setAttribute('lang', 'en');
+                  } else {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.documentElement.setAttribute('lang', 'ar');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}

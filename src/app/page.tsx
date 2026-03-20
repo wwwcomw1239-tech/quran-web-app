@@ -16,10 +16,13 @@ import {
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Headphones, BookOpen } from 'lucide-react';
+import { LanguageProvider, useLanguage } from '@/lib/i18n';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
-export default function QuranWebApp() {
+function QuranWebAppContent() {
+  const { t, isRTL, direction } = useLanguage();
+
   // State
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<FilterType>('all');
@@ -121,7 +124,7 @@ export default function QuranWebApp() {
   // Contact developer function
   const handleContactDeveloper = () => {
     const email = 'almubarmaj8@gmail.com';
-    const subject = encodeURIComponent('تواصل من تطبيق القرآن الكريم');
+    const subject = encodeURIComponent(isRTL ? 'تواصل من تطبيق القرآن الكريم' : 'Contact from Quran App');
     const gmailUrl = `googlegmail://co?to=${email}&subject=${subject}`;
     const mailtoUrl = `mailto:${email}?subject=${subject}`;
 
@@ -191,13 +194,13 @@ export default function QuranWebApp() {
           })
           .catch((error) => {
             console.error('Audio play error:', error);
-            setAudioError('حدث خطأ أثناء تشغيل الصوت');
+            setAudioError(t('audioError'));
             setIsLoading(false);
             setIsPlaying(false);
           });
       }
     }
-  }, [currentSurah, isPlaying, selectedReciter]);
+  }, [currentSurah, isPlaying, selectedReciter, t]);
 
   // Play next surah
   const playNext = useCallback(() => {
@@ -255,7 +258,7 @@ export default function QuranWebApp() {
 
     const handleError = (e: Event) => {
       console.error('Audio error:', e);
-      setAudioError('تعذر تحميل الملف الصوتي');
+      setAudioError(t('loadError'));
       setIsLoading(false);
       setIsPlaying(false);
     };
@@ -275,7 +278,7 @@ export default function QuranWebApp() {
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
     };
-  }, [isRepeat, playNext]);
+  }, [isRepeat, playNext, t]);
 
   const togglePlay = () => {
     if (!audioRef.current || !currentSurah) return;
@@ -408,7 +411,7 @@ export default function QuranWebApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900" dir={direction}>
       {/* Audio Element */}
       <audio ref={audioRef} preload="auto" crossOrigin="anonymous" />
 
@@ -425,19 +428,19 @@ export default function QuranWebApp() {
         {/* Library Tabs */}
         <Tabs defaultValue="audio" className="w-full mb-6">
           <TabsList className="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-1.5 mx-auto flex justify-center mb-6">
-            <TabsTrigger 
-              value="audio" 
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all"
+            <TabsTrigger
+              value="audio"
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <Headphones className="w-5 h-5" />
-              <span className="font-medium">المكتبة الصوتية</span>
+              <span className="font-medium">{t('audioLibrary')}</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="books" 
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all"
+            <TabsTrigger
+              value="books"
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <BookOpen className="w-5 h-5" />
-              <span className="font-medium">المكتبة المقروءة</span>
+              <span className="font-medium">{t('booksLibrary')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -525,5 +528,13 @@ export default function QuranWebApp() {
         onDownload={downloadAudio}
       />
     </div>
+  );
+}
+
+export default function QuranWebApp() {
+  return (
+    <LanguageProvider>
+      <QuranWebAppContent />
+    </LanguageProvider>
   );
 }

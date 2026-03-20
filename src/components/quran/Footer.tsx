@@ -3,6 +3,7 @@
 import { forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowUp, Mail } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 interface FooterProps {
   showBackToTop: boolean;
@@ -14,6 +15,8 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
   { showBackToTop, onScrollToTop, onContactDeveloper },
   ref
 ) {
+  const { t, isRTL } = useLanguage();
+
   return (
     <footer
       ref={ref}
@@ -23,10 +26,10 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
         <div className="text-center">
           {/* Title */}
           <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-            القرآن الكريم
+            {t('appTitle')}
           </h3>
           <p className="text-slate-500 dark:text-slate-400 mb-4">
-            استمع إلى تلاوات عطرة من كتاب الله
+            {t('appSubtitle')}
           </p>
 
           {/* Contact Button */}
@@ -35,8 +38,8 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
             variant="outline"
             className="mb-6 rounded-xl"
           >
-            <Mail className="w-4 h-4 ml-2" />
-            تواصل مع المطور
+            <Mail className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+            {t('contactDeveloper')}
           </Button>
 
           {/* Divider */}
@@ -44,7 +47,7 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
 
           {/* Copyright */}
           <p className="text-sm text-slate-400 dark:text-slate-500">
-            جميع التلاوات من موقع{' '}
+            {isRTL ? 'جميع التلاوات من موقع' : 'All recitations from'}{' '}
             <a
               href="https://mp3quran.net"
               target="_blank"
@@ -55,14 +58,14 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
             </a>
           </p>
           <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
-            © {new Date().getFullYear()} جميع الحقوق محفوظة
+            © {new Date().getFullYear()} {t('rights')}
           </p>
 
           {/* Back to Top Button */}
           {showBackToTop && (
             <Button
               onClick={onScrollToTop}
-              className="fixed bottom-24 left-4 h-12 w-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg"
+              className={`fixed bottom-24 ${isRTL ? 'left-4' : 'right-4'} h-12 w-12 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg`}
               size="icon"
             >
               <ArrowUp className="w-5 h-5" />

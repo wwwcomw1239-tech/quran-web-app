@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, Heart, BookOpen } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
@@ -28,10 +29,12 @@ export function SearchFilter({
   favoritesCount,
   filteredCount,
 }: SearchFilterProps) {
-  const filterButtons: { type: FilterType; label: string }[] = [
-    { type: 'all', label: 'الكل' },
-    { type: 'مكية', label: 'مكية' },
-    { type: 'مدنية', label: 'مدنية' },
+  const { t, isRTL } = useLanguage();
+
+  const filterButtons: { type: FilterType; labelKey: 'all' | 'makki' | 'madani' }[] = [
+    { type: 'all', labelKey: 'all' },
+    { type: 'مكية', labelKey: 'makki' },
+    { type: 'مدنية', labelKey: 'madani' },
   ];
 
   return (
@@ -39,12 +42,12 @@ export function SearchFilter({
       <div className="flex flex-col lg:flex-row gap-4 items-center">
         {/* Search */}
         <div className="relative w-full lg:flex-1">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400`} />
           <Input
-            placeholder="ابحث باسم السورة أو رقمها..."
+            placeholder={t('searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white pr-10 h-12 rounded-xl"
+            className={`bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white h-12 rounded-xl ${isRTL ? 'pr-10' : 'pl-10'}`}
           />
         </div>
 
@@ -61,7 +64,7 @@ export function SearchFilter({
                   : 'border-emerald-200 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-slate-700'
               }`}
             >
-              {btn.label}
+              {t(btn.labelKey)}
             </Button>
           ))}
 
@@ -75,10 +78,10 @@ export function SearchFilter({
                 : 'border-rose-200 dark:border-rose-700 hover:bg-rose-50 dark:hover:bg-slate-700'
             }`}
           >
-            <Heart className={`w-4 h-4 ml-1 ${showFavorites ? 'fill-white' : ''}`} />
-            المفضلة
+            <Heart className={`w-4 h-4 ${isRTL ? 'ml-1' : 'mr-1'} ${showFavorites ? 'fill-white' : ''}`} />
+            {t('favorites')}
             {favoritesCount > 0 && (
-              <Badge className="mr-1 bg-white/20 text-white">
+              <Badge className={`${isRTL ? 'mr-1' : 'ml-1'} bg-white/20 text-white`}>
                 {favoritesCount}
               </Badge>
             )}
@@ -88,8 +91,8 @@ export function SearchFilter({
 
       {/* Results Count */}
       <div className="mt-3 text-center text-sm text-slate-500 dark:text-slate-400">
-        <BookOpen className="w-4 h-4 inline ml-1" />
-        عرض {filteredCount} سورة
+        <BookOpen className={`w-4 h-4 inline ${isRTL ? 'ml-1' : 'mr-1'}`} />
+        {t('displaying')} {filteredCount} {t('surah')}
       </div>
     </div>
   );

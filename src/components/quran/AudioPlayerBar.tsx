@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import {
   Play,
   Pause,
@@ -16,6 +15,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
+import { useLanguage } from '@/lib/i18n';
 
 interface AudioPlayerBarProps {
   currentSurah: Surah | null;
@@ -60,6 +60,7 @@ export function AudioPlayerBar({
   onRandom,
   onClose,
 }: AudioPlayerBarProps) {
+  const { isRTL } = useLanguage();
   const progressRef = useRef<HTMLDivElement>(null);
 
   const formatTime = (time: number) => {
@@ -78,6 +79,9 @@ export function AudioPlayerBar({
   };
 
   if (!currentSurah) return null;
+
+  // Get display name based on language
+  const displayName = isRTL ? currentSurah.nameArabic : currentSurah.nameEnglish;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 shadow-2xl z-50">
@@ -99,7 +103,7 @@ export function AudioPlayerBar({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="font-bold text-lg text-slate-900 dark:text-white truncate">
-                {currentSurah.nameArabic}
+                {displayName}
               </span>
               <span className="text-sm text-slate-500 dark:text-slate-400">
                 - {reciterName}
@@ -112,9 +116,9 @@ export function AudioPlayerBar({
 
           {/* Main Controls */}
           <div className="flex items-center gap-2">
-            {/* Previous */}
+            {/* Previous - swap icons for RTL */}
             <Button
-              onClick={onPrevious}
+              onClick={isRTL ? onNext : onPrevious}
               variant="ghost"
               className="h-10 w-10 p-0 rounded-full"
             >
@@ -136,9 +140,9 @@ export function AudioPlayerBar({
               )}
             </Button>
 
-            {/* Next */}
+            {/* Next - swap icons for RTL */}
             <Button
-              onClick={onNext}
+              onClick={isRTL ? onPrevious : onNext}
               variant="ghost"
               className="h-10 w-10 p-0 rounded-full"
             >

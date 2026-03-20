@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Download, Loader2 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
+import { useLanguage } from '@/lib/i18n';
 
 interface DownloadDialogProps {
   open: boolean;
@@ -34,17 +35,23 @@ export function DownloadDialog({
   onClose,
   onDownload,
 }: DownloadDialogProps) {
+  const { t, isRTL } = useLanguage();
+
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
+  // Get display name based on language
+  const displayName = isRTL ? surah?.nameArabic : surah?.nameEnglish;
+  const displaySubName = isRTL ? surah?.nameEnglish : surah?.nameArabic;
+
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" dir={isRTL ? 'rtl' : 'ltr'}>
         <DialogHeader>
-          <DialogTitle className="text-center text-xl">تحميل السورة</DialogTitle>
+          <DialogTitle className="text-center text-xl">{t('downloadSurah')}</DialogTitle>
         </DialogHeader>
 
         {surah && (
@@ -52,10 +59,10 @@ export function DownloadDialog({
             {/* Surah Info */}
             <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-center">
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                {surah.nameArabic}
+                {displayName}
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                {surah.nameEnglish}
+                {displaySubName}
               </p>
               <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
                 {reciterName}
@@ -66,15 +73,15 @@ export function DownloadDialog({
             <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  الجودة
+                  {isRTL ? 'الجودة' : 'Quality'}
                 </span>
                 <span className="text-sm text-emerald-600 dark:text-emerald-400 font-bold">
-                  أصلية (Original)
+                  {t('originalQuality')}
                 </span>
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  الحجم
+                  {t('fileSize')}
                 </span>
                 <span className="text-sm text-slate-600 dark:text-slate-400">
                   {isLoadingFileSize ? (
@@ -82,7 +89,7 @@ export function DownloadDialog({
                   ) : fileSize ? (
                     formatFileSize(fileSize)
                   ) : (
-                    'غير معروف'
+                    isRTL ? 'غير معروف' : 'Unknown'
                   )}
                 </span>
               </div>
@@ -93,7 +100,7 @@ export function DownloadDialog({
               <div className="space-y-2">
                 <Progress value={downloadProgress} className="h-2" />
                 <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-                  جاري التحميل... {downloadProgress}%
+                  {t('downloading')} {downloadProgress}%
                 </p>
               </div>
             )}
@@ -102,24 +109,26 @@ export function DownloadDialog({
             <Button
               onClick={onDownload}
               disabled={isDownloading || isLoadingFileSize}
-              className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl"
+              className={`w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               {isDownloading ? (
                 <>
-                  <Loader2 className="w-5 h-5 ml-2 animate-spin" />
-                  جاري التحميل...
+                  <Loader2 className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'} animate-spin`} />
+                  {t('downloading')}
                 </>
               ) : (
                 <>
-                  <Download className="w-5 h-5 ml-2" />
-                  تحميل
+                  <Download className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
+                  {t('download')}
                 </>
               )}
             </Button>
 
             {/* Note */}
             <p className="text-xs text-center text-slate-400 dark:text-slate-500">
-              ملاحظة: Mp3Quran يوفر جودة واحدة لكل قارئ (عادة 128kbps)
+              {isRTL
+                ? 'ملاحظة: Mp3Quran يوفر جودة واحدة لكل قارئ (عادة 128kbps)'
+                : 'Note: Mp3Quran provides one quality per reciter (usually 128kbps)'}
             </p>
           </div>
         )}
