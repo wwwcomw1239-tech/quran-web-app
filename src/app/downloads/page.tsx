@@ -11,7 +11,7 @@ import {
   ArrowLeft,
   Loader2,
   AlertCircle,
-  CheckCircle,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -20,10 +20,10 @@ import {
   getAudioFromCache, 
   getCacheStats,
   formatFileSize,
-  CachedAudioMeta 
+  CachedAudioMeta,
+  debugCacheState,
 } from '@/lib/audioCache';
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
-import { surahs } from '@/data/surahs';
 
 function DownloadsContent() {
   const { isRTL, direction } = useLanguage();
@@ -49,17 +49,27 @@ function DownloadsContent() {
     };
   }, []);
 
-  const loadCachedAudio = async () => {
+  const loadCachedAudio = useCallback(async () => {
     setLoading(true);
+    console.log('[Downloads] Loading cached audio...');
+    
+    // Debug: log current state
+    debugCacheState();
+    
+    // Get cached audio from registry
     const cached = getAllCachedAudio();
+    console.log('[Downloads] Found items:', cached.length, cached);
+    
     // Sort by timestamp (newest first)
     const sorted = [...cached].sort((a, b) => b.timestamp - a.timestamp);
     setCachedAudio(sorted);
     
+    // Get stats
     const stats = await getCacheStats();
     setCacheStats(stats);
+    
     setLoading(false);
-  };
+  }, []);
 
   const handlePlay = useCallback(async (item: CachedAudioMeta) => {
     if (!audioElement) return;
@@ -75,6 +85,8 @@ function DownloadsContent() {
     // Stop current playback
     audioElement.pause();
     
+    console.log('[Downloads] Playing:', item.id);
+    
     // Get blob URL from cache
     const blobUrl = await getAudioFromCache(item.url, item.reciterId, item.surahId);
     
@@ -83,8 +95,11 @@ function DownloadsContent() {
       audioElement.play().then(() => {
         setPlayingId(item.id);
       }).catch(console.error);
+    } else {
+      console.error('[Downloads] Failed to get audio from cache');
+      alert(isRTL ? 'فشل في تشغيل الملف' : 'Failed to play file');
     }
-  }, [audioElement, playingId]);
+  }, [audioElement, playingId, isRTL]);
 
   const handleDelete = useCallback(async (item: CachedAudioMeta) => {
     setDeletingId(item.id);
@@ -96,7 +111,10 @@ function DownloadsContent() {
       setPlayingId(null);
     }
     
+    console.log('[Downloads] Deleting:', item.id);
+    
     const success = await removeAudioFromCache(item.reciterId, item.surahId);
+    console.log('[Downloads] Delete result:', success);
     
     if (success) {
       // Update UI immediately without reload
@@ -152,10 +170,16 @@ function DownloadsContent() {
             
             <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Download className="w-6 h-6 text-emerald-500" />
-              {isRTL ? 'تنزيلاتي' : 'My Downloads'}
+              {isRTL ? 'تَنْزِيلَاتِي' : 'My Downloads'}
             </h1>
             
-            <div className="w-20" /> {/* Spacer for centering */}
+            <Button
+              onClick={loadCachedAudio}
+              variant="ghost"
+              className="text-slate-600 dark:text-slate-400"
+            >
+              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
         </div>
       </div>
@@ -192,7 +216,7 @@ function DownloadsContent() {
                 className="text-red-600 border-red-300 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                {isRTL ? 'حذف الكل' : 'Clear All'}
+                {isRTL ? 'حَذْف الْكُل' : 'Clear All'}
               </Button>
             </div>
           </div>
@@ -215,18 +239,18 @@ function DownloadsContent() {
               <Download className="w-12 h-12 text-slate-400 dark:text-slate-600" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-              {isRTL ? 'لا توجد صوتيات محملة بعد' : 'No downloaded audio yet'}
+              {isRTL ? 'لَا تُوجَدُ صَوْتِيَّاتٌ مُحَمَّلَةٌ بَعْد' : 'No downloaded audio yet'}
             </h2>
             <p className="text-slate-500 dark:text-slate-400 text-center mb-6 max-w-md">
               {isRTL 
-                ? 'ابدأ بحفظ السور للاستماع إليها بدون إنترنت من صفحة المكتبة الصوتية'
+                ? 'ابْدَأْ بِحِفْظِ السُّوَرِ لِلِاسْتِمَاعِ إِلَيْهَا بِدُونِ إِنْتَرْنِت مِنْ صَفْحَةِ الْمَكْتَبَةِ الصَّوْتِيَّة'
                 : 'Start saving surahs for offline listening from the Audio Library'
               }
             </p>
             <Link href="/">
               <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-2">
                 <Headphones className="w-5 h-5" />
-                {isRTL ? 'الذهاب للمكتبة الصوتية' : 'Go to Audio Library'}
+                {isRTL ? 'الذَّهَابُ لِلْمَكْتَبَةِ الصَّوْتِيَّة' : 'Go to Audio Library'}
               </Button>
             </Link>
           </div>
@@ -272,6 +296,7 @@ function DownloadsContent() {
                           : 'bg-emerald-500 hover:bg-emerald-600 text-white'
                       }`}
                       disabled={deletingId === item.id}
+                      title={isRTL ? 'تَشْغِيل' : 'Play'}
                     >
                       {playingId === item.id ? (
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -289,6 +314,7 @@ function DownloadsContent() {
                       variant="outline"
                       className="h-11 w-11 p-0 rounded-full text-red-600 border-red-300 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
                       disabled={deletingId === item.id}
+                      title={isRTL ? 'حَذْف' : 'Delete'}
                     >
                       {deletingId === item.id ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -309,7 +335,7 @@ function DownloadsContent() {
             <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <p className="text-sm text-blue-700 dark:text-blue-300">
               {isRTL 
-                ? 'الملفات المحفوظة تبقى في جهازك حتى تقوم بحذفها يدوياً. يمكنك الاستماع إليها بدون إنترنت في أي وقت.'
+                ? 'الْمَلَفَّاتُ الْمَحْفُوظَةُ تَبْقَى فِي جِهَازِكَ حَتَّى تَقُومَ بِحَذْفِهَا يَدَوِيًّا. يُمْكِنُكَ الِاسْتِمَاعُ إِلَيْهَا بِدُونِ إِنْتَرْنِت فِي أَيِّ وَقْت.'
                 : 'Saved files stay on your device until you manually delete them. You can listen to them offline anytime.'
               }
             </p>

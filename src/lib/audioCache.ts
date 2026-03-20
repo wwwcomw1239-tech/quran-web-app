@@ -12,15 +12,15 @@ import { getProxiedUrl, shouldProxy } from './proxy';
 // Cache name for audio files
 const CACHE_NAME = 'quran-audio-cache-v1';
 
-// Metadata key in localStorage
-const CACHE_META_KEY = 'quran-audio-cache-meta';
+// localStorage key for downloads registry - MUST be consistent
+const DOWNLOADS_REGISTRY_KEY = 'quran_downloads_registry';
 
 /**
  * Interface for cached audio metadata
  */
 export interface CachedAudioMeta {
-  url: string;
   id: string;
+  url: string;
   timestamp: number;
   size: number;
   surahId: number;
@@ -39,28 +39,92 @@ export function getCacheKey(reciterId: string, surahId: number): string {
 }
 
 /**
- * Get the cache metadata store from localStorage
+ * Get all cached audio from localStorage registry
+ * This is the primary source of truth for the downloads list
  */
 export function getAllCachedAudio(): CachedAudioMeta[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === 'undefined') {
+    console.log('[Cache] Window not available, returning empty array');
+    return [];
+  }
+  
   try {
-    const stored = localStorage.getItem(CACHE_META_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
+    const stored = localStorage.getItem(DOWNLOADS_REGISTRY_KEY);
+    console.log('[Cache] Raw localStorage data:', stored);
+    
+    if (!stored) {
+      console.log('[Cache] No registry found, returning empty array');
+      return [];
+    }
+    
+    const parsed = JSON.parse(stored);
+    
+    if (!Array.isArray(parsed)) {
+      console.error('[Cache] Registry is not an array, resetting');
+      localStorage.removeItem(DOWNLOADS_REGISTRY_KEY);
+      return [];
+    }
+    
+    console.log(`[Cache] Found ${parsed.length} items in registry`);
+    return parsed;
+  } catch (error) {
+    console.error('[Cache] Error parsing registry:', error);
+    // Reset corrupted data
+    localStorage.removeItem(DOWNLOADS_REGISTRY_KEY);
     return [];
   }
 }
 
 /**
- * Save cache metadata to localStorage
+ * Save cache metadata to localStorage registry
  */
-function saveCacheMetadata(metadata: CachedAudioMeta[]): void {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.setItem(CACHE_META_KEY, JSON.stringify(metadata));
-  } catch (error) {
-    console.error('Failed to save cache metadata:', error);
+function saveToRegistry(metadata: CachedAudioMeta[]): boolean {
+  if (typeof window === 'undefined') {
+    console.error('[Cache] Cannot save to registry: window not available');
+    return false;
   }
+  
+  try {
+    const data = JSON.stringify(metadata);
+    localStorage.setItem(DOWNLOADS_REGISTRY_KEY, data);
+    console.log(`[Cache] Saved ${metadata.length} items to registry`);
+    
+    // Verify the save worked
+    const verify = localStorage.getItem(DOWNLOADS_REGISTRY_KEY);
+    if (verify !== data) {
+      console.error('[Cache] Verification failed after save');
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('[Cache] Error saving to registry:', error);
+    return false;
+  }
+}
+
+/**
+ * Add item to registry
+ */
+function addToRegistry(item: CachedAudioMeta): boolean {
+  const current = getAllCachedAudio();
+  
+  // Remove existing entry with same id
+  const filtered = current.filter(m => m.id !== item.id);
+  
+  // Add new entry
+  const updated = [...filtered, item];
+  
+  return saveToRegistry(updated);
+}
+
+/**
+ * Remove item from registry
+ */
+function removeFromRegistry(id: string): boolean {
+  const current = getAllCachedAudio();
+  const filtered = current.filter(m => m.id !== id);
+  return saveToRegistry(filtered);
 }
 
 /**
@@ -74,13 +138,31 @@ export async function checkAudioInCache(
   if (typeof window === 'undefined' || !('caches' in window)) return false;
   
   try {
-    const cache = await caches.open(CACHE_NAME);
     const key = getCacheKey(reciterId, surahId);
-    const response = await cache.match(key);
     
-    return !!response;
+    // First check the registry (faster)
+    const registry = getAllCachedAudio();
+    const inRegistry = registry.some(m => m.id === key);
+    
+    if (inRegistry) {
+      // Verify it's actually in the Cache API
+      const cache = await caches.open(CACHE_NAME);
+      const response = await cache.match(key);
+      
+      if (response) {
+        console.log(`[Cache] Hit: ${key}`);
+        return true;
+      } else {
+        // Registry out of sync - remove from registry
+        console.log(`[Cache] Registry says cached but not in Cache API: ${key}`);
+        removeFromRegistry(key);
+        return false;
+      }
+    }
+    
+    return false;
   } catch (error) {
-    console.error('Error checking cache:', error);
+    console.error('[Cache] Error checking cache:', error);
     return false;
   }
 }
@@ -107,7 +189,7 @@ export async function getAudioFromCache(
     
     return null;
   } catch (error) {
-    console.error('Error getting audio from cache:', error);
+    console.error('[Cache] Error getting audio from cache:', error);
     return null;
   }
 }
@@ -128,19 +210,25 @@ export async function saveAudioOffline(
   reciterNameEnglish: string,
   onProgress?: (progress: number) => void
 ): Promise<{ success: boolean; error?: string }> {
+  console.log('[Cache] Starting save:', { reciterId, surahId, surahNameArabic });
+  
   if (typeof window === 'undefined' || !('caches' in window)) {
     return { success: false, error: 'Cache API not supported' };
   }
   
   try {
+    const key = getCacheKey(reciterId, surahId);
+    
     // Check if already cached
     const isCached = await checkAudioInCache(audioUrl, reciterId, surahId);
     if (isCached) {
+      console.log('[Cache] Already cached:', key);
       return { success: true };
     }
     
     // Get the proxied URL to avoid CORS issues
     const proxiedUrl = shouldProxy(audioUrl) ? getProxiedUrl(audioUrl) : audioUrl;
+    console.log('[Cache] Fetching from:', proxiedUrl.substring(0, 100) + '...');
     
     onProgress?.(5);
     
@@ -188,6 +276,7 @@ export async function saveAudioOffline(
     
     // Create blob from chunks
     const blob = new Blob(chunks, { type: 'audio/mpeg' });
+    console.log('[Cache] Downloaded blob size:', blob.size);
     
     // Create a new response with the blob
     const cachedResponse = new Response(blob, {
@@ -200,10 +289,10 @@ export async function saveAudioOffline(
     
     // Store in cache - let browser handle quota
     const cache = await caches.open(CACHE_NAME);
-    const key = getCacheKey(reciterId, surahId);
     
     try {
       await cache.put(key, cachedResponse);
+      console.log('[Cache] Successfully stored in Cache API:', key);
     } catch (cacheError: any) {
       if (cacheError.name === 'QuotaExceededError') {
         return { success: false, error: 'storage_full' };
@@ -211,11 +300,10 @@ export async function saveAudioOffline(
       throw cacheError;
     }
     
-    // Update metadata
-    const metadata = getAllCachedAudio();
-    const newMeta: CachedAudioMeta = {
-      url: audioUrl,
+    // Save metadata to localStorage registry
+    const meta: CachedAudioMeta = {
       id: key,
+      url: audioUrl,
       timestamp: Date.now(),
       size: blob.size,
       surahId,
@@ -226,15 +314,29 @@ export async function saveAudioOffline(
       reciterNameEnglish,
     };
     
-    // Remove old entry for same key if exists
-    const filteredMeta = metadata.filter(m => m.id !== key);
-    saveCacheMetadata([...filteredMeta, newMeta]);
+    const saved = addToRegistry(meta);
+    if (!saved) {
+      console.error('[Cache] Failed to save metadata to registry');
+      // Try to clean up cache entry
+      await cache.delete(key);
+      return { success: false, error: 'Failed to save metadata' };
+    }
+    
+    console.log('[Cache] Successfully saved to registry:', key);
+    
+    // Verify everything is saved
+    const verifyRegistry = getAllCachedAudio();
+    const verifyItem = verifyRegistry.find(m => m.id === key);
+    if (!verifyItem) {
+      console.error('[Cache] Verification failed - item not in registry after save');
+      return { success: false, error: 'Verification failed' };
+    }
     
     onProgress?.(100);
     
     return { success: true };
   } catch (error: any) {
-    console.error('Error saving audio to cache:', error);
+    console.error('[Cache] Error saving audio to cache:', error);
     return { 
       success: false, 
       error: error.message || 'unknown_error' 
@@ -252,19 +354,20 @@ export async function removeAudioFromCache(
   if (typeof window === 'undefined' || !('caches' in window)) return false;
   
   try {
-    const cache = await caches.open(CACHE_NAME);
     const key = getCacheKey(reciterId, surahId);
+    console.log('[Cache] Removing:', key);
     
-    const deleted = await cache.delete(key);
+    // Remove from Cache API
+    const cache = await caches.open(CACHE_NAME);
+    await cache.delete(key);
     
-    // Update metadata
-    const metadata = getAllCachedAudio();
-    const filteredMeta = metadata.filter(m => m.id !== key);
-    saveCacheMetadata(filteredMeta);
+    // Remove from registry
+    const removed = removeFromRegistry(key);
     
-    return deleted;
+    console.log('[Cache] Removal result:', removed);
+    return removed;
   } catch (error) {
-    console.error('Error removing audio from cache:', error);
+    console.error('[Cache] Error removing audio from cache:', error);
     return false;
   }
 }
@@ -295,9 +398,10 @@ export async function clearAudioCache(): Promise<void> {
   
   try {
     await caches.delete(CACHE_NAME);
-    localStorage.removeItem(CACHE_META_KEY);
+    localStorage.removeItem(DOWNLOADS_REGISTRY_KEY);
+    console.log('[Cache] Cleared all cache');
   } catch (error) {
-    console.error('Error clearing cache:', error);
+    console.error('[Cache] Error clearing cache:', error);
   }
 }
 
@@ -319,4 +423,14 @@ export function formatFileSize(bytes: number): string {
  */
 export function isCacheApiSupported(): boolean {
   return typeof window !== 'undefined' && 'caches' in window;
+}
+
+/**
+ * Debug: Log current cache state
+ */
+export function debugCacheState(): void {
+  console.log('=== Cache Debug State ===');
+  console.log('Registry:', getAllCachedAudio());
+  console.log('localStorage key:', DOWNLOADS_REGISTRY_KEY);
+  console.log('Cache API supported:', isCacheApiSupported());
 }
