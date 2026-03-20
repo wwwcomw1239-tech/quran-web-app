@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ExternalLink, Download, Loader2, BookOpen, FileText, Search, X } from 'lucide-react';
+import { getProxiedUrl, shouldProxy } from '@/lib/proxy';
 
 // Book categories - strictly Quranic sciences only
 type BookCategory = 'التفسير' | 'علوم القرآن' | 'التجويد والقراءات' | 'إعراب القرآن وبيانه' | 'أسباب النزول' | 'غريب القرآن ومفرداته' | 'التدبر';
@@ -304,13 +305,20 @@ export function BooksLibrary() {
     return grouped;
   }, [filteredBooks]);
 
-  // Handle PDF download with in-page execution and CORS fallback
+  // Handle PDF download with proxy support for blocked regions
   const handleDownload = async (book: Book) => {
     if (downloadingBooks[book.id]) return;
     setDownloadingBooks(prev => ({ ...prev, [book.id]: true }));
 
     try {
-      const response = await fetch(book.pdfUrl, { mode: 'cors', cache: 'no-cache' });
+      // Use proxy for archive.org URLs
+      const downloadUrl = getProxiedUrl(book.pdfUrl);
+      
+      const response = await fetch(downloadUrl, { 
+        mode: 'cors', 
+        cache: 'no-cache'
+      });
+      
       if (!response.ok) throw new Error('فشل في تحميل الملف');
       
       const blob = await response.blob();
@@ -325,14 +333,16 @@ export function BooksLibrary() {
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download error:', error);
-      window.open(book.pdfUrl, '_blank', 'noopener,noreferrer');
+      // Fallback: open with proxy in new tab
+      window.open(getProxiedUrl(book.pdfUrl), '_blank', 'noopener,noreferrer');
     } finally {
       setDownloadingBooks(prev => ({ ...prev, [book.id]: false }));
     }
   };
 
   const handleRead = (book: Book) => {
-    window.open(book.pdfUrl, '_blank', 'noopener,noreferrer');
+    // Use proxy for archive.org URLs to bypass regional blocks
+    window.open(getProxiedUrl(book.pdfUrl), '_blank', 'noopener,noreferrer');
   };
 
   const categories: BookCategory[] = ['التفسير', 'علوم القرآن', 'التجويد والقراءات', 'إعراب القرآن وبيانه', 'أسباب النزول', 'غريب القرآن ومفرداته', 'التدبر'];
