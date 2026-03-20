@@ -3,12 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowRight, Loader2, RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
-import { ShortsVideoPlayer } from '@/components/shorts/ShortsVideoPlayer';
-import { fetchAllVideos, getReliableSampleVideos, YouTubeVideo } from '@/lib/youtube';
+import { ShortsVideoPlayer, ShortsVideo } from '@/components/shorts/ShortsVideoPlayer';
+import shortsData from '@/data/shorts.json';
 import { cn } from '@/lib/utils';
 
 export default function ShortsPage() {
-  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
+  const [videos, setVideos] = useState<ShortsVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
@@ -18,7 +18,7 @@ export default function ShortsPage() {
   // Load videos on mount
   useEffect(() => {
     loadVideos();
-    
+
     // Load liked videos from localStorage
     try {
       const savedLikes = localStorage.getItem('shorts-liked-videos');
@@ -39,35 +39,18 @@ export default function ShortsPage() {
     }
   }, [likedVideos]);
 
-  // Load videos from API with fallback to reliable samples
-  const loadVideos = async () => {
+  // Load videos from local JSON data
+  const loadVideos = useCallback(() => {
     setLoading(true);
-    
-    try {
-      // First, set reliable sample videos immediately (they're guaranteed to work)
-      const reliableVideos = shuffleArray([...getReliableSampleVideos()]);
-      setVideos(reliableVideos);
-      
-      // Then try to fetch from API in background
-      const fetchedVideos = await fetchAllVideos();
-      
-      if (fetchedVideos.length > 0) {
-        // Combine reliable samples with fetched videos
-        const combined = [...reliableVideos, ...fetchedVideos];
-        // Remove duplicates by ID
-        const uniqueVideos = combined.filter((video, index, self) =>
-          index === self.findIndex(v => v.id === video.id)
-        );
-        setVideos(shuffleArray(uniqueVideos));
-      }
-    } catch (err) {
-      console.error('Failed to load videos:', err);
-      // Fallback to reliable samples only
-      setVideos(shuffleArray([...getReliableSampleVideos()]));
-    } finally {
+
+    // Simulate brief loading for smooth UX
+    setTimeout(() => {
+      // Shuffle the videos array
+      const shuffled = shuffleArray([...shortsData] as ShortsVideo[]);
+      setVideos(shuffled);
       setLoading(false);
-    }
-  };
+    }, 300);
+  }, []);
 
   // Fisher-Yates shuffle
   const shuffleArray = <T,>(array: T[]): T[] => {
@@ -134,10 +117,10 @@ export default function ShortsPage() {
   // Handle scroll for navigation
   const handleScroll = useCallback((e: React.WheelEvent) => {
     if (!containerRef.current) return;
-    
+
     const direction = e.deltaY > 0 ? 1 : -1;
     const newIndex = Math.max(0, Math.min(videos.length - 1, activeIndex + direction));
-    
+
     const targetElement = containerRef.current.querySelector(`[data-index="${newIndex}"]`);
     targetElement?.scrollIntoView({ behavior: 'smooth' });
   }, [activeIndex, videos.length]);
@@ -178,19 +161,19 @@ export default function ShortsPage() {
       <div className="absolute top-0 left-0 right-0 z-50 px-4 py-3 bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           {/* Home Button */}
-          <Link 
+          <Link
             href="/"
             className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-all"
           >
             <Home className="w-5 h-5" />
           </Link>
-          
+
           {/* Title */}
           <div className="flex flex-col items-center">
             <h1 className="text-white font-bold text-lg">نور القرآن</h1>
             <span className="text-emerald-400 text-xs font-medium">Shorts</span>
           </div>
-          
+
           {/* Refresh Button */}
           <button
             onClick={loadVideos}
@@ -221,7 +204,6 @@ export default function ShortsPage() {
               isActive={index === activeIndex}
               onLike={handleLike}
               isLiked={likedVideos.has(video.id)}
-              onSkip={handleSkip}
             />
           </div>
         ))}
