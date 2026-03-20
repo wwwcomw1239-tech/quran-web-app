@@ -25,10 +25,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "القرآن الكريم - The Holy Quran",
-  description: "تطبيق القرآن الكريم - استمع إلى تلاوات عطرة واقرأ الكتب الإسلامية. Listen to beautiful Quran recitations and read Islamic books.",
-  keywords: ["القرآن الكريم", "استماع القرآن", "تلاوات", "Quran", "Islamic", "PWA", "Recitation"],
-  authors: [{ name: "Quran Web App" }],
+  title: "نور القرآن - Noor Al-Quran",
+  description: "تطبيق نور القرآن - استمع إلى تلاوات عطرة من كتاب الله واقرأ الكتب الإسلامية. Noor Al-Quran - Listen to beautiful Quran recitations and read Islamic books.",
+  keywords: ["نور القرآن", "القرآن الكريم", "استماع القرآن", "تلاوات", "Noor Al-Quran", "Quran", "Islamic", "PWA", "Recitation"],
+  authors: [{ name: "Noor Al-Quran Team" }],
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -49,35 +49,35 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "القرآن الكريم",
+    title: "نور القرآن",
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
-    title: "القرآن الكريم - The Holy Quran",
-    description: "استمع إلى تلاوات القرآن الكريم بصوت أشهر القراء واقرأ الكتب الإسلامية",
+    title: "نور القرآن - Noor Al-Quran",
+    description: "استمع إلى تلاوات القرآن الكريم بصوت 100 قارئ واقرأ مكتبة من 343 كتاب إسلامي",
     type: "website",
     images: [
       {
         url: "/icons/icon-512x512.png",
         width: 512,
         height: 512,
-        alt: "القرآن الكريم",
+        alt: "نور القرآن - Noor Al-Quran",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "القرآن الكريم - The Holy Quran",
-    description: "استمع إلى تلاوات القرآن الكريم بصوت أشهر القراء واقرأ الكتب الإسلامية",
+    title: "نور القرآن - Noor Al-Quran",
+    description: "استمع إلى تلاوات القرآن الكريم بصوت 100 قارئ واقرأ مكتبة من 343 كتاب إسلامي",
     images: ["/icons/icon-512x512.png"],
   },
-  applicationName: "القرآن الكريم",
+  applicationName: "نور القرآن - Noor Al-Quran",
   generator: "Next.js",
   referrer: "origin-when-cross-origin",
-  creator: "Quran Web App Team",
-  publisher: "Quran Web App",
+  creator: "Noor Al-Quran Team",
+  publisher: "Noor Al-Quran",
   robots: {
     index: true,
     follow: true,
@@ -103,15 +103,15 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap"
           rel="stylesheet"
         />
 
         {/* PWA Meta Tags */}
-        <meta name="application-name" content="القرآن الكريم" />
+        <meta name="application-name" content="نور القرآن - Noor Al-Quran" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="القرآن الكريم" />
+        <meta name="apple-mobile-web-app-title" content="نور القرآن" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-TileColor" content="#10b981" />
@@ -154,7 +154,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-        style={{ fontFamily: "'Cairo', 'Amiri', sans-serif" }}
+        style={{ fontFamily: "'Cairo', 'Tajawal', 'Amiri', sans-serif" }}
       >
         {children}
         <Toaster />

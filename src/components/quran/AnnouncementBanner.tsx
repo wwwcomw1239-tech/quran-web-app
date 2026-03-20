@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Bell, Megaphone, Sparkles } from 'lucide-react';
+import { X, Bell, Megaphone, Sparkles, Volume2 } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 export interface Announcement {
   id: string;
-  message: string;
+  messageAr: string;
+  messageEn: string;
   type: 'info' | 'success' | 'warning' | 'update';
   isActive: boolean;
   createdAt: string;
@@ -15,27 +17,38 @@ interface AnnouncementBannerProps {
   className?: string;
 }
 
-// Sample announcements - developer can edit these
+// Developer announcements - can be edited
 const announcements: Announcement[] = [
   {
-    id: 'new_reciters_100',
-    message: '🎉 تم إضافة 15 قارئًا جديداً - أصبح لدينا الآن 100 قارئ متاح!',
+    id: 'proxy_fix',
+    messageAr: '🎉 تم إصلاح مشكلة الكتب المحجوبة! الآن جميع الكتب تعمل عبر Cloudflare Proxy',
+    messageEn: '🎉 Fixed blocked books issue! All books now work via Cloudflare Proxy',
     type: 'success',
     isActive: true,
     createdAt: new Date().toISOString(),
   },
   {
-    id: 'pwa_update',
-    message: '✨ تم تحديث الموقع مع تحسينات الأداء والتوافق مع Cloudflare Pages',
+    id: 'new_reciters',
+    messageAr: '✨ تم إضافة 15 قارئ جديد! أصبح العدد الإجمالي 100 قارئ متاح',
+    messageEn: '✨ 15 new reciters added! Total now 100 reciters available',
     type: 'update',
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'new_branding',
+    messageAr: '🌙 نور القرآن - تم تحديث الاسم والتصميم لشكل أكثر أناقة وجمالاً',
+    messageEn: '🌙 Noor Al-Quran - Updated branding with elegant new design',
+    type: 'info',
     isActive: true,
     createdAt: new Date().toISOString(),
   },
 ];
 
-const STORAGE_KEY = 'quran_announcements_dismissed';
+const STORAGE_KEY = 'noor_quran_announcements_dismissed';
 
 export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) {
+  const { language, isRTL } = useLanguage();
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -71,7 +84,7 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
     }
   }, [activeAnnouncements.length]);
 
-  // Auto-rotate announcements every 6 seconds
+  // Auto-rotate announcements every 8 seconds
   useEffect(() => {
     if (activeAnnouncements.length <= 1) return;
 
@@ -79,7 +92,7 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
       setCurrentAnnouncementIndex((prev) => 
         (prev + 1) % activeAnnouncements.length
       );
-    }, 6000);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, [activeAnnouncements.length]);
@@ -102,7 +115,6 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
     setIsAnimating(false);
     setTimeout(() => {
       setIsVisible(false);
-      // Reset index when dismissed
       setCurrentAnnouncementIndex(0);
     }, 300);
   };
@@ -112,29 +124,31 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
   const currentAnnouncement = activeAnnouncements[currentAnnouncementIndex];
   if (!currentAnnouncement) return null;
 
+  const message = isRTL ? currentAnnouncement.messageAr : currentAnnouncement.messageEn;
+
   const getTypeStyles = () => {
     switch (currentAnnouncement.type) {
       case 'success':
-        return 'bg-gradient-to-l from-emerald-500 to-teal-600 border-emerald-400 text-white';
+        return 'bg-gradient-to-l from-emerald-500 to-teal-600 border-emerald-400/50 text-white';
       case 'update':
-        return 'bg-gradient-to-l from-blue-500 to-indigo-600 border-blue-400 text-white';
+        return 'bg-gradient-to-l from-blue-500 to-indigo-600 border-blue-400/50 text-white';
       case 'warning':
-        return 'bg-gradient-to-l from-amber-500 to-orange-600 border-amber-400 text-white';
+        return 'bg-gradient-to-l from-amber-500 to-orange-600 border-amber-400/50 text-white';
       default:
-        return 'bg-gradient-to-l from-slate-600 to-slate-700 border-slate-400 text-white';
+        return 'bg-gradient-to-l from-slate-600 to-slate-700 border-slate-400/50 text-white';
     }
   };
 
   const getIcon = () => {
     switch (currentAnnouncement.type) {
       case 'success':
-        return <Megaphone className="w-4 h-4 animate-pulse" />;
+        return <Volume2 className="w-4 h-4 animate-pulse" />;
       case 'update':
         return <Sparkles className="w-4 h-4" />;
       case 'warning':
         return <Bell className="w-4 h-4" />;
       default:
-        return <Bell className="w-4 h-4" />;
+        return <Megaphone className="w-4 h-4" />;
     }
   };
 
@@ -146,7 +160,7 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
         ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
       `}
     >
-      <div className={`${getTypeStyles()} shadow-md rounded-xl mx-2`}>
+      <div className={`${getTypeStyles()} shadow-md rounded-xl mx-2 border backdrop-blur-sm`}>
         <div className="container mx-auto px-4 py-2.5">
           <div className="flex items-center justify-center gap-3">
             <div className="flex-shrink-0">
@@ -154,7 +168,7 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
             </div>
             
             <p className="text-sm font-medium text-center flex-1">
-              {currentAnnouncement.message}
+              {message}
             </p>
             
             {/* Pagination dots for multiple announcements */}
@@ -176,7 +190,7 @@ export function AnnouncementBanner({ className = '' }: AnnouncementBannerProps) 
             <button
               onClick={handleDismiss}
               className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition-colors flex-shrink-0"
-              aria-label="إغلاق"
+              aria-label={isRTL ? 'إغلاق' : 'Close'}
             >
               <X className="w-3.5 h-3.5" />
             </button>

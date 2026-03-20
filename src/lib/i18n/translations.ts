@@ -2,9 +2,13 @@ export type Language = 'ar' | 'en';
 
 export const translations = {
   ar: {
+    // App Branding
+    appName: 'نور القرآن',
+    appNameFull: 'نور القرآن - Noor Al-Quran',
+    appTitle: 'نور القرآن',
+    appSubtitle: 'استمع إلى تلاوات عطرة من كتاب الله',
+    
     // Header
-    appTitle: 'القرآن الكريم',
-    appSubtitle: 'استمع إلى تلاوات عطرة',
     surahs: 'سورة',
     verses: 'آية',
     makki: 'مكية',
@@ -52,6 +56,7 @@ export const translations = {
 
     // Footer
     contactDeveloper: 'تواصل مع المطور',
+    contactDeveloperFull: 'للتواصل مع المطور عبر الإيميل',
     backToTop: 'العودة للأعلى',
     rights: 'جميع الحقوق محفوظة',
 
@@ -63,6 +68,7 @@ export const translations = {
 
     // Announcement
     newReciters: 'تم إضافة 15 قارئ جديد! أصبح العدد 100 قارئ',
+    developerNote: 'مرحباً بكم في نور القرآن - تم تحديث التطبيق بخلفية جديدة وأداء محسّن',
 
     // Language
     language: 'اللغة',
@@ -70,9 +76,13 @@ export const translations = {
     english: 'English',
   },
   en: {
+    // App Branding
+    appName: 'Noor Al-Quran',
+    appNameFull: 'Noor Al-Quran - نور القرآن',
+    appTitle: 'Noor Al-Quran',
+    appSubtitle: 'Listen to beautiful recitations from the Book of Allah',
+    
     // Header
-    appTitle: 'The Holy Quran',
-    appSubtitle: 'Listen to beautiful recitations',
     surahs: 'Surahs',
     verses: 'Verses',
     makki: 'Makki',
@@ -120,6 +130,7 @@ export const translations = {
 
     // Footer
     contactDeveloper: 'Contact Developer',
+    contactDeveloperFull: 'Contact the developer via email',
     backToTop: 'Back to Top',
     rights: 'All rights reserved',
 
@@ -131,6 +142,7 @@ export const translations = {
 
     // Announcement
     newReciters: '15 new reciters added! Now 100 reciters total',
+    developerNote: 'Welcome to Noor Al-Quran - Updated with new design and improved performance',
 
     // Language
     language: 'Language',
