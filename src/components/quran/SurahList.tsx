@@ -66,11 +66,11 @@ export function SurahList({
             }`}
           >
             <CardContent className="p-4">
-              {/* Surah Header - New Layout */}
-              <div className={`flex items-center justify-between mb-3 min-h-[56px] ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
+              {/* Surah Header - Elegant Layout with Centered Name */}
+              <div className={`flex items-center justify-between mb-3 min-h-[60px] ${isRTL ? 'flex-row' : 'flex-row-reverse'}`}>
                 
-                {/* Surah Number - With elegant styling */}
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0 transition-all duration-300 ${
+                {/* Surah Number - Elegant styling on the right */}
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-xl flex-shrink-0 transition-all duration-300 ${
                   isCurrentSurah
                     ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30'
                     : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 text-slate-600 dark:text-slate-300'
@@ -78,22 +78,22 @@ export function SurahList({
                   {surah.id}
                 </div>
 
-                {/* Surah Info - Centered */}
-                <div className="flex-1 min-w-0 flex flex-col items-center justify-center px-2">
-                  <h3 className={`font-bold text-slate-900 dark:text-white text-center truncate ${
-                    isRTL ? 'text-lg' : 'text-base'
-                  }`}>
+                {/* Surah Info - Perfectly Centered with elegant typography */}
+                <div className="flex-1 min-w-0 flex flex-col items-center justify-center px-3">
+                  <h3 className={`font-bold text-slate-900 dark:text-white text-center ${
+                    isRTL ? 'text-xl font-arabic' : 'text-base'
+                  }`} style={isRTL ? { fontFamily: "'Tajawal', 'Cairo', 'Amiri', sans-serif" } : {}}>
                     {displayName}
                   </h3>
                   {isRTL && (
-                    <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5" style={{ fontFamily: "'Cairo', sans-serif" }}>
                       {surah.nameEnglish}
                     </p>
                   )}
                 </div>
 
                 {/* Favorite indicator - Left side */}
-                <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
                   {isFavorite && (
                     <Heart className="w-5 h-5 text-rose-400 fill-rose-400 animate-pulse" />
                   )}
@@ -125,7 +125,7 @@ export function SurahList({
                 {/* Play/Pause Button */}
                 <Button
                   onClick={() => onPlay(surah)}
-                  className={`flex-1 h-10 rounded-xl transition-all duration-300 ${
+                  className={`flex-1 h-11 rounded-xl transition-all duration-300 ${
                     isCurrentSurah && isPlaying
                       ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white'
                       : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white'
@@ -145,7 +145,7 @@ export function SurahList({
                 <Button
                   onClick={() => onToggleFavorite(surah.id)}
                   variant="outline"
-                  className={`h-10 w-10 p-0 rounded-xl transition-all duration-300 ${
+                  className={`h-11 w-11 p-0 rounded-xl transition-all duration-300 ${
                     isFavorite
                       ? 'bg-rose-50 border-rose-300 dark:bg-rose-900/30 dark:border-rose-700 hover:bg-rose-100 dark:hover:bg-rose-900/50'
                       : 'hover:bg-rose-50 dark:hover:bg-rose-900/20'
@@ -162,7 +162,7 @@ export function SurahList({
                 <Button
                   onClick={() => onDownload(surah)}
                   variant="outline"
-                  className="h-10 w-10 p-0 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-300"
+                  className="h-11 w-11 p-0 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-300"
                 >
                   <Download className="w-5 h-5 text-slate-400 hover:text-emerald-500" />
                 </Button>

@@ -40,6 +40,7 @@ export const translations = {
     fileSize: 'حجم الملف',
     originalQuality: 'الجودة الأصلية',
     downloading: 'جاري التحميل...',
+    downloadingProgress: 'جارِ التحميل',
     cancel: 'إلغاء',
 
     // Reciter Selector
@@ -59,6 +60,7 @@ export const translations = {
     contactDeveloperFull: 'للتواصل مع المطور عبر الإيميل',
     backToTop: 'العودة للأعلى',
     rights: 'جميع الحقوق محفوظة',
+    developedBy: 'تطوير داوود الاحمدي',
 
     // Errors
     noResults: 'لا توجد نتائج',
@@ -114,6 +116,7 @@ export const translations = {
     fileSize: 'File size',
     originalQuality: 'Original Quality',
     downloading: 'Downloading...',
+    downloadingProgress: 'Downloading',
     cancel: 'Cancel',
 
     // Reciter Selector
@@ -133,6 +136,7 @@ export const translations = {
     contactDeveloperFull: 'Contact the developer via email',
     backToTop: 'Back to Top',
     rights: 'All rights reserved',
+    developedBy: 'Developed by Dawood Al-Ahmadi',
 
     // Errors
     noResults: 'No results found',

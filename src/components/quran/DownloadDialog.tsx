@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Download, Loader2 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
 import { useLanguage } from '@/lib/i18n';
@@ -95,33 +94,43 @@ export function DownloadDialog({
               </div>
             </div>
 
-            {/* Download Progress */}
-            {isDownloading && (
-              <div className="space-y-2">
-                <Progress value={downloadProgress} className="h-2" />
-                <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-                  {t('downloading')} {downloadProgress}%
-                </p>
-              </div>
-            )}
-
-            {/* Download Button */}
+            {/* Download Button with Progress Fill */}
             <Button
               onClick={onDownload}
               disabled={isDownloading || isLoadingFileSize}
-              className={`w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl ${isRTL ? 'flex-row-reverse' : ''}`}
+              className={`w-full h-14 rounded-xl relative overflow-hidden transition-all duration-300 ${
+                isDownloading 
+                  ? 'bg-emerald-600 cursor-wait' 
+                  : 'bg-emerald-500 hover:bg-emerald-600'
+              } text-white ${isRTL ? 'flex-row-reverse' : ''}`}
             >
-              {isDownloading ? (
-                <>
-                  <Loader2 className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'} animate-spin`} />
-                  {t('downloading')}
-                </>
-              ) : (
-                <>
-                  <Download className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'}`} />
-                  {t('download')}
-                </>
+              {/* Dynamic Progress Fill Background */}
+              {isDownloading && (
+                <div 
+                  className="absolute inset-0 bg-emerald-400 transition-all duration-200 ease-out"
+                  style={{ 
+                    width: `${downloadProgress}%`,
+                    [isRTL ? 'right' : 'left']: 0
+                  }}
+                />
               )}
+              
+              {/* Button Content */}
+              <div className="relative z-10 flex items-center justify-center w-full gap-2">
+                {isDownloading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
+                    <span className="font-semibold text-lg">
+                      {t('downloadingProgress')} {downloadProgress}%
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-semibold">{t('download')}</span>
+                  </>
+                )}
+              </div>
             </Button>
 
             {/* Note */}

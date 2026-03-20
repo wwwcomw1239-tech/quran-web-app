@@ -2,7 +2,7 @@
 
 import { forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, Mail, Heart } from 'lucide-react';
+import { ArrowUp, Mail } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 
 interface FooterProps {
@@ -43,15 +43,25 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
             {t('appSubtitle')}
           </p>
 
-          {/* Contact Section */}
-          <div className="mb-6">
+          {/* Developer Credits - Prominent */}
+          <div className="mb-5">
+            <p className="text-base font-semibold text-emerald-600 dark:text-emerald-400">
+              {t('developedBy')}
+            </p>
+          </div>
+
+          {/* Contact Section with explicit label */}
+          <div className="mb-6 flex flex-col items-center gap-2">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {t('contactDeveloperFull')}
+            </p>
             <Button
               onClick={onContactDeveloper}
               variant="outline"
               className="rounded-xl px-6 py-2.5 h-auto bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 hover:bg-emerald-50 dark:hover:bg-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300"
             >
               <Mail className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'} text-emerald-500`} />
-              <span className="text-sm">{t('contactDeveloperFull')}</span>
+              <span className="text-sm font-medium">almubarmaj8@gmail.com</span>
             </Button>
           </div>
 
@@ -74,13 +84,6 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
           {/* Copyright */}
           <p className="text-sm text-slate-400 dark:text-slate-500 mt-2">
             © {new Date().getFullYear()} {t('appName')} • {t('rights')}
-          </p>
-
-          {/* Made with love */}
-          <p className="text-xs text-slate-400 dark:text-slate-500 mt-3 flex items-center justify-center gap-1">
-            {isRTL ? 'صنع بـ' : 'Made with'}{' '}
-            <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />{' '}
-            {isRTL ? 'للمسلمين حول العالم' : 'for Muslims worldwide'}
           </p>
 
           {/* Back to Top Button */}
