@@ -524,6 +524,97 @@ export const reciters: Reciter[] = [
     nameEnglish: 'Yusuf bin Noah',
     baseUrl: 'https://server8.mp3quran.net/noah',
   },
+  // === NEW RECITERS BATCH 3 (15) - All verified from Mp3Quran API ===
+  {
+    id: 'hassan_saleh',
+    nameArabic: 'حسان صالح',
+    nameEnglish: 'Hassan Saleh',
+    baseUrl: 'https://server6.mp3quran.net/hssn',
+  },
+  {
+    id: 'mohisni',
+    nameArabic: 'محسن المحيسني',
+    nameEnglish: 'Mohsen Al-Mohisni',
+    baseUrl: 'https://server7.mp3quran.net/mhsn',
+  },
+  {
+    id: 'abdullah_kamel',
+    nameArabic: 'عبدالله كامل',
+    nameEnglish: 'Abdullah Kamel',
+    baseUrl: 'https://server7.mp3quran.net/kml',
+  },
+  {
+    id: 'yasser_salama',
+    nameArabic: 'ياسر سلامة',
+    nameEnglish: 'Yasser Salama',
+    baseUrl: 'https://server7.mp3quran.net/yasser_s',
+  },
+  {
+    id: 'husary_warsh',
+    nameArabic: 'الحصري ورش',
+    nameEnglish: 'Husary Warsh',
+    baseUrl: 'https://server13.mp3quran.net/husr_warsh',
+  },
+  {
+    id: 'haitham_jadaani',
+    nameArabic: 'هيثم الجدعاني',
+    nameEnglish: 'Haitham Al-Jadaani',
+    baseUrl: 'https://server10.mp3quran.net/jadd',
+  },
+  {
+    id: 'dokali',
+    nameArabic: 'الدوكالي محمد العالم',
+    nameEnglish: 'Al-Dokali Muhammad Al-Alam',
+    baseUrl: 'https://server12.mp3quran.net/dkali',
+  },
+  {
+    id: 'khalid_muhanna',
+    nameArabic: 'خالد المهنا',
+    nameEnglish: 'Khalid Al-Muhanna',
+    baseUrl: 'https://server10.mp3quran.net/mhn',
+  },
+  {
+    id: 'majed_owaid',
+    nameArabic: 'ماجد العويد',
+    nameEnglish: 'Majed Al-Owaid',
+    baseUrl: 'https://server10.mp3quran.net/owaid',
+  },
+  {
+    id: 'mansour_zahrani',
+    nameArabic: 'منصور الزهراني',
+    nameEnglish: 'Mansour Al-Zahrani',
+    baseUrl: 'https://server12.mp3quran.net/zhr',
+  },
+  {
+    id: 'muhammad_osman_khan',
+    nameArabic: 'محمد عثمان خان',
+    nameEnglish: 'Muhammad Osman Khan',
+    baseUrl: 'https://server10.mp3quran.net/khn',
+  },
+  {
+    id: 'abdulmohsen_harthy',
+    nameArabic: 'عبدالمحسن الحارثي',
+    nameEnglish: 'Abdulmohsen Al-Harthy',
+    baseUrl: 'https://server10.mp3quran.net/hrthi',
+  },
+  {
+    id: 'abu_el_enein_shaeisha',
+    nameArabic: 'أبو العنين شعيشع',
+    nameEnglish: 'Abu El-Enein Shaeisha',
+    baseUrl: 'https://server8.mp3quran.net/shash',
+  },
+  {
+    id: 'tariq_muhammad_trabulsi',
+    nameArabic: 'طارق محمد الطرابلسي',
+    nameEnglish: 'Tariq Muhammad Al-Trabulsi',
+    baseUrl: 'https://server14.mp3quran.net/trabulsi_m',
+  },
+  {
+    id: 'abdulwadood_haneef',
+    nameArabic: 'عبدالودود حنيف',
+    nameEnglish: 'Abdulwadood Haneef',
+    baseUrl: 'https://server12.mp3quran.net/wade',
+  },
 ];
 
 // Generate audio URL based on reciter and surah

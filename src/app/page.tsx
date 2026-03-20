@@ -12,6 +12,7 @@ import {
   Footer,
   DownloadDialog,
   BooksLibrary,
+  AnnouncementBanner,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Headphones, BookOpen } from 'lucide-react';
@@ -413,6 +414,11 @@ export default function QuranWebApp() {
 
       {/* Header */}
       <Header onScrollToBottom={scrollToBottom} />
+
+      {/* Announcement Banner */}
+      <div className="container mx-auto pt-4">
+        <AnnouncementBanner />
+      </div>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6 pb-36">
