@@ -2,15 +2,5 @@ name = "quran-shorts-api"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
-# R2 bucket binding (uncomment after creating the bucket)
-# [[r2_buckets]]
-# binding = "BUCKET"
-# bucket_name = "noor-quran-shorts"
-
 [vars]
 ENVIRONMENT = "production"
-
-# Routes
-routes = [
-  { pattern = "quran-shorts-api.wwwcomw1239.workers.dev/api/*", zone_name = "wwwcomw1239.workers.dev" },
-]
