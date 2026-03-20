@@ -1,0 +1,47 @@
+[
+  {
+    "id": "short-1",
+    "title": "سورة الفاتحة - تلاوة خاشعة",
+    "author": "قارئ",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "thumbnail": "/icons/icon-512x512.png",
+    "type": "quran",
+    "duration": 10
+  },
+  {
+    "id": "short-2",
+    "title": "سورة الإخلاص - قراءة جميلة",
+    "author": "قارئ",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "thumbnail": "/icons/icon-512x512.png",
+    "type": "quran",
+    "duration": 12
+  },
+  {
+    "id": "short-3",
+    "title": "أذكار الصباح - أجر عظيم",
+    "author": "قارئ",
+    "videoUrl": "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4",
+    "thumbnail": "/icons/icon-512x512.png",
+    "type": "sermon",
+    "duration": 30
+  },
+  {
+    "id": "short-4",
+    "title": "سورة الناس - حماية من الشر",
+    "author": "قارئ",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "thumbnail": "/icons/icon-512x512.png",
+    "type": "quran",
+    "duration": 10
+  },
+  {
+    "id": "short-5",
+    "title": "دعاء مستجاب - كنوز الجنة",
+    "author": "قارئ",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "thumbnail": "/icons/icon-512x512.png",
+    "type": "sermon",
+    "duration": 12
+  }
+]
