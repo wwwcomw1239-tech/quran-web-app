@@ -3,10 +3,10 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Heart, Share2, Download, Volume2, VolumeX, Play, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ArchiveVideo, getArchiveDownloadUrl } from '@/lib/archiveFetch';
+import { ShortsVideo, getArchiveDownloadUrl } from '@/lib/archiveFetch';
 
 interface ShortsVideoPlayerProps {
-  video: ArchiveVideo;
+  video: ShortsVideo;
   isActive: boolean;
   onLike?: (videoId: string) => void;
   isLiked?: boolean;
@@ -35,12 +35,10 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
     if (!videoElement) return;
 
     if (isActive) {
-      // Play video when active (muted initially for autoplay compliance)
       videoElement.muted = true;
       videoElement.play().then(() => {
         setIsMuted(true);
         setIsLoaded(true);
-        // Sync background video if exists
         if (bgVideoElement) {
           bgVideoElement.muted = true;
           bgVideoElement.play().catch(() => {});
@@ -50,7 +48,6 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
         setShowPlayButton(true);
       });
     } else {
-      // Pause video when not active to save bandwidth
       videoElement.pause();
       videoElement.currentTime = 0;
       if (bgVideoElement) {
@@ -61,15 +58,13 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
     }
   }, [isActive]);
 
-  // Detect video orientation on loaded metadata
+  // Detect video orientation
   const handleVideoLoadedMetadata = useCallback(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
 
     const { videoWidth, videoHeight } = videoElement;
-    // If width > height, it's horizontal (16:9), otherwise vertical (9:16)
-    const isHorizontal = videoWidth > videoHeight;
-    setVideoOrientation(isHorizontal ? 'horizontal' : 'vertical');
+    setVideoOrientation(videoWidth > videoHeight ? 'horizontal' : 'vertical');
   }, []);
 
   // Toggle mute/unmute
@@ -82,7 +77,7 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
     setIsMuted(newMuted);
   }, [isMuted]);
 
-  // Manual play (for when autoplay is blocked)
+  // Manual play
   const handleManualPlay = useCallback(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
@@ -98,19 +93,17 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
 
   // Share to WhatsApp
   const handleShare = useCallback(() => {
-    const text = `${video.title}\n- ${video.creator}\n\nمن تطبيق نور القرآن`;
+    const text = `${video.title}\n- ${video.author}\n\nمن تطبيق نور القرآن`;
     const shareUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(shareUrl, '_blank');
   }, [video]);
 
-  // Download video - route through Cloudflare proxy for CORS bypass
+  // Download video - through proxy for CORS bypass
   const handleDownload = useCallback(async () => {
     setIsDownloading(true);
     try {
-      // Use proxy for download (mandatory low-quality option)
-      const downloadUrl = getArchiveDownloadUrl(video.videoUrl, 'low');
+      const downloadUrl = getArchiveDownloadUrl(video.videoUrl);
       
-      // Create a temporary anchor element for download
       const link = document.createElement('a');
       link.href = downloadUrl;
       link.download = `${video.title.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_')}.mp4`;
@@ -120,7 +113,6 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
       document.body.removeChild(link);
     } catch (error) {
       console.error('Download failed:', error);
-      // Fallback: open in new tab
       window.open(video.videoUrl, '_blank', 'noopener,noreferrer');
     }
     setTimeout(() => setIsDownloading(false), 1500);
@@ -173,7 +165,6 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
         src={video.videoUrl}
         loop
         playsInline
-        webkit-playsinline="true"
         preload="metadata"
         className={cn(
           "relative z-[1]",
@@ -201,7 +192,6 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
           )}>
             {video.type === 'quran' ? 'تلاوة Quran' : 'خطبة Sermon'}
           </span>
-          {/* Duration badge */}
           <span className="px-2 py-1 rounded-full text-[10px] font-medium bg-white/10 text-white/70 backdrop-blur-sm">
             {formatDuration(video.duration)}
           </span>
@@ -210,7 +200,7 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
           {video.title}
         </h3>
         <p className="text-white/70 text-sm mt-1 drop-shadow-lg">
-          {video.creator}
+          {video.author}
         </p>
       </div>
 
@@ -286,7 +276,7 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
         </button>
       </div>
 
-      {/* Manual Play Button (when autoplay is blocked) */}
+      {/* Manual Play Button */}
       {showPlayButton && (
         <button
           onClick={handleManualPlay}
@@ -298,7 +288,7 @@ export function ShortsVideoPlayer({ video, isActive, onLike, isLiked = false }: 
         </button>
       )}
 
-      {/* Play Button Overlay (when loading) */}
+      {/* Play Button Overlay */}
       {isActive && !isLoaded && !showPlayButton && (
         <div className="absolute inset-0 flex items-center justify-center z-15 pointer-events-none">
           <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">

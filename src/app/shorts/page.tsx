@@ -4,20 +4,16 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowRight, Loader2, RefreshCw, Home, WifiOff } from 'lucide-react';
 import Link from 'next/link';
 import { ShortsVideoPlayer } from '@/components/shorts/ShortsVideoPlayer';
-import { 
-  fetchArchiveVideos, 
-  getCachedArchiveVideos, 
-  cacheArchiveVideos,
-  ArchiveVideo 
-} from '@/lib/archiveFetch';
+import { fetchArchiveVideos, ShortsVideo } from '@/lib/archiveFetch';
 import { cn } from '@/lib/utils';
 
 export default function ShortsPage() {
-  const [videos, setVideos] = useState<ArchiveVideo[]>([]);
+  const [videos, setVideos] = useState<ShortsVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [isFallback, setIsFallback] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -45,26 +41,37 @@ export default function ShortsPage() {
     }
   }, [likedVideos]);
 
-  // Load videos from Internet Archive API
+  // Load videos from Archive.org (client-side with CORS proxy)
   const loadVideos = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Check cache first
-      const cached = getCachedArchiveVideos();
-      if (cached && cached.length > 0) {
-        setVideos(cached);
-        setLoading(false);
-        return;
+      // Check sessionStorage cache first (5 minutes)
+      const cached = sessionStorage.getItem('shorts-videos-cache');
+      if (cached) {
+        const { videos: cachedVideos, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < 5 * 60 * 1000 && cachedVideos.length > 0) {
+          setVideos(cachedVideos);
+          setLoading(false);
+          return;
+        }
       }
 
-      // Fetch from Internet Archive API
-      const fetchedVideos = await fetchArchiveVideos(50);
+      // Fetch from Archive.org
+      const fetchedVideos = await fetchArchiveVideos(30);
       
       if (fetchedVideos.length > 0) {
+        // Check if using fallback videos
+        const isFallbackData = fetchedVideos.some(v => v.id.startsWith('fallback'));
+        setIsFallback(isFallbackData);
         setVideos(fetchedVideos);
-        cacheArchiveVideos(fetchedVideos);
+        
+        // Cache in sessionStorage
+        sessionStorage.setItem('shorts-videos-cache', JSON.stringify({
+          videos: fetchedVideos,
+          timestamp: Date.now(),
+        }));
       } else {
         setError('لم يتم العثور على فيديوهات');
       }
@@ -89,13 +96,6 @@ export default function ShortsPage() {
     });
   }, []);
 
-  // Handle skip to next video
-  const handleSkip = useCallback(() => {
-    const nextIndex = Math.min(videos.length - 1, activeIndex + 1);
-    const targetElement = containerRef.current?.querySelector(`[data-index="${nextIndex}"]`);
-    targetElement?.scrollIntoView({ behavior: 'smooth' });
-  }, [activeIndex, videos.length]);
-
   // Intersection Observer for auto-play
   useEffect(() => {
     if (observerRef.current) {
@@ -113,11 +113,10 @@ export default function ShortsPage() {
       },
       {
         root: containerRef.current,
-        threshold: 0.8, // 80% visible
+        threshold: 0.8,
       }
     );
 
-    // Observe all video containers
     const videoElements = containerRef.current?.querySelectorAll('[data-video-item]');
     videoElements?.forEach((el) => {
       observerRef.current?.observe(el);
@@ -165,7 +164,6 @@ export default function ShortsPage() {
       <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
         <Loader2 className="w-16 h-16 text-emerald-500 animate-spin mb-4" />
         <p className="text-white/70 text-lg">جاري تحميل الفيديوهات...</p>
-        <p className="text-white/50 text-sm mt-2">من أرشيف الإنترنت</p>
       </div>
     );
   }
@@ -227,6 +225,15 @@ export default function ShortsPage() {
           </button>
         </div>
       </div>
+
+      {/* Fallback indicator */}
+      {isFallback && (
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs px-3 py-1 rounded-full backdrop-blur-sm">
+            فيديوهات تجريبية - جاري البحث...
+          </div>
+        </div>
+      )}
 
       {/* Video Feed - Full-screen vertical scroll with snap */}
       <div
