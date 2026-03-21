@@ -18,6 +18,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Headphones, BookOpen } from 'lucide-react';
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
+import { AudioQualityProvider, useAudioQuality } from '@/lib/audioQuality';
 import {
   checkAudioInCache,
   getAudioFromCache,
@@ -31,6 +32,7 @@ type FilterType = 'all' | 'مكية' | 'مدنية';
 
 function QuranWebAppContent() {
   const { t, isRTL, direction } = useLanguage();
+  const { quality } = useAudioQuality();
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -142,9 +144,9 @@ function QuranWebAppContent() {
       return;
     }
 
-    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
     checkAudioInCache(audioUrl, selectedReciter, currentSurah.id).then(setIsCached);
-  }, [currentSurah, selectedReciter, cacheSupported]);
+  }, [currentSurah, selectedReciter, cacheSupported, quality]);
 
   // Clean up blob URL on unmount or surah change
   useEffect(() => {
@@ -187,7 +189,7 @@ function QuranWebAppContent() {
         setCachedBlobUrl(null);
       }
 
-      const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+      const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
       audioRef.current.src = audioUrl;
       audioRef.current.load();
 
@@ -199,6 +201,64 @@ function QuranWebAppContent() {
         .catch(console.error);
     }
   }, [selectedReciter]);
+
+  // Reload audio when quality changes (if audio is playing)
+  useEffect(() => {
+    if (audioRef.current && currentSurah && isPlaying) {
+      // Save current playback position
+      const savedTime = audioRef.current.currentTime;
+
+      // Clean up old blob URL
+      if (cachedBlobUrl) {
+        URL.revokeObjectURL(cachedBlobUrl);
+        setCachedBlobUrl(null);
+      }
+
+      const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
+
+      // Check if cached version exists for new quality
+      const reloadWithNewQuality = async () => {
+        let playUrl = audioUrl;
+
+        if (cacheSupported) {
+          const inCache = await checkAudioInCache(audioUrl, selectedReciter, currentSurah.id);
+          setIsCached(inCache);
+
+          if (inCache) {
+            const blobUrl = await getAudioFromCache(audioUrl, selectedReciter, currentSurah.id);
+            if (blobUrl) {
+              playUrl = blobUrl;
+              setCachedBlobUrl(blobUrl);
+            }
+          }
+        }
+
+        if (audioRef.current) {
+          audioRef.current.src = playUrl;
+          audioRef.current.load();
+          audioRef.current.playbackRate = playbackRate;
+
+          audioRef.current.play()
+            .then(() => {
+              setIsLoading(false);
+              // Restore playback position if possible
+              if (audioRef.current && savedTime > 0) {
+                audioRef.current.currentTime = savedTime;
+              }
+            })
+            .catch((error) => {
+              console.error('Error reloading audio with new quality:', error);
+              setIsPlaying(false);
+            });
+        }
+      };
+
+      setIsLoading(true);
+      reloadWithNewQuality();
+
+      console.log('[AudioQuality] Quality changed to:', quality);
+    }
+  }, [quality]); // Intentionally only trigger on quality change
 
   // Play surah function - CHECKS CACHE FIRST
   const playSurah = useCallback(async (surah: Surah) => {
@@ -226,7 +286,7 @@ function QuranWebAppContent() {
     }
 
     if (audioRef.current) {
-      const audioUrl = getAudioUrl(selectedReciter, surah.id);
+      const audioUrl = getAudioUrl(selectedReciter, surah.id, quality);
       let playUrl = audioUrl;
 
       // CHECK CACHE FIRST
@@ -274,7 +334,7 @@ function QuranWebAppContent() {
           });
       }
     }
-  }, [currentSurah, isPlaying, selectedReciter, t, cacheSupported, cachedBlobUrl, playbackRate]);
+  }, [currentSurah, isPlaying, selectedReciter, quality, t, cacheSupported, cachedBlobUrl, playbackRate]);
 
   // Play next surah
   const playNext = useCallback(() => {
@@ -421,7 +481,7 @@ function QuranWebAppContent() {
   const toggleCache = useCallback(async () => {
     if (!currentSurah || !cacheSupported || isCaching) return;
 
-    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
 
     if (isCached) {
       // Remove from cache
@@ -478,7 +538,7 @@ function QuranWebAppContent() {
         alert(errorMessage);
       }
     }
-  }, [currentSurah, selectedReciter, isCached, isCaching, cacheSupported, cachedBlobUrl, isRTL, currentReciter]);
+  }, [currentSurah, selectedReciter, isCached, isCaching, cacheSupported, cachedBlobUrl, isRTL, currentReciter, quality]);
 
   // Fetch file size using HEAD request
   const fetchFileSize = async (url: string): Promise<number | null> => {
@@ -732,7 +792,9 @@ function QuranWebAppContent() {
 export default function QuranWebApp() {
   return (
     <LanguageProvider>
-      <QuranWebAppContent />
+      <AudioQualityProvider>
+        <QuranWebAppContent />
+      </AudioQualityProvider>
     </LanguageProvider>
   );
 }
