@@ -15,9 +15,19 @@ export function Header({ onScrollToBottom }: HeaderProps) {
   const { t, language, setLanguage, isRTL } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [showScrollDown, setShowScrollDown] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Hide floating scroll-down button when scrolled down
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollDown(window.scrollY < 200);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleLanguage = () => {
@@ -129,17 +139,20 @@ export function Header({ onScrollToBottom }: HeaderProps) {
                 : '100 Reciters • Live Streaming • Free Download'}
             </span>
           </div>
-
-          {/* Scroll to Bottom Button - Now floating style */}
-          <button
-            onClick={onScrollToBottom}
-            className="mt-6 w-12 h-12 mx-auto rounded-full bg-white/20 hover:bg-white/30 backdrop-blur text-white shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 border border-white/10"
-            aria-label={t('scrollToBottom')}
-          >
-            <ArrowDown className="w-5 h-5" />
-          </button>
         </div>
       </div>
+
+      {/* Floating Scroll to Bottom Button - Fixed positioning for mobile access */}
+      {showScrollDown && (
+        <Button
+          onClick={onScrollToBottom}
+          className={`fixed top-24 ${isRTL ? 'left-4' : 'right-4'} h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white shadow-lg transition-all duration-300 hover:scale-110 z-[60]`}
+          size="icon"
+          aria-label={t('scrollToBottom')}
+        >
+          <ArrowDown className="w-5 h-5" />
+        </Button>
+      )}
     </header>
   );
 }
