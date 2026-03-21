@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://github.com/e2b-dev/awesome-ai-agents",
+    "name": "e2b-dev/awesome-ai-agents: A list of AI autonomous agents",
+    "snippet": "Blinky is an open - source AI debugging agent for VSCode that uses LLMs to help identify and fix backend code errors (inspired by SWE- agent ). Blinky leverages the ... Read more",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/simular-ai/agent-s",
+    "name": "Agent S: an open agentic framework that uses computers",
+    "snippet": "Welcome to Agent S, an open - source framework designed to enable autonomous interaction with computers through Agent -Computer Interface. Our mission is to ... Read more",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/gptme/gptme",
+    "name": "gptme/gptme: Your agent in your terminal",
+    "snippet": "Your agent in your terminal, equipped with local tools : writes code, uses the terminal, browses the web. Make your own persistent autonomous agent on top!",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/aygp-dr/terminal-ai-agents-workshop",
+    "name": "aygp-dr/terminal-ai-agents-workshop",
+    "snippet": "Dec 21, 2025 — Comprehensive workshop for building terminal -based AI agents with LLM tool calling, featuring implementations in Python and Scheme with ...",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://opendatascience.com/the-top-ten-github-agentic-ai-repositories-in-2025",
+    "name": "The Top Ten GitHub Agentic AI Repositories in 2025",
+    "snippet": "Dec 18, 2025 — This open - source project provides a CLI (specify) and workflow that works with tools like GitHub Copilot, Anthropic Claude, and even Gemini CLI. Read more",
+    "host_name": "opendatascience.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/aider-ai/aider",
+    "name": "aider is AI pair programming in your terminal",
+    "snippet": "AI Pair Programming in Your Terminal ... Aider lets you pair program with LLMs to start a new project or build on your existing codebase. aider screencast. GitHub ... Read more",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/opencode-ai/opencode",
+    "name": "opencode-ai/opencode: A powerful AI coding agent. Built",
+    "snippet": "Sep 18, 2025 — Use at your own risk. A powerful terminal-based AI assistant for developers, providing intelligent coding assistance directly in your terminal . Read more",
+    "host_name": "github.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/agiresearch/AIOS",
+    "name": "agiresearch/AIOS: AIOS: AI Agent Operating System",
+    "snippet": "AIOS is the AI Agent Operating System , which embeds large language model (LLM) into the operating system and facilitates the development and deployment of LLM- ... Read more",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/FoundationAgents/MetaGPT",
+    "name": "FoundationAgents/MetaGPT: 🌟 The Multi-Agent",
+    "snippet": "Feb. 19, 2025 : Today we are officially launching our natural language programming product: MGX (MetaGPT X) - the world's first AI agent development team. More ... Read more",
+    "host_name": "github.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.bytebytego.com/p/top-ai-github-repositories-in-2026",
+    "name": "Top AI GitHub Repositories in 2026",
+    "snippet": "Mar 9, 2026 — Let's look at the most impactful AI repositories trending on GitHub right now, covering what they do, why they matter, and how they fit into ...",
+    "host_name": "blog.bytebytego.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://github.com/OpenHands/OpenHands",
+    "name": "OpenHands: AI-Driven Development",
+    "snippet": "OpenHands Software Agent SDK ... The SDK is a composable Python library that contains all of our agentic tech. It's the engine that powers everything else below.",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/AI-App/OpenDevin.OpenDevin",
+    "name": "OpenDevin: Code Less, Make More",
+    "snippet": "An open - source project aiming to replicate Devin , an autonomous AI software engineer who is capable of executing complex engineering tasks.",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openhands.dev",
+    "name": "OpenHands | The Open Platform for Cloud Coding Agents",
+    "snippet": "Meet OpenHands , the open - source , model-agnostic platform for cloud coding agents . Automate real engineering work securely and transparently.",
+    "host_name": "openhands.dev",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/invariantlabs-ai/OpenDevin",
+    "name": "invariantlabs-ai/OpenDevin",
+    "snippet": "A platform for software development agents powered by AI . OpenHands agents can do anything a human developer can: modify code, run commands, browse the web, ...",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.kdnuggets.com/openhands-open-source-ai-software-developer",
+    "name": "OpenHands: Open Source AI Software Developer",
+    "snippet": "26 Feb 2025 — OpenHands , formerly known as OpenDevin , is an advanced open - source platform for AI -powered software development that has evolved significantly since its ...",
+    "host_name": "www.kdnuggets.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

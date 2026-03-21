@@ -1,0 +1,24 @@
+
+> vane@1.12.1 start
+> next start
+
+   ▲ Next.js 16.0.7
+   - Local:         http://localhost:3000
+   - Network:       http://21.0.8.229:3000
+
+ ✓ Starting...
+ ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+Running database migrations...
+Applied migration: 0000_fuzzy_randall.sql
+Applied migration: 0001_wise_rockslide.sql
+Applied migration: 0002_daffy_wrecker.sql
+Database migrations completed successfully
+ ✓ Ready in 262ms
+Failed to get model list for newly added provider. Type: gemini, ID: 91d685b3-025f-4c0d-98a1-c70df8860774, Error: Cannot read properties of undefined (reading 'forEach')
+Failed to get model list. Type: gemini, ID: 91d685b3-025f-4c0d-98a1-c70df8860774, Error: Cannot read properties of undefined (reading 'forEach')
+Failed to get model list. Type: gemini, ID: 91d685b3-025f-4c0d-98a1-c70df8860774, Error: Cannot read properties of undefined (reading 'forEach')
+Failed to get model list. Type: gemini, ID: 91d685b3-025f-4c0d-98a1-c70df8860774, Error: Cannot read properties of undefined (reading 'forEach')
+An error occurred in discover route: TypeError: Invalid URL
+Failed to get model list. Type: gemini, ID: 91d685b3-025f-4c0d-98a1-c70df8860774, Error: Cannot read properties of undefined (reading 'forEach')
+An error occurred in discover route: TypeError: Invalid URL
+Failed to get model list. Type: gemini, ID: 91d685b3-025f-4c0d-98a1-c70df8860774, Error: Cannot read properties of undefined (reading 'forEach')
