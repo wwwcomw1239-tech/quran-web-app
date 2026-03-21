@@ -19,6 +19,7 @@ import {
   Rewind,
   FastForward,
   Bookmark,
+  Signal,
 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
 import { useLanguage } from '@/lib/i18n';
@@ -78,6 +79,7 @@ interface AudioPlayerBarProps {
   isCached?: boolean;
   isCaching?: boolean;
   cacheProgress?: number;
+  quality?: 'high' | 'low';
   onTogglePlay: () => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -109,6 +111,7 @@ export function AudioPlayerBar({
   isCached = false,
   isCaching = false,
   cacheProgress = 0,
+  quality = 'high',
   onTogglePlay,
   onPrevious,
   onNext,

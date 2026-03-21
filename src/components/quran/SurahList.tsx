@@ -124,7 +124,11 @@ export function SurahList({
               <div className="flex items-center gap-2">
                 {/* Play/Pause Button */}
                 <Button
-                  onClick={() => onPlay(surah)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onPlay(surah);
+                  }}
                   className={`flex-1 h-11 rounded-xl transition-all duration-300 ${
                     isCurrentSurah && isPlaying
                       ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white'
@@ -143,7 +147,11 @@ export function SurahList({
 
                 {/* Favorite Button */}
                 <Button
-                  onClick={() => onToggleFavorite(surah.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onToggleFavorite(surah.id);
+                  }}
                   variant="outline"
                   className={`h-11 w-11 p-0 rounded-xl transition-all duration-300 ${
                     isFavorite
@@ -160,7 +168,11 @@ export function SurahList({
 
                 {/* Download Button */}
                 <Button
-                  onClick={() => onDownload(surah)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onDownload(surah);
+                  }}
                   variant="outline"
                   className="h-11 w-11 p-0 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-300"
                 >

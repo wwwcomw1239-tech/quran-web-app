@@ -757,6 +757,7 @@ function QuranWebAppContent() {
         isCached={isCached}
         isCaching={isCaching}
         cacheProgress={cacheProgress}
+        quality={quality}
         onTogglePlay={togglePlay}
         onPrevious={playPrevious}
         onNext={playNext}

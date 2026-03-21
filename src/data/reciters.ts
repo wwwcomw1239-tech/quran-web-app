@@ -617,10 +617,23 @@ export const reciters: Reciter[] = [
   },
 ];
 
-// Generate audio URL based on reciter and surah
-export const getAudioUrl = (reciterId: string, surahId: number): string => {
+// Cloudflare Worker proxy URL for low quality audio (64kbps)
+const LOW_QUALITY_PROXY_URL = 'https://quran-shorts-api.wwwcomw1239.workers.dev/audio';
+
+// Audio quality type
+export type AudioQuality = 'high' | 'low';
+
+// Generate audio URL based on reciter, surah, and quality
+export const getAudioUrl = (reciterId: string, surahId: number, quality: AudioQuality = 'high'): string => {
   const reciter = reciters.find(r => r.id === reciterId);
   if (!reciter) return '';
   const paddedNumber = surahId.toString().padStart(3, '0');
-  return `${reciter.baseUrl}/${paddedNumber}.mp3`;
+  const originalUrl = `${reciter.baseUrl}/${paddedNumber}.mp3`;
+  
+  // For low quality (Data Saver mode), route through Cloudflare Worker
+  if (quality === 'low') {
+    return `${LOW_QUALITY_PROXY_URL}?url=${encodeURIComponent(originalUrl)}`;
+  }
+  
+  return originalUrl;
 };
