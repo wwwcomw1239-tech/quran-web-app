@@ -38,7 +38,7 @@ export function SearchFilter({
   ];
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 mb-6 sticky top-4 z-40">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 mb-6">
       <div className="flex flex-col lg:flex-row gap-4 items-center">
         {/* Search */}
         <div className="relative w-full lg:flex-1">

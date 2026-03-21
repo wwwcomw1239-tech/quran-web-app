@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Play,
@@ -17,9 +17,52 @@ import {
   Check,
   WifiOff,
   Trash2,
+  Rewind,
+  FastForward,
+  Bookmark,
 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
 import { useLanguage } from '@/lib/i18n';
+
+// Bookmark utility functions
+const BOOKMARK_KEY = 'quran-bookmarks';
+
+const saveBookmark = (reciterId: string, surahId: number, currentTime: number) => {
+  try {
+    const bookmarks = getBookmarks();
+    const key = `${reciterId}-${surahId}`;
+    bookmarks[key] = {
+      reciterId,
+      surahId,
+      timestamp: currentTime,
+      savedAt: Date.now()
+    };
+    localStorage.setItem(BOOKMARK_KEY, JSON.stringify(bookmarks));
+    return true;
+  } catch (error) {
+    console.error('Error saving bookmark:', error);
+    return false;
+  }
+};
+
+const getBookmark = (reciterId: string, surahId: number): number | null => {
+  try {
+    const bookmarks = getBookmarks();
+    const key = `${reciterId}-${surahId}`;
+    return bookmarks[key]?.timestamp || null;
+  } catch {
+    return null;
+  }
+};
+
+const getBookmarks = (): Record<string, { reciterId: string; surahId: number; timestamp: number; savedAt: number }> => {
+  try {
+    const data = localStorage.getItem(BOOKMARK_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch {
+    return {};
+  }
+};
 
 interface AudioPlayerBarProps {
   currentSurah: Surah | null;
@@ -31,6 +74,7 @@ interface AudioPlayerBarProps {
   volume: number;
   isMuted: boolean;
   isRepeat: boolean;
+  reciterId: string;
   reciterName: string;
   isCached?: boolean;
   isCaching?: boolean;
@@ -45,6 +89,10 @@ interface AudioPlayerBarProps {
   onRandom: () => void;
   onClose: () => void;
   onToggleCache?: () => void;
+  onSeekForward?: () => void;
+  onSeekBackward?: () => void;
+  onPlaybackRateChange?: (rate: number) => void;
+  playbackRate?: number;
 }
 
 export function AudioPlayerBar({
@@ -57,6 +105,7 @@ export function AudioPlayerBar({
   volume,
   isMuted,
   isRepeat,
+  reciterId,
   reciterName,
   isCached = false,
   isCaching = false,
@@ -71,9 +120,27 @@ export function AudioPlayerBar({
   onRandom,
   onClose,
   onToggleCache,
+  onSeekForward,
+  onSeekBackward,
+  onPlaybackRateChange,
+  playbackRate = 1,
 }: AudioPlayerBarProps) {
   const { isRTL, t } = useLanguage();
   const progressRef = useRef<HTMLDivElement>(null);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const [hasBookmark, setHasBookmark] = useState(false);
+
+  const playbackRates = [1, 1.25, 1.5, 2];
+
+  // Check if there's a saved bookmark for this surah
+  useEffect(() => {
+    if (currentSurah && reciterId) {
+      const bookmark = getBookmark(reciterId, currentSurah.id);
+      setHasBookmark(bookmark !== null);
+    } else {
+      setHasBookmark(false);
+    }
+  }, [currentSurah, reciterId]);
 
   const formatTime = (time: number) => {
     if (!time || isNaN(time)) return '0:00';
@@ -88,6 +155,14 @@ export function AudioPlayerBar({
     const clickX = e.clientX - rect.left;
     const newProgress = (clickX / rect.width) * 100;
     onSeek(newProgress);
+  };
+
+  const handleSaveBookmark = () => {
+    if (!currentSurah || !reciterId || !currentTime) return;
+    const success = saveBookmark(reciterId, currentSurah.id, currentTime);
+    if (success) {
+      setHasBookmark(true);
+    }
   };
 
   if (!currentSurah) return null;
@@ -135,6 +210,19 @@ export function AudioPlayerBar({
 
           {/* Main Controls */}
           <div className="flex items-center gap-2">
+            {/* Rewind -10s */}
+            {onSeekBackward && (
+              <Button
+                onClick={onSeekBackward}
+                variant="ghost"
+                className="h-9 w-9 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                title={isRTL ? 'ترجيع 10 ثواني' : 'Rewind 10s'}
+              >
+                <Rewind className="w-4 h-4" />
+                <span className="absolute text-[8px] font-bold mt-0.5">10</span>
+              </Button>
+            )}
+
             {/* Previous - swap icons for RTL */}
             <Button
               onClick={isRTL ? onNext : onPrevious}
@@ -167,10 +255,71 @@ export function AudioPlayerBar({
             >
               <SkipForward className="w-5 h-5" />
             </Button>
+
+            {/* Fast Forward +10s */}
+            {onSeekForward && (
+              <Button
+                onClick={onSeekForward}
+                variant="ghost"
+                className="h-9 w-9 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                title={isRTL ? 'تقديم 10 ثواني' : 'Forward 10s'}
+              >
+                <FastForward className="w-4 h-4" />
+                <span className="absolute text-[8px] font-bold mt-0.5">10</span>
+              </Button>
+            )}
           </div>
 
           {/* Secondary Controls */}
           <div className="flex items-center gap-1">
+            {/* Playback Speed Control */}
+            {onPlaybackRateChange && (
+              <div className="relative">
+                <Button
+                  onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                  variant="ghost"
+                  className="h-8 w-8 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold"
+                  title={isRTL ? 'سرعة التشغيل' : 'Playback Speed'}
+                >
+                  {playbackRate}x
+                </Button>
+                {showSpeedMenu && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-10">
+                    {playbackRates.map((rate) => (
+                      <button
+                        key={rate}
+                        onClick={() => {
+                          onPlaybackRateChange(rate);
+                          setShowSpeedMenu(false);
+                        }}
+                        className={`block w-full px-3 py-1.5 text-sm text-left hover:bg-slate-100 dark:hover:bg-slate-700 ${
+                          playbackRate === rate 
+                            ? 'text-emerald-600 dark:text-emerald-400 font-medium' 
+                            : 'text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        {rate}x
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Bookmark Button */}
+            <Button
+              onClick={handleSaveBookmark}
+              variant={hasBookmark ? 'default' : 'ghost'}
+              className={`h-8 w-8 p-0 rounded-full ${
+                hasBookmark
+                  ? 'bg-amber-500 text-white hover:bg-amber-600'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+              title={isRTL ? 'حفظ مكان التوقف' : 'Save position'}
+            >
+              <Bookmark className={`w-4 h-4 ${hasBookmark ? 'fill-current' : ''}`} />
+            </Button>
+
             {/* Offline Download/Delete Button */}
             {onToggleCache && (
               <Button

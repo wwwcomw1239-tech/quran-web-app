@@ -1,12 +1,11 @@
 'use client';
 
 import { surahs, totalVerses, makkiCount, madaniCount } from '@/data/surahs';
-import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2, Download } from 'lucide-react';
+import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2 } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 interface HeaderProps {
   onScrollToBottom: () => void;
@@ -66,14 +65,8 @@ export function Header({ onScrollToBottom }: HeaderProps) {
               </Button>
             )}
 
-            {/* Downloads Link - Center */}
-            <Link
-              href="/downloads"
-              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white rounded-full px-4 py-2 text-sm font-medium backdrop-blur transition-all duration-300"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">{isRTL ? 'تنزيلاتي' : 'Downloads'}</span>
-            </Link>
+            {/* Spacer to maintain layout */}
+            <div className="flex-1" />
 
             {/* Language Switcher - Right Side */}
             <Button
@@ -137,7 +130,7 @@ export function Header({ onScrollToBottom }: HeaderProps) {
             </span>
           </div>
 
-          {/* Scroll to Bottom Button */}
+          {/* Scroll to Bottom Button - Now floating style */}
           <button
             onClick={onScrollToBottom}
             className="mt-6 w-12 h-12 mx-auto rounded-full bg-white/20 hover:bg-white/30 backdrop-blur text-white shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 border border-white/10"

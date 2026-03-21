@@ -267,8 +267,14 @@ interface DownloadState {
   [key: string]: boolean;
 }
 
+// Download progress interface
+interface DownloadProgress {
+  [key: string]: number; // 0-100 percentage
+}
+
 export function BooksLibrary() {
   const [downloadingBooks, setDownloadingBooks] = useState<DownloadState>({});
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<BookCategory | 'all'>('all');
 
@@ -309,6 +315,7 @@ export function BooksLibrary() {
   const handleDownload = async (book: Book) => {
     if (downloadingBooks[book.id]) return;
     setDownloadingBooks(prev => ({ ...prev, [book.id]: true }));
+    setDownloadProgress(prev => ({ ...prev, [book.id]: 0 }));
 
     try {
       // Use proxy for archive.org URLs
@@ -321,7 +328,34 @@ export function BooksLibrary() {
       
       if (!response.ok) throw new Error('فشل في تحميل الملف');
       
-      const blob = await response.blob();
+      // Get content length for progress tracking
+      const contentLength = response.headers.get('content-length');
+      const total = contentLength ? parseInt(contentLength, 10) : 0;
+      
+      // Read response body with progress tracking
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('Cannot read response body');
+      }
+      
+      const chunks: Uint8Array[] = [];
+      let receivedLength = 0;
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        
+        chunks.push(value);
+        receivedLength += value.length;
+        
+        if (total > 0) {
+          const progress = Math.round((receivedLength / total) * 100);
+          setDownloadProgress(prev => ({ ...prev, [book.id]: progress }));
+        }
+      }
+      
+      const blob = new Blob(chunks, { type: 'application/pdf' });
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
@@ -337,6 +371,7 @@ export function BooksLibrary() {
       window.open(getProxiedUrl(book.pdfUrl), '_blank', 'noopener,noreferrer');
     } finally {
       setDownloadingBooks(prev => ({ ...prev, [book.id]: false }));
+      setDownloadProgress(prev => ({ ...prev, [book.id]: 0 }));
     }
   };
 
@@ -439,6 +474,7 @@ export function BooksLibrary() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {categoryBooks.map(book => {
                   const isDownloading = downloadingBooks[book.id];
+                  const progress = downloadProgress[book.id] || 0;
                   return (
                     <Card key={book.id} className="group overflow-hidden transition-all duration-200 hover:shadow-lg bg-white dark:bg-slate-800">
                       <CardContent className="p-4">
@@ -460,11 +496,18 @@ export function BooksLibrary() {
                             <ExternalLink className="w-3 h-3 ml-1" />
                             قراءة
                           </Button>
-                          <Button onClick={() => handleDownload(book)} disabled={isDownloading} className="flex-1 h-8 rounded-lg text-xs bg-blue-500 hover:bg-blue-600 text-white">
+                          <Button onClick={() => handleDownload(book)} disabled={isDownloading} className="flex-1 h-8 rounded-lg text-xs bg-blue-500 hover:bg-blue-600 text-white relative overflow-hidden">
                             {isDownloading ? (
                               <>
-                                <Loader2 className="w-3 h-3 ml-1 animate-spin" />
-                                جاري...
+                                {/* Progress bar background */}
+                                <div 
+                                  className="absolute inset-0 bg-blue-400 transition-all duration-300"
+                                  style={{ width: `${progress}%` }}
+                                />
+                                <span className="relative z-10 flex items-center justify-center">
+                                  <Loader2 className="w-3 h-3 ml-1 animate-spin" />
+                                  {progress}%
+                                </span>
                               </>
                             ) : (
                               <>
@@ -486,6 +529,7 @@ export function BooksLibrary() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filteredBooks.map(book => {
             const isDownloading = downloadingBooks[book.id];
+            const progress = downloadProgress[book.id] || 0;
             return (
               <Card key={book.id} className="group overflow-hidden transition-all duration-200 hover:shadow-lg bg-white dark:bg-slate-800">
                 <CardContent className="p-4">
@@ -510,11 +554,18 @@ export function BooksLibrary() {
                       <ExternalLink className="w-3 h-3 ml-1" />
                       قراءة
                     </Button>
-                    <Button onClick={() => handleDownload(book)} disabled={isDownloading} className="flex-1 h-8 rounded-lg text-xs bg-blue-500 hover:bg-blue-600 text-white">
+                    <Button onClick={() => handleDownload(book)} disabled={isDownloading} className="flex-1 h-8 rounded-lg text-xs bg-blue-500 hover:bg-blue-600 text-white relative overflow-hidden">
                       {isDownloading ? (
                         <>
-                          <Loader2 className="w-3 h-3 ml-1 animate-spin" />
-                          جاري...
+                          {/* Progress bar background */}
+                          <div 
+                            className="absolute inset-0 bg-blue-400 transition-all duration-300"
+                            style={{ width: `${progress}%` }}
+                          />
+                          <span className="relative z-10 flex items-center justify-center">
+                            <Loader2 className="w-3 h-3 ml-1 animate-spin" />
+                            {progress}%
+                          </span>
                         </>
                       ) : (
                         <>

@@ -69,8 +69,24 @@ function QuranWebAppContent() {
   const [cacheStats, setCacheStats] = useState({ count: 0, totalSize: 0, formattedSize: '0 B' });
   const [cacheSupported, setCacheSupported] = useState(true);
   const [cachedBlobUrl, setCachedBlobUrl] = useState<string | null>(null);
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Bookmark utility functions
+  const BOOKMARK_KEY = 'quran-bookmarks';
+  
+  const getBookmark = (reciterId: string, surahId: number): number | null => {
+    try {
+      const data = localStorage.getItem(BOOKMARK_KEY);
+      if (!data) return null;
+      const bookmarks = JSON.parse(data);
+      const key = `${reciterId}-${surahId}`;
+      return bookmarks[key]?.timestamp || null;
+    } catch {
+      return null;
+    }
+  };
   const footerRef = useRef<HTMLElement | null>(null);
 
   // Get selected reciter info
@@ -264,12 +280,22 @@ function QuranWebAppContent() {
       audioRef.current.src = playUrl;
       audioRef.current.load();
 
+      // Set playback rate
+      audioRef.current.playbackRate = playbackRate;
+
       const playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
             setIsPlaying(true);
             setIsLoading(false);
+            
+            // Resume from bookmark if exists
+            const savedBookmark = getBookmark(selectedReciter, surah.id);
+            if (savedBookmark && audioRef.current && savedBookmark < audioRef.current.duration) {
+              audioRef.current.currentTime = savedBookmark;
+              console.log('[Audio] Resuming from bookmark:', savedBookmark);
+            }
           })
           .catch((error) => {
             console.error('Audio play error:', error);
@@ -279,7 +305,7 @@ function QuranWebAppContent() {
           });
       }
     }
-  }, [currentSurah, isPlaying, selectedReciter, t, cacheSupported, cachedBlobUrl]);
+  }, [currentSurah, isPlaying, selectedReciter, t, cacheSupported, cachedBlobUrl, playbackRate]);
 
   // Play next surah
   const playNext = useCallback(() => {
@@ -400,6 +426,27 @@ function QuranWebAppContent() {
     const randomIndex = Math.floor(Math.random() * surahs.length);
     playSurah(surahs[randomIndex]);
   };
+
+  // Seek forward by 10 seconds
+  const seekForward = useCallback(() => {
+    if (!audioRef.current || !duration) return;
+    const newTime = Math.min(audioRef.current.currentTime + 10, duration);
+    audioRef.current.currentTime = newTime;
+  }, [duration]);
+
+  // Seek backward by 10 seconds
+  const seekBackward = useCallback(() => {
+    if (!audioRef.current) return;
+    const newTime = Math.max(audioRef.current.currentTime - 10, 0);
+    audioRef.current.currentTime = newTime;
+  }, []);
+
+  // Change playback rate
+  const handlePlaybackRateChange = useCallback((rate: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.playbackRate = rate;
+    setPlaybackRate(rate);
+  }, []);
 
   // Toggle cache for current surah
   const toggleCache = useCallback(async () => {
@@ -663,6 +710,7 @@ function QuranWebAppContent() {
         volume={volume}
         isMuted={isMuted}
         isRepeat={isRepeat}
+        reciterId={selectedReciter}
         reciterName={currentReciter.nameArabic}
         isCached={isCached}
         isCaching={isCaching}
@@ -677,6 +725,10 @@ function QuranWebAppContent() {
         onRandom={playRandom}
         onClose={closePlayer}
         onToggleCache={cacheSupported ? toggleCache : undefined}
+        onSeekForward={seekForward}
+        onSeekBackward={seekBackward}
+        onPlaybackRateChange={handlePlaybackRateChange}
+        playbackRate={playbackRate}
       />
 
       {/* Download Dialog */}
