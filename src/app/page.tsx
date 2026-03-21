@@ -18,6 +18,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Headphones, BookOpen } from 'lucide-react';
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
+import { AudioQualityProvider, useAudioQuality } from '@/lib/audioQuality';
 import {
   checkAudioInCache,
   getAudioFromCache,
@@ -31,6 +32,7 @@ type FilterType = 'all' | 'مكية' | 'مدنية';
 
 function QuranWebAppContent() {
   const { t, isRTL, direction } = useLanguage();
+  const { quality, setQuality, qualityLabel } = useAudioQuality();
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -142,9 +144,9 @@ function QuranWebAppContent() {
       return;
     }
 
-    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
     checkAudioInCache(audioUrl, selectedReciter, currentSurah.id).then(setIsCached);
-  }, [currentSurah, selectedReciter, cacheSupported]);
+  }, [currentSurah, selectedReciter, cacheSupported, quality]);
 
   // Clean up blob URL on unmount or surah change
   useEffect(() => {
@@ -187,7 +189,7 @@ function QuranWebAppContent() {
         setCachedBlobUrl(null);
       }
 
-      const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+      const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
       audioRef.current.src = audioUrl;
       audioRef.current.load();
 
@@ -226,7 +228,7 @@ function QuranWebAppContent() {
     }
 
     if (audioRef.current) {
-      const audioUrl = getAudioUrl(selectedReciter, surah.id);
+      const audioUrl = getAudioUrl(selectedReciter, surah.id, quality);
       let playUrl = audioUrl;
 
       // CHECK CACHE FIRST
@@ -421,7 +423,7 @@ function QuranWebAppContent() {
   const toggleCache = useCallback(async () => {
     if (!currentSurah || !cacheSupported || isCaching) return;
 
-    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id);
+    const audioUrl = getAudioUrl(selectedReciter, currentSurah.id, quality);
 
     if (isCached) {
       // Remove from cache
@@ -732,7 +734,9 @@ function QuranWebAppContent() {
 export default function QuranWebApp() {
   return (
     <LanguageProvider>
-      <QuranWebAppContent />
+      <AudioQualityProvider>
+        <QuranWebAppContent />
+      </AudioQualityProvider>
     </LanguageProvider>
   );
 }

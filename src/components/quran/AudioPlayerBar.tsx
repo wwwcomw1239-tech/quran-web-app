@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
 import { useLanguage } from '@/lib/i18n';
+import { useAudioQuality, qualityLabels } from '@/lib/audioQuality';
+import { Signal } from 'lucide-react';
 
 // Bookmark utility functions
 const BOOKMARK_KEY = 'quran-bookmarks';
@@ -125,6 +127,7 @@ export function AudioPlayerBar({
   playbackRate = 1,
 }: AudioPlayerBarProps) {
   const { isRTL, t } = useLanguage();
+  const { quality, toggleQuality, qualityLabel } = useAudioQuality();
   const progressRef = useRef<HTMLDivElement>(null);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [hasBookmark, setHasBookmark] = useState(false);
@@ -313,6 +316,20 @@ export function AudioPlayerBar({
                 )}
               </div>
             )}
+
+            {/* Quality Toggle */}
+            <Button
+              onClick={toggleQuality}
+              variant={quality === 'low' ? 'default' : 'ghost'}
+              className={`h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full flex-shrink-0 ${
+                quality === 'low'
+                  ? 'bg-blue-500 text-white hover:bg-blue-600'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+              title={quality === 'high' ? qualityLabels.high.ar : qualityLabels.low.ar}
+            >
+              <Signal className="w-4 h-4 sm:w-5 sm:h-5" />
+            </Button>
 
             {/* Bookmark Button */}
             <Button

@@ -9,6 +9,8 @@ export interface Reciter {
   nameEnglish: string;
   baseUrl: string;
   imageUrl?: string;
+  /** Optional low quality (64kbps) base URL for data saver mode */
+  lowQualityBaseUrl?: string;
 }
 
 export const reciters: Reciter[] = [
@@ -617,10 +619,26 @@ export const reciters: Reciter[] = [
   },
 ];
 
-// Generate audio URL based on reciter and surah
-export const getAudioUrl = (reciterId: string, surahId: number): string => {
+// Generate audio URL based on reciter, surah, and quality
+export const getAudioUrl = (
+  reciterId: string, 
+  surahId: number, 
+  quality: 'high' | 'low' = 'high'
+): string => {
   const reciter = reciters.find(r => r.id === reciterId);
   if (!reciter) return '';
   const paddedNumber = surahId.toString().padStart(3, '0');
+  
+  // For low quality (data saver mode)
+  if (quality === 'low') {
+    // If reciter has explicit low quality base URL, use it
+    if (reciter.lowQualityBaseUrl) {
+      return `${reciter.lowQualityBaseUrl}/${paddedNumber}.mp3`;
+    }
+    // Otherwise, try the _64kbps suffix pattern (most Mp3Quran servers support this)
+    return `${reciter.baseUrl}/${paddedNumber}_64kbps.mp3`;
+  }
+  
+  // High quality (default 128kbps)
   return `${reciter.baseUrl}/${paddedNumber}.mp3`;
 };
