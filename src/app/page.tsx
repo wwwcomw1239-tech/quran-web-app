@@ -13,6 +13,7 @@ import {
   DownloadDialog,
   BooksLibrary,
   AnnouncementBanner,
+  FloatingScrollButtons,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Headphones, BookOpen } from 'lucide-react';
@@ -23,7 +24,6 @@ import {
   saveAudioOffline,
   removeAudioFromCache,
   getCacheStats,
-  formatFileSize,
   isCacheApiSupported,
 } from '@/lib/audioCache';
 
@@ -57,7 +57,6 @@ function QuranWebAppContent() {
   const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
   const [selectedSurahForDownload, setSelectedSurahForDownload] = useState<Surah | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const [fileSize, setFileSize] = useState<number | null>(null);
   const [isLoadingFileSize, setIsLoadingFileSize] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
@@ -136,15 +135,6 @@ function QuranWebAppContent() {
     }
   }, [cacheSupported]);
 
-  // Handle scroll for Back to Top button visibility
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 300);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Check cache status when surah or reciter changes
   useEffect(() => {
     if (!currentSurah || !cacheSupported) {
@@ -164,27 +154,6 @@ function QuranWebAppContent() {
       }
     };
   }, [cachedBlobUrl]);
-
-  // Scroll functions
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const scrollToBottom = () => {
-    footerRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // Fetch file size using HEAD request
-  const fetchFileSize = async (url: string): Promise<number | null> => {
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-      const contentLength = response.headers.get('content-length');
-      return contentLength ? parseInt(contentLength, 10) : null;
-    } catch (error) {
-      console.error('Error fetching file size:', error);
-      return null;
-    }
-  };
 
   // Contact developer function
   const handleContactDeveloper = () => {
@@ -511,6 +480,18 @@ function QuranWebAppContent() {
     }
   }, [currentSurah, selectedReciter, isCached, isCaching, cacheSupported, cachedBlobUrl, isRTL, currentReciter]);
 
+  // Fetch file size using HEAD request
+  const fetchFileSize = async (url: string): Promise<number | null> => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      const contentLength = response.headers.get('content-length');
+      return contentLength ? parseInt(contentLength, 10) : null;
+    } catch (error) {
+      console.error('Error fetching file size:', error);
+      return null;
+    }
+  };
+
   const handleDownload = async (surah: Surah) => {
     setSelectedSurahForDownload(surah);
     setFileSize(null);
@@ -611,7 +592,7 @@ function QuranWebAppContent() {
       <audio ref={audioRef} preload="metadata" crossOrigin="anonymous" />
 
       {/* Header */}
-      <Header onScrollToBottom={scrollToBottom} />
+      <Header />
 
       {/* Announcement Banner */}
       <div className="container mx-auto pt-4">
@@ -694,10 +675,11 @@ function QuranWebAppContent() {
       {/* Footer */}
       <Footer
         ref={footerRef}
-        showBackToTop={showBackToTop}
-        onScrollToTop={scrollToTop}
         onContactDeveloper={handleContactDeveloper}
       />
+
+      {/* Floating Scroll Buttons - Positioned above audio player */}
+      <FloatingScrollButtons hasActiveAudio={!!currentSurah} />
 
       {/* Audio Player Bar */}
       <AudioPlayerBar

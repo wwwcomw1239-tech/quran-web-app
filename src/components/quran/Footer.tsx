@@ -1,45 +1,19 @@
 'use client';
 
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowUp, ArrowDown, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 
 interface FooterProps {
-  showBackToTop: boolean;
-  onScrollToTop: () => void;
   onContactDeveloper: () => void;
 }
 
 export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
-  { showBackToTop, onScrollToTop, onContactDeveloper },
+  { onContactDeveloper },
   ref
 ) {
   const { t, isRTL } = useLanguage();
-  const [showScrollDown, setShowScrollDown] = useState(true);
-
-  // Hide scroll down button when near the bottom
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.innerHeight + window.scrollY;
-      const pageHeight = document.documentElement.scrollHeight;
-      // Hide when within 200px of bottom
-      setShowScrollDown(pageHeight - scrollPosition > 200);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
-  };
 
   return (
     <footer
@@ -111,30 +85,6 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
           </p>
         </div>
       </div>
-
-      {/* Scroll to Top Button - z-index adjusted to be above audio player */}
-      {showBackToTop && (
-        <Button
-          onClick={onScrollToTop}
-          className={`fixed bottom-24 ${isRTL ? 'left-4' : 'right-4'} h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg transition-all duration-300 hover:scale-110 z-[60]`}
-          size="icon"
-          aria-label={t('backToTop')}
-        >
-          <ArrowUp className="w-5 h-5" />
-        </Button>
-      )}
-
-      {/* Scroll to Bottom Button - Now a floating button, opposite to scroll-to-top */}
-      {showScrollDown && !showBackToTop && (
-        <Button
-          onClick={scrollToBottom}
-          className={`fixed bottom-24 ${isRTL ? 'right-4' : 'left-4'} h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white shadow-lg transition-all duration-300 hover:scale-110 z-[60]`}
-          size="icon"
-          aria-label={isRTL ? 'التمرير للأسفل' : 'Scroll to bottom'}
-        >
-          <ArrowDown className="w-5 h-5" />
-        </Button>
-      )}
     </footer>
   );
 });

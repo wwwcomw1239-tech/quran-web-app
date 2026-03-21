@@ -1,33 +1,19 @@
 'use client';
 
 import { surahs, totalVerses, makkiCount, madaniCount } from '@/data/surahs';
-import { BookOpen, ArrowDown, Globe, Moon, Sun, Volume2 } from 'lucide-react';
+import { BookOpen, Globe, Moon, Sun, Volume2 } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-interface HeaderProps {
-  onScrollToBottom: () => void;
-}
-
-export function Header({ onScrollToBottom }: HeaderProps) {
+export function Header() {
   const { t, language, setLanguage, isRTL } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [showScrollDown, setShowScrollDown] = useState(true);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  // Hide floating scroll-down button when scrolled down
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollDown(window.scrollY < 200);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleLanguage = () => {
@@ -141,18 +127,6 @@ export function Header({ onScrollToBottom }: HeaderProps) {
           </div>
         </div>
       </div>
-
-      {/* Floating Scroll to Bottom Button - Fixed positioning for mobile access */}
-      {showScrollDown && (
-        <Button
-          onClick={onScrollToBottom}
-          className={`fixed top-24 ${isRTL ? 'left-4' : 'right-4'} h-12 w-12 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white shadow-lg transition-all duration-300 hover:scale-110 z-[60]`}
-          size="icon"
-          aria-label={t('scrollToBottom')}
-        >
-          <ArrowDown className="w-5 h-5" />
-        </Button>
-      )}
     </header>
   );
 }

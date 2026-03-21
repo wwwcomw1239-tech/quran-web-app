@@ -14,7 +14,6 @@ import {
   X,
   Loader2,
   Download,
-  Check,
   WifiOff,
   Trash2,
   Rewind,
@@ -184,76 +183,83 @@ export function AudioPlayerBar({
         />
       </div>
 
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center gap-4">
-          {/* Surah Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-slate-900 dark:text-white truncate">
-                {displayName}
+      {/* Mobile-First Two-Row Layout */}
+      <div className="px-3 py-2 sm:px-4 sm:py-3">
+        {/* Row 1: Surah Info - Full width, horizontal layout */}
+        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-0">
+          {/* Surah Info Container */}
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate">
+              {displayName}
+            </span>
+            <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate hidden sm:inline">
+              - {reciterName}
+            </span>
+            {/* Cached indicator */}
+            {isCached && (
+              <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full flex-shrink-0">
+                <WifiOff className="w-3 h-3" />
+                <span className="hidden sm:inline">{isRTL ? 'محفوظ' : 'Offline'}</span>
               </span>
-              <span className="text-sm text-slate-500 dark:text-slate-400">
-                - {reciterName}
-              </span>
-              {/* Cached indicator */}
-              {isCached && (
-                <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
-                  <WifiOff className="w-3 h-3" />
-                  <span className="hidden sm:inline">{isRTL ? 'محفوظ' : 'Offline'}</span>
-                </span>
-              )}
-            </div>
-            <div className="text-sm text-slate-500 dark:text-slate-400">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
+            )}
           </div>
 
-          {/* Main Controls */}
-          <div className="flex items-center gap-2">
+          {/* Timer - Always visible */}
+          <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono flex-shrink-0">
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </div>
+        </div>
+
+        {/* Row 2: All Controls - Horizontal scrollable on mobile */}
+        <div className="flex items-center justify-between gap-1 sm:gap-2">
+          {/* Main Playback Controls */}
+          <div className="flex items-center gap-0.5 sm:gap-1">
             {/* Rewind -10s */}
             {onSeekBackward && (
               <Button
                 onClick={onSeekBackward}
                 variant="ghost"
-                className="h-9 w-9 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex-shrink-0"
                 title={isRTL ? 'ترجيع 10 ثواني' : 'Rewind 10s'}
               >
-                <Rewind className="w-4 h-4" />
-                <span className="absolute text-[8px] font-bold mt-0.5">10</span>
+                <div className="relative">
+                  <Rewind className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-[7px] sm:text-[8px] font-bold">10</span>
+                </div>
               </Button>
             )}
 
-            {/* Previous - swap icons for RTL */}
+            {/* Previous */}
             <Button
               onClick={isRTL ? onNext : onPrevious}
               variant="ghost"
-              className="h-10 w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex-shrink-0"
             >
-              <SkipBack className="w-5 h-5" />
+              <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
 
             {/* Play/Pause */}
             <Button
               onClick={onTogglePlay}
-              className="h-12 w-12 p-0 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white"
+              className="h-11 w-11 sm:h-12 sm:w-12 p-0 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white flex-shrink-0"
               disabled={isLoading}
             >
               {isLoading ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
+                <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
               ) : isPlaying ? (
-                <Pause className="w-6 h-6" />
+                <Pause className="w-5 h-5 sm:w-6 sm:h-6" />
               ) : (
-                <Play className="w-6 h-6" />
+                <Play className="w-5 h-5 sm:w-6 sm:h-6" />
               )}
             </Button>
 
-            {/* Next - swap icons for RTL */}
+            {/* Next */}
             <Button
               onClick={isRTL ? onPrevious : onNext}
               variant="ghost"
-              className="h-10 w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex-shrink-0"
             >
-              <SkipForward className="w-5 h-5" />
+              <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
 
             {/* Fast Forward +10s */}
@@ -261,30 +267,32 @@ export function AudioPlayerBar({
               <Button
                 onClick={onSeekForward}
                 variant="ghost"
-                className="h-9 w-9 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex-shrink-0"
                 title={isRTL ? 'تقديم 10 ثواني' : 'Forward 10s'}
               >
-                <FastForward className="w-4 h-4" />
-                <span className="absolute text-[8px] font-bold mt-0.5">10</span>
+                <div className="relative">
+                  <FastForward className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-[7px] sm:text-[8px] font-bold">10</span>
+                </div>
               </Button>
             )}
           </div>
 
           {/* Secondary Controls */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 sm:gap-1">
             {/* Playback Speed Control */}
             {onPlaybackRateChange && (
               <div className="relative">
                 <Button
                   onClick={() => setShowSpeedMenu(!showSpeedMenu)}
                   variant="ghost"
-                  className="h-8 w-8 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold"
+                  className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold flex-shrink-0"
                   title={isRTL ? 'سرعة التشغيل' : 'Playback Speed'}
                 >
                   {playbackRate}x
                 </Button>
                 {showSpeedMenu && (
-                  <div className="absolute bottom-full left-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-10">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-[60] min-w-[60px]">
                     {playbackRates.map((rate) => (
                       <button
                         key={rate}
@@ -292,7 +300,7 @@ export function AudioPlayerBar({
                           onPlaybackRateChange(rate);
                           setShowSpeedMenu(false);
                         }}
-                        className={`block w-full px-3 py-1.5 text-sm text-left hover:bg-slate-100 dark:hover:bg-slate-700 ${
+                        className={`block w-full px-3 py-1.5 text-sm text-center hover:bg-slate-100 dark:hover:bg-slate-700 ${
                           playbackRate === rate 
                             ? 'text-emerald-600 dark:text-emerald-400 font-medium' 
                             : 'text-slate-700 dark:text-slate-300'
@@ -310,14 +318,14 @@ export function AudioPlayerBar({
             <Button
               onClick={handleSaveBookmark}
               variant={hasBookmark ? 'default' : 'ghost'}
-              className={`h-8 w-8 p-0 rounded-full ${
+              className={`h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full flex-shrink-0 ${
                 hasBookmark
                   ? 'bg-amber-500 text-white hover:bg-amber-600'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
               title={isRTL ? 'حفظ مكان التوقف' : 'Save position'}
             >
-              <Bookmark className={`w-4 h-4 ${hasBookmark ? 'fill-current' : ''}`} />
+              <Bookmark className={`w-4 h-4 sm:w-5 sm:h-5 ${hasBookmark ? 'fill-current' : ''}`} />
             </Button>
 
             {/* Offline Download/Delete Button */}
@@ -326,7 +334,7 @@ export function AudioPlayerBar({
                 onClick={onToggleCache}
                 variant={isCached ? 'destructive' : 'ghost'}
                 disabled={isCaching}
-                className={`h-8 w-8 p-0 rounded-full relative ${
+                className={`h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full relative flex-shrink-0 ${
                   isCached
                     ? 'bg-red-500 text-white hover:bg-red-600'
                     : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -338,25 +346,25 @@ export function AudioPlayerBar({
               >
                 {isCaching ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                     {/* Progress ring */}
-                    <svg className="absolute inset-0 w-8 h-8 -rotate-90">
+                    <svg className="absolute inset-0 w-9 h-9 sm:w-10 sm:h-10 -rotate-90">
                       <circle
-                        cx="16"
-                        cy="16"
-                        r="14"
+                        cx="50%"
+                        cy="50%"
+                        r="45%"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        strokeDasharray={`${cacheProgress * 0.88} 88`}
+                        strokeDasharray={`${cacheProgress * 2.83} 283`}
                         className="text-emerald-400"
                       />
                     </svg>
                   </>
                 ) : isCached ? (
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 ) : (
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                 )}
               </Button>
             )}
@@ -365,30 +373,30 @@ export function AudioPlayerBar({
             <Button
               onClick={onToggleRepeat}
               variant={isRepeat ? 'default' : 'ghost'}
-              className={`h-8 w-8 p-0 rounded-full ${
+              className={`h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full flex-shrink-0 ${
                 isRepeat 
                   ? 'bg-emerald-500 text-white hover:bg-emerald-600' 
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              <Repeat className="w-4 h-4" />
+              <Repeat className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
 
             {/* Random */}
             <Button
               onClick={onRandom}
               variant="ghost"
-              className="h-8 w-8 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex-shrink-0 hidden sm:flex"
             >
-              <Shuffle className="w-4 h-4" />
+              <Shuffle className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
 
-            {/* Volume */}
-            <div className="hidden sm:flex items-center gap-1">
+            {/* Volume - Desktop only */}
+            <div className="hidden md:flex items-center gap-1">
               <Button
                 onClick={onToggleMute}
                 variant="ghost"
-                className="h-8 w-8 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="h-9 w-9 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 {isMuted || volume === 0 ? (
                   <VolumeX className="w-4 h-4" />
@@ -411,9 +419,9 @@ export function AudioPlayerBar({
             <Button
               onClick={onClose}
               variant="ghost"
-              className="h-8 w-8 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="h-9 w-9 sm:h-10 sm:w-10 p-0 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex-shrink-0"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
         </div>

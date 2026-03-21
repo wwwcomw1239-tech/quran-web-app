@@ -7,4 +7,5 @@ export { DownloadDialog } from './DownloadDialog';
 export { Footer } from './Footer';
 export { BooksLibrary } from './BooksLibrary';
 export { AnnouncementBanner } from './AnnouncementBanner';
+export { FloatingScrollButtons } from './FloatingScrollButtons';
 export type { Announcement } from './AnnouncementBanner';
