@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import Link from 'next/link';
 import { surahs, Surah } from '@/data/surahs';
 import { reciters, getAudioUrl } from '@/data/reciters';
 import {
@@ -16,7 +17,7 @@ import {
   FloatingScrollButtons,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Headphones, BookOpen } from 'lucide-react';
+import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
 import { AudioQualityProvider, useAudioQuality } from '@/lib/audioQuality';
 import {
@@ -702,14 +703,23 @@ function QuranWebAppContent() {
 
             {/* Cache Stats - Show if there are cached files */}
             {cacheStats.count > 0 && (
-              <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg px-4 py-2">
+              <Link
+                href="/downloads"
+                className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg px-4 py-2 cursor-pointer hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:shadow-md transition-all duration-300 group"
+              >
+                <Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span className="text-emerald-600 dark:text-emerald-400">
                   {isRTL 
                     ? `${cacheStats.count} سورة محفوظة (${cacheStats.formattedSize})`
                     : `${cacheStats.count} surahs cached (${cacheStats.formattedSize})`
                   }
                 </span>
-              </div>
+                {isRTL ? (
+                  <ChevronLeft className="w-4 h-4 text-emerald-500 dark:text-emerald-400 group-hover:-translate-x-1 transition-transform" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-emerald-500 dark:text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                )}
+              </Link>
             )}
 
             {/* Surah List */}
