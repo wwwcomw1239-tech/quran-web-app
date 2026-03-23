@@ -3,6 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AudioPlayerProvider } from "@/lib/AudioPlayerContext";
+import { GlobalAudioPlayer } from "@/components/GlobalAudioPlayer";
+import { LanguageProvider } from "@/lib/i18n";
+import { AudioQualityProvider } from "@/lib/audioQuality";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -173,7 +177,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <LanguageProvider>
+            <AudioQualityProvider>
+              <AudioPlayerProvider>
+                {children}
+                <GlobalAudioPlayer />
+              </AudioPlayerProvider>
+            </AudioQualityProvider>
+          </LanguageProvider>
         </ThemeProvider>
         <Toaster />
       </body>

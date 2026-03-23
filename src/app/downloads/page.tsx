@@ -19,37 +19,32 @@ import { Button } from '@/components/ui/button';
 import { 
   getAllCachedAudio, 
   removeAudioFromCache, 
-  getAudioFromCache, 
   getCacheStats,
   formatFileSize,
   CachedAudioMeta,
   debugCacheState,
 } from '@/lib/audioCache';
-import { LanguageProvider, useLanguage } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
+import { useAudioPlayer } from '@/lib/AudioPlayerContext';
 
 function DownloadsContent() {
   const { isRTL, direction } = useLanguage();
+  const { 
+    currentSurah, 
+    isPlaying, 
+    playFromCache,
+    refreshCacheStats 
+  } = useAudioPlayer();
+  
   const [cachedAudio, setCachedAudio] = useState<CachedAudioMeta[]>([]);
   const [cacheStats, setCacheStats] = useState({ count: 0, totalSize: 0, formattedSize: '0 B' });
   const [loading, setLoading] = useState(true);
-  const [playingId, setPlayingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isLoadingAudio, setIsLoadingAudio] = useState<string | null>(null);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
 
   // Load cached audio on mount
   useEffect(() => {
     loadCachedAudio();
-    
-    // Create audio element for playback
-    const audio = new Audio();
-    audio.addEventListener('ended', () => setPlayingId(null));
-    setAudioElement(audio);
-    
-    return () => {
-      audio.pause();
-      audio.src = '';
-    };
   }, []);
 
   const loadCachedAudio = useCallback(async () => {
@@ -75,46 +70,23 @@ function DownloadsContent() {
   }, []);
 
   const handlePlay = useCallback(async (item: CachedAudioMeta) => {
-    if (!audioElement) return;
-    
-    // If same track is playing, stop it
-    if (playingId === item.id) {
-      audioElement.pause();
-      audioElement.src = '';
-      setPlayingId(null);
-      return;
-    }
-    
-    // Stop current playback
-    audioElement.pause();
     setIsLoadingAudio(item.id);
     
     console.log('[Downloads] Attempting to play:', item.id);
     
     try {
-      // Get blob URL from cache
-      const result = await getAudioFromCache(item.url, item.reciterId, item.surahId);
+      const success = await playFromCache({
+        surahId: item.surahId,
+        surahNameArabic: item.surahNameArabic,
+        surahNameEnglish: item.surahNameEnglish,
+        reciterId: item.reciterId,
+        reciterNameArabic: item.reciterNameArabic,
+        reciterNameEnglish: item.reciterNameEnglish,
+      });
       
-      if (result.url) {
-        console.log('[Downloads] Got blob URL, attempting playback');
-        audioElement.src = result.url;
-        
-        audioElement.onloadeddata = () => {
-          console.log('[Downloads] Audio loaded successfully');
-          setIsLoadingAudio(null);
-        };
-        
-        audioElement.onerror = (e) => {
-          console.error('[Downloads] Audio element error:', e);
-          setIsLoadingAudio(null);
-          toast.error(isRTL ? 'فشل في تشغيل الملف الصوتي' : 'Failed to play audio file', {
-            description: isRTL ? 'قد يكون الملف تالفاً، حاول حذفه وإعادة تحميله' : 'The file may be corrupted, try deleting and re-downloading'
-          });
-        };
-        
-        await audioElement.play();
-        setPlayingId(item.id);
-        
+      setIsLoadingAudio(null);
+      
+      if (success) {
         toast.success(
           isRTL 
             ? `تشغيل: ${item.surahNameArabic}`
@@ -122,23 +94,14 @@ function DownloadsContent() {
           { icon: <Volume2 className="w-4 h-4" /> }
         );
       } else {
-        console.error('[Downloads] Failed to get audio from cache:', result.error);
-        setIsLoadingAudio(null);
-        
-        // Show appropriate error message
-        const errorMessage = result.error === 'not_found'
-          ? (isRTL ? 'الملف غير موجود في الذاكرة المؤقتة' : 'File not found in cache')
-          : result.error === 'empty_blob'
-          ? (isRTL ? 'الملف تالف أو فارغ' : 'File is corrupted or empty')
-          : result.error === 'invalid_response'
-          ? (isRTL ? 'استجابة غير صالحة من الذاكرة' : 'Invalid cache response')
-          : (isRTL ? 'فشل في استرجاع الملف' : 'Failed to retrieve file');
-        
-        toast.error(errorMessage, {
-          description: isRTL 
-            ? 'حاول حذف هذا الملف وإعادة تحميله من المكتبة الصوتية'
-            : 'Try deleting this file and re-downloading from Audio Library'
-        });
+        toast.error(
+          isRTL ? 'فشل في تشغيل الملف الصوتي' : 'Failed to play audio file',
+          {
+            description: isRTL 
+              ? 'قد يكون الملف تالفاً، حاول حذفه وإعادة تحميله' 
+              : 'The file may be corrupted, try deleting and re-downloading'
+          }
+        );
       }
     } catch (error: any) {
       console.error('[Downloads] Play error:', error);
@@ -149,17 +112,10 @@ function DownloadsContent() {
         { description: error.message || String(error) }
       );
     }
-  }, [audioElement, playingId, isRTL]);
+  }, [playFromCache, isRTL]);
 
   const handleDelete = useCallback(async (item: CachedAudioMeta) => {
     setDeletingId(item.id);
-    
-    // Stop playback if deleting currently playing track
-    if (playingId === item.id && audioElement) {
-      audioElement.pause();
-      audioElement.src = '';
-      setPlayingId(null);
-    }
     
     console.log('[Downloads] Deleting:', item.id);
     
@@ -171,21 +127,24 @@ function DownloadsContent() {
       setCachedAudio(prev => prev.filter(a => a.id !== item.id));
       const stats = await getCacheStats();
       setCacheStats(stats);
+      refreshCacheStats();
+      
+      toast.success(
+        isRTL ? 'تم حذف الملف بنجاح' : 'File deleted successfully'
+      );
+    } else {
+      toast.error(
+        isRTL ? 'فشل في حذف الملف' : 'Failed to delete file'
+      );
     }
     
     setDeletingId(null);
-  }, [playingId, audioElement]);
+  }, [isRTL, refreshCacheStats]);
 
   const handleClearAll = async () => {
     if (!confirm(isRTL ? 'هل تريد حذف جميع الملفات المحملة؟' : 'Delete all downloaded files?')) {
       return;
     }
-    
-    if (audioElement) {
-      audioElement.pause();
-      audioElement.src = '';
-    }
-    setPlayingId(null);
     
     // Delete each item
     for (const item of cachedAudio) {
@@ -194,6 +153,11 @@ function DownloadsContent() {
     
     setCachedAudio([]);
     setCacheStats({ count: 0, totalSize: 0, formattedSize: '0 B' });
+    refreshCacheStats();
+    
+    toast.success(
+      isRTL ? 'تم حذف جميع الملفات' : 'All files deleted'
+    );
   };
 
   // Format date
@@ -202,6 +166,11 @@ function DownloadsContent() {
     return isRTL 
       ? date.toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' })
       : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
+
+  // Check if this item is currently playing
+  const isItemPlaying = (item: CachedAudioMeta) => {
+    return currentSurah?.id === item.surahId && isPlaying;
   };
 
   return (
@@ -235,7 +204,7 @@ function DownloadsContent() {
       </div>
 
       {/* Content */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6 pb-36">
         {/* Stats Card */}
         {cachedAudio.length > 0 && (
           <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-4 mb-6 border border-emerald-200 dark:border-emerald-800">
@@ -341,7 +310,7 @@ function DownloadsContent() {
                     <Button
                       onClick={() => handlePlay(item)}
                       className={`h-11 w-11 p-0 rounded-full ${
-                        playingId === item.id
+                        isItemPlaying(item)
                           ? 'bg-red-500 hover:bg-red-600 text-white'
                           : 'bg-emerald-500 hover:bg-emerald-600 text-white'
                       }`}
@@ -350,7 +319,7 @@ function DownloadsContent() {
                     >
                       {isLoadingAudio === item.id ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : playingId === item.id ? (
+                      ) : isItemPlaying(item) ? (
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                           <rect x="6" y="4" width="4" height="16" rx="1" />
                           <rect x="14" y="4" width="4" height="16" rx="1" />
@@ -399,9 +368,5 @@ function DownloadsContent() {
 }
 
 export default function DownloadsPage() {
-  return (
-    <LanguageProvider>
-      <DownloadsContent />
-    </LanguageProvider>
-  );
+  return <DownloadsContent />;
 }
