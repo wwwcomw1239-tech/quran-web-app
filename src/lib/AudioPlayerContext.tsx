@@ -160,8 +160,20 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
   const [filter, setFilter] = useState<'all' | 'مكية' | 'مدنية'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Audio element ref
+  // Audio element ref - created dynamically without crossOrigin for blob support
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Create audio element on mount (without crossOrigin to support blob URLs)
+  useEffect(() => {
+    const audio = new Audio();
+    audio.preload = 'metadata';
+    audioRef.current = audio;
+    
+    return () => {
+      audio.pause();
+      audio.src = '';
+    };
+  }, []);
 
   // Get current reciter info
   const currentReciter = reciters.find(r => r.id === selectedReciter) || reciters[0];
@@ -714,8 +726,6 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
 
   return (
     <AudioPlayerContext.Provider value={value}>
-      {/* Global Audio Element */}
-      <audio ref={audioRef} preload="metadata" crossOrigin="anonymous" />
       {children}
     </AudioPlayerContext.Provider>
   );
