@@ -226,10 +226,10 @@ function QuranWebAppContent() {
           setIsCached(inCache);
 
           if (inCache) {
-            const blobUrl = await getAudioFromCache(audioUrl, selectedReciter, currentSurah.id);
-            if (blobUrl) {
-              playUrl = blobUrl;
-              setCachedBlobUrl(blobUrl);
+            const result = await getAudioFromCache(audioUrl, selectedReciter, currentSurah.id);
+            if (result.url) {
+              playUrl = result.url;
+              setCachedBlobUrl(result.url);
             }
           }
         }
@@ -296,10 +296,10 @@ function QuranWebAppContent() {
         setIsCached(inCache);
 
         if (inCache) {
-          const blobUrl = await getAudioFromCache(audioUrl, selectedReciter, surah.id);
-          if (blobUrl) {
-            playUrl = blobUrl;
-            setCachedBlobUrl(blobUrl);
+          const result = await getAudioFromCache(audioUrl, selectedReciter, surah.id);
+          if (result.url) {
+            playUrl = result.url;
+            setCachedBlobUrl(result.url);
             console.log('[Audio] Playing from cache:', surah.id);
           }
         } else {

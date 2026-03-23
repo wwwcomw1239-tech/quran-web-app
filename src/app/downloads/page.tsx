@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { 
   ArrowRight, 
   Play, 
@@ -12,6 +13,7 @@ import {
   Loader2,
   AlertCircle,
   RefreshCw,
+  Volume2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -32,6 +34,7 @@ function DownloadsContent() {
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isLoadingAudio, setIsLoadingAudio] = useState<string | null>(null);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
 
   // Load cached audio on mount
@@ -84,20 +87,67 @@ function DownloadsContent() {
     
     // Stop current playback
     audioElement.pause();
+    setIsLoadingAudio(item.id);
     
-    console.log('[Downloads] Playing:', item.id);
+    console.log('[Downloads] Attempting to play:', item.id);
     
-    // Get blob URL from cache
-    const blobUrl = await getAudioFromCache(item.url, item.reciterId, item.surahId);
-    
-    if (blobUrl) {
-      audioElement.src = blobUrl;
-      audioElement.play().then(() => {
+    try {
+      // Get blob URL from cache
+      const result = await getAudioFromCache(item.url, item.reciterId, item.surahId);
+      
+      if (result.url) {
+        console.log('[Downloads] Got blob URL, attempting playback');
+        audioElement.src = result.url;
+        
+        audioElement.onloadeddata = () => {
+          console.log('[Downloads] Audio loaded successfully');
+          setIsLoadingAudio(null);
+        };
+        
+        audioElement.onerror = (e) => {
+          console.error('[Downloads] Audio element error:', e);
+          setIsLoadingAudio(null);
+          toast.error(isRTL ? 'فشل في تشغيل الملف الصوتي' : 'Failed to play audio file', {
+            description: isRTL ? 'قد يكون الملف تالفاً، حاول حذفه وإعادة تحميله' : 'The file may be corrupted, try deleting and re-downloading'
+          });
+        };
+        
+        await audioElement.play();
         setPlayingId(item.id);
-      }).catch(console.error);
-    } else {
-      console.error('[Downloads] Failed to get audio from cache');
-      alert(isRTL ? 'فشل في تشغيل الملف' : 'Failed to play file');
+        
+        toast.success(
+          isRTL 
+            ? `تشغيل: ${item.surahNameArabic}`
+            : `Now playing: ${item.surahNameEnglish}`,
+          { icon: <Volume2 className="w-4 h-4" /> }
+        );
+      } else {
+        console.error('[Downloads] Failed to get audio from cache:', result.error);
+        setIsLoadingAudio(null);
+        
+        // Show appropriate error message
+        const errorMessage = result.error === 'not_found'
+          ? (isRTL ? 'الملف غير موجود في الذاكرة المؤقتة' : 'File not found in cache')
+          : result.error === 'empty_blob'
+          ? (isRTL ? 'الملف تالف أو فارغ' : 'File is corrupted or empty')
+          : result.error === 'invalid_response'
+          ? (isRTL ? 'استجابة غير صالحة من الذاكرة' : 'Invalid cache response')
+          : (isRTL ? 'فشل في استرجاع الملف' : 'Failed to retrieve file');
+        
+        toast.error(errorMessage, {
+          description: isRTL 
+            ? 'حاول حذف هذا الملف وإعادة تحميله من المكتبة الصوتية'
+            : 'Try deleting this file and re-downloading from Audio Library'
+        });
+      }
+    } catch (error: any) {
+      console.error('[Downloads] Play error:', error);
+      setIsLoadingAudio(null);
+      
+      toast.error(
+        isRTL ? 'حدث خطأ أثناء التشغيل' : 'An error occurred during playback',
+        { description: error.message || String(error) }
+      );
     }
   }, [audioElement, playingId, isRTL]);
 
@@ -295,10 +345,12 @@ function DownloadsContent() {
                           ? 'bg-red-500 hover:bg-red-600 text-white'
                           : 'bg-emerald-500 hover:bg-emerald-600 text-white'
                       }`}
-                      disabled={deletingId === item.id}
+                      disabled={deletingId === item.id || isLoadingAudio === item.id}
                       title={isRTL ? 'تَشْغِيل' : 'Play'}
                     >
-                      {playingId === item.id ? (
+                      {isLoadingAudio === item.id ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : playingId === item.id ? (
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                           <rect x="6" y="4" width="4" height="16" rx="1" />
                           <rect x="14" y="4" width="4" height="16" rx="1" />
@@ -313,7 +365,7 @@ function DownloadsContent() {
                       onClick={() => handleDelete(item)}
                       variant="outline"
                       className="h-11 w-11 p-0 rounded-full text-red-600 border-red-300 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
-                      disabled={deletingId === item.id}
+                      disabled={deletingId === item.id || isLoadingAudio === item.id}
                       title={isRTL ? 'حَذْف' : 'Delete'}
                     >
                       {deletingId === item.id ? (

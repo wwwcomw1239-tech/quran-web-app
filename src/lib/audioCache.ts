@@ -169,28 +169,67 @@ export async function checkAudioInCache(
 
 /**
  * Get audio from cache as Blob URL
+ * Enhanced with validation and error handling
  */
 export async function getAudioFromCache(
   audioUrl: string,
   reciterId: string,
   surahId: number
-): Promise<string | null> {
-  if (typeof window === 'undefined' || !('caches' in window)) return null;
+): Promise<{ url: string | null; error?: string }> {
+  if (typeof window === 'undefined' || !('caches' in window)) {
+    return { url: null, error: 'Cache API not supported' };
+  }
   
   try {
     const cache = await caches.open(CACHE_NAME);
     const key = getCacheKey(reciterId, surahId);
+    
+    console.log('[Cache] Attempting to retrieve:', key);
+    
     const response = await cache.match(key);
     
-    if (response) {
-      const blob = await response.blob();
-      return URL.createObjectURL(blob);
+    if (!response) {
+      console.error('[Cache] No response found for key:', key);
+      return { url: null, error: 'not_found' };
     }
     
-    return null;
-  } catch (error) {
+    // Check if response is valid
+    if (!response.ok) {
+      console.error('[Cache] Response not OK:', response.status, response.statusText);
+      return { url: null, error: 'invalid_response' };
+    }
+    
+    // Check content type
+    const contentType = response.headers.get('content-type');
+    console.log('[Cache] Content-Type:', contentType);
+    
+    // Get blob
+    const blob = await response.blob();
+    
+    // Validate blob
+    if (!blob || blob.size === 0) {
+      console.error('[Cache] Invalid blob: size =', blob?.size || 0);
+      return { url: null, error: 'empty_blob' };
+    }
+    
+    // Check if blob type is correct (should be audio/mpeg)
+    if (blob.type && !blob.type.includes('audio') && !blob.type.includes('mpeg')) {
+      console.warn('[Cache] Unexpected blob type:', blob.type);
+      // Try to continue anyway - some browsers may not set the correct type
+    }
+    
+    console.log('[Cache] Successfully retrieved blob:', {
+      size: blob.size,
+      type: blob.type || 'unknown'
+    });
+    
+    // Create object URL
+    const blobUrl = URL.createObjectURL(blob);
+    
+    return { url: blobUrl };
+  } catch (error: any) {
     console.error('[Cache] Error getting audio from cache:', error);
-    return null;
+    return { url: null, error: error.message || 'unknown_error' };
   }
 }
 
