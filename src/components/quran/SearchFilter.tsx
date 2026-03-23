@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Heart, BookOpen } from 'lucide-react';
+import { Search, Star, BookOpen } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
@@ -74,11 +74,11 @@ export function SearchFilter({
             variant={showFavorites ? 'default' : 'outline'}
             className={`h-10 px-4 rounded-xl ${
               showFavorites
-                ? 'bg-rose-500 hover:bg-rose-600 text-white'
-                : 'border-rose-200 dark:border-rose-700 hover:bg-rose-50 dark:hover:bg-slate-700'
+                ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                : 'border-amber-200 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-slate-700'
             }`}
           >
-            <Heart className={`w-4 h-4 ${isRTL ? 'ml-1' : 'mr-1'} ${showFavorites ? 'fill-white' : ''}`} />
+            <Star className={`w-4 h-4 ${isRTL ? 'ml-1' : 'mr-1'} ${showFavorites ? 'fill-white' : ''}`} />
             {t('favorites')}
             {favoritesCount > 0 && (
               <Badge className={`${isRTL ? 'mr-1' : 'ml-1'} bg-white/20 text-white`}>

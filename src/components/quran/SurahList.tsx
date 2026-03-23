@@ -3,7 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Play, Pause, Heart, Download, Loader2 } from 'lucide-react';
+import { Play, Pause, Star, Download, Loader2 } from 'lucide-react';
 import { Surah } from '@/data/surahs';
 import { useLanguage } from '@/lib/i18n';
 
@@ -95,7 +95,7 @@ export function SurahList({
                 {/* Favorite indicator - Left side */}
                 <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
                   {isFavorite && (
-                    <Heart className="w-5 h-5 text-rose-400 fill-rose-400 animate-pulse" />
+                    <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
                   )}
                 </div>
               </div>
@@ -155,13 +155,13 @@ export function SurahList({
                   variant="outline"
                   className={`h-11 w-11 p-0 rounded-xl transition-all duration-300 ${
                     isFavorite
-                      ? 'bg-rose-50 border-rose-300 dark:bg-rose-900/30 dark:border-rose-700 hover:bg-rose-100 dark:hover:bg-rose-900/50'
-                      : 'hover:bg-rose-50 dark:hover:bg-rose-900/20'
+                      ? 'bg-amber-50 border-amber-300 dark:bg-amber-900/30 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/50'
+                      : 'hover:bg-amber-50 dark:hover:bg-amber-900/20'
                   }`}
                 >
-                  <Heart
+                  <Star
                     className={`w-5 h-5 transition-all duration-300 ${
-                      isFavorite ? 'fill-rose-500 text-rose-500' : 'text-slate-400 hover:text-rose-400'
+                      isFavorite ? 'fill-amber-500 text-amber-500' : 'text-slate-400 hover:text-amber-400'
                     }`}
                   />
                 </Button>
