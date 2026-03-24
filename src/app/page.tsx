@@ -16,7 +16,7 @@ import {
   FloatingScrollButtons,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { useAudioQuality } from '@/lib/audioQuality';
 import { useAudioPlayer } from '@/lib/AudioPlayerContext';
@@ -208,17 +208,25 @@ function QuranWebAppContent() {
           <TabsList className="bg-white dark:bg-slate-900 shadow-lg rounded-2xl p-1.5 mx-auto flex justify-center mb-6 border border-slate-200 dark:border-slate-800">
             <TabsTrigger
               value="audio"
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <Headphones className="w-5 h-5" />
-              <span className="font-medium">{t('audioLibrary')}</span>
+              <span className="font-medium hidden sm:inline">{t('audioLibrary')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="books"
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
             >
               <BookOpen className="w-5 h-5" />
-              <span className="font-medium">{t('booksLibrary')}</span>
+              <span className="font-medium hidden sm:inline">{t('booksLibrary')}</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="library"
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-purple-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
+              onClick={() => window.location.href = '/library'}
+            >
+              <Library className="w-5 h-5" />
+              <span className="font-medium hidden sm:inline">{isRTL ? 'المكتبة الشاملة' : 'Library'}</span>
             </TabsTrigger>
           </TabsList>
 
