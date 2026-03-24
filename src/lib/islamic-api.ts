@@ -479,11 +479,15 @@ export async function getHadithsFromBook(
     }>(response);
 
     if (result.data?.hadiths) {
-      const allHadiths = result.data.hadiths;
-      const total = allHadiths.length;
+      // ✅ CRITICAL FIX: Filter out hadiths with empty or very short text
+      const validHadiths = result.data.hadiths.filter(h => 
+        h.text && h.text.trim().length > 10
+      );
+      
+      const total = validHadiths.length;
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
-      const paginatedHadiths = allHadiths.slice(startIndex, endIndex);
+      const paginatedHadiths = validHadiths.slice(startIndex, endIndex);
 
       const hadiths: Hadith[] = paginatedHadiths.map((h, index) => ({
         id: `${bookId}-${h.hadithnumber}`,
@@ -496,7 +500,7 @@ export async function getHadithsFromBook(
         },
       }));
 
-      console.log(`[API] Successfully fetched ${hadiths.length} hadiths from ${bookInfo.name}`);
+      console.log(`[API] Successfully fetched ${hadiths.length} valid hadiths from ${bookInfo.name} (filtered from ${result.data.hadiths.length} total)`);
 
       return {
         data: {

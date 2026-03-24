@@ -40,6 +40,7 @@ import {
   X,
   Filter,
   AlertTriangle,
+  Hash,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -109,6 +110,29 @@ export default function LibraryPage() {
 
   // Rate limit state
   const [isRateLimited, setIsRateLimited] = useState(false);
+
+  // ✅ NEW: Selected ayah for scroll-to feature
+  const [selectedAyah, setSelectedAyah] = useState<number | null>(null);
+  const verseListRef = useRef<HTMLDivElement>(null);
+
+  // ✅ NEW: Scroll to specific ayah
+  const scrollToAyah = useCallback((ayahNumber: number) => {
+    const element = document.getElementById(`verse-${ayahNumber}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Add highlight effect
+      element.classList.add('ring-2', 'ring-emerald-400');
+      setTimeout(() => {
+        element.classList.remove('ring-2', 'ring-emerald-400');
+      }, 2000);
+    }
+  }, []);
+
+  // ✅ NEW: Handle ayah selection from dropdown
+  const handleAyahSelect = useCallback((ayahNumber: number) => {
+    setSelectedAyah(ayahNumber);
+    scrollToAyah(ayahNumber);
+  }, [scrollToAyah]);
 
   // ✅ NEW: Filtered verses based on local search
   const filteredVerses = useMemo(() => {
@@ -490,6 +514,33 @@ export default function LibraryPage() {
               </button>
             )}
           </div>
+          
+          {/* ✅ NEW: Ayah Selector Dropdown */}
+          <div className="relative">
+            <Hash className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <select
+              className="pr-9 pl-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white appearance-none cursor-pointer min-w-[120px]"
+              value={selectedAyah || ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value) {
+                  handleAyahSelect(Number(value));
+                }
+              }}
+              disabled={tafsirLoading || tafsirVerses.length === 0}
+            >
+              <option value="" disabled>
+                {isRTL ? 'اختر الآية' : 'Select Ayah'}
+              </option>
+              {tafsirVerses.map((verse) => (
+                <option key={verse.verse_number} value={verse.verse_number}>
+                  {isRTL ? `الآية ${verse.verse_number}` : `Verse ${verse.verse_number}`}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Tafsir Book Selector */}
           <select
             className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
             value={selectedTafsir?.id || ''}
@@ -525,7 +576,11 @@ export default function LibraryPage() {
         <ScrollArea className="h-[calc(100vh-350px)]">
           <div className="space-y-4 pr-4">
             {filteredVerses.map((verse) => (
-              <Card key={verse.id} className="overflow-hidden shadow-md">
+              <Card 
+                key={verse.id} 
+                id={`verse-${verse.verse_number}`}
+                className="overflow-hidden shadow-md transition-all duration-300"
+              >
                 <CardContent className="p-5">
                   {/* Verse Number */}
                   <div className="flex items-center gap-3 mb-4">
