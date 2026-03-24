@@ -1,26 +1,42 @@
 /**
- * Islamic Library API
+ * Islamic Library API - DYNAMIC VERSION
  * 
- * Provides access to:
- * - Tafsir from Quran.com API
- * - Hadith from sunnah.api (and fallback sources)
+ * Real APIs used:
+ * - Quranenc API for translations/tafsir
+ * - fawazahmed0 Hadith API for hadiths
  * 
  * Features:
  * - 24-hour caching with Next.js revalidate
  * - Debouncing support
  * - Rate limit handling (429)
- * - Graceful error fallbacks
+ * - Dynamic surah/book fetching
  */
 
-// API Configuration
-const QURAN_API_BASE = 'https://api.quran.com/api/v4';
-const HADITH_API_BASE = 'https://api.hadith.sutanlab.id';
-const HADITH_API_ALT = 'https://api.sunnah.com/v1'; // Alternative
+// API Configuration - REAL WORKING APIs
+const QURANENC_API = 'https://quranenc.com/api/v1';
+const HADITH_API_BASE = 'https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1';
 
 // Cache configuration - 24 hours
 const CACHE_REVALIDATE = 86400;
 
 // Types
+export interface QuranVerse {
+  id: number;
+  sura: number;
+  verseNumber: number;
+  aya: string;
+  translation: string;
+  footnotes: string | null;
+}
+
+export interface SurahInfo {
+  id: number;
+  name: string;
+  englishName: string;
+  revelationType: string;
+  numberOfAyahs: number;
+}
+
 export interface Tafsir {
   id: number;
   name: string;
@@ -28,25 +44,6 @@ export interface Tafsir {
   author_name: string | null;
   slug: string;
   source: string;
-}
-
-export interface TafsirVerse {
-  id: number;
-  verse_id: number;
-  verse_key: string;
-  text_uthmani: string;
-  text_imlaei: string;
-  tafsir_text: string;
-}
-
-export interface TafsirResponse {
-  tafsirs: Tafsir[];
-  pagination: {
-    next_page: number | null;
-    current_page: number;
-    total_pages: number;
-    total_records: number;
-  };
 }
 
 export interface VerseWithTafsir {
@@ -73,16 +70,13 @@ export interface HadithBook {
 }
 
 export interface Hadith {
-  number: number;
-  arab: string;
-  id?: string;
+  id: string;
+  hadithnumber: number;
+  arabnumber: number;
+  text: string;
   book?: {
     id: string;
     name: string;
-  };
-  chapter?: {
-    id: string;
-    title: string;
   };
 }
 
@@ -94,13 +88,34 @@ export interface ApiResponse<T> {
 }
 
 // Error messages in Arabic
-const ERROR_MESSAGES = {
+export const ERROR_MESSAGES = {
   rateLimited: 'المكتبة تواجه ضغطاً كبيراً، يرجى المحاولة بعد قليل',
   serverError: 'حدث خطأ في الخادم، يرجى المحاولة لاحقاً',
   notFound: 'لم يتم العثور على البيانات المطلوبة',
   networkError: 'تعذر الاتصال بالخادم، تحقق من اتصالك بالإنترنت',
   timeout: 'انتهت مهلة الطلب، يرجى المحاولة مرة أخرى',
   unknown: 'حدث خطأ غير متوقع',
+};
+
+// Available translations/tafsirs
+const AVAILABLE_TRANSLATIONS = [
+  { id: 1, name: 'التفسير الميسر', slug: 'arabic_moyassar', language: 'arabic' },
+  { id: 2, name: 'تفسير الجلالين', slug: 'arabic_jalalayn', language: 'arabic' },
+  { id: 3, name: 'تفسير السعدي', slug: 'arabic_saadi', language: 'arabic' },
+  { id: 4, name: 'ترجمة معاني القرآن', slug: 'arabic_mokhtasar', language: 'arabic' },
+];
+
+// Available hadith books mapping
+const HADITH_BOOKS_MAP: Record<string, { name: string; file: string }> = {
+  'bukhari': { name: 'صحيح البخاري', file: 'ara-bukhari' },
+  'muslim': { name: 'صحيح مسلم', file: 'ara-muslim' },
+  'abudawud': { name: 'سنن أبي داود', file: 'ara-abudawud' },
+  'tirmidhi': { name: 'سنن الترمذي', file: 'ara-tirmidhi' },
+  'nasai': { name: 'سنن النسائي', file: 'ara-nasai' },
+  'ibnmajah': { name: 'سنن ابن ماجه', file: 'ara-ibnmajah' },
+  'malik': { name: 'موطأ مالك', file: 'ara-malik' },
+  'ahmad': { name: 'مسند أحمد', file: 'ara-ahmad' },
+  'darimi': { name: 'سنن الدارمي', file: 'ara-darimi' },
 };
 
 /**
@@ -134,7 +149,6 @@ async function fetchWithTimeout(
  * Handle API response with proper error handling
  */
 async function handleApiResponse<T>(response: Response): Promise<ApiResponse<T>> {
-  // Handle rate limiting
   if (response.status === 429) {
     return {
       data: null,
@@ -144,7 +158,6 @@ async function handleApiResponse<T>(response: Response): Promise<ApiResponse<T>>
     };
   }
 
-  // Handle server errors
   if (response.status >= 500) {
     return {
       data: null,
@@ -154,7 +167,6 @@ async function handleApiResponse<T>(response: Response): Promise<ApiResponse<T>>
     };
   }
 
-  // Handle not found
   if (response.status === 404) {
     return {
       data: null,
@@ -164,7 +176,6 @@ async function handleApiResponse<T>(response: Response): Promise<ApiResponse<T>>
     };
   }
 
-  // Handle success
   if (response.ok) {
     try {
       const data = await response.json();
@@ -193,13 +204,50 @@ async function handleApiResponse<T>(response: Response): Promise<ApiResponse<T>>
 }
 
 /**
- * Get list of available Tafsirs
- * Cached for 24 hours
+ * Get list of available Tafsirs/Translations
  */
 export async function getTafsirsList(): Promise<ApiResponse<Tafsir[]>> {
+  const tafsirs: Tafsir[] = AVAILABLE_TRANSLATIONS.map(t => ({
+    id: t.id,
+    name: t.name,
+    language_name: t.language,
+    author_name: null,
+    slug: t.slug,
+    source: 'quranenc',
+  }));
+
+  return {
+    data: tafsirs,
+    error: null,
+    status: 200,
+    isRateLimited: false,
+  };
+}
+
+/**
+ * Get Surah with Translation/Tafsir - DYNAMIC
+ * @param surahId - Surah number (1-114)
+ * @param translationSlug - Translation identifier
+ */
+export async function getSurahTafsir(
+  surahId: number,
+  translationSlug: string = 'arabic_moyassar'
+): Promise<ApiResponse<VerseWithTafsir[]>> {
   try {
+    console.log(`[API] Fetching surah ${surahId} with translation ${translationSlug}`);
+    
+    // Validate surahId
+    if (surahId < 1 || surahId > 114) {
+      return {
+        data: null,
+        error: ERROR_MESSAGES.notFound,
+        status: 404,
+        isRateLimited: false,
+      };
+    }
+
     const response = await fetchWithTimeout(
-      `${QURAN_API_BASE}/resources/tafsirs`,
+      `${QURANENC_API}/translation/sura/${translationSlug}/${surahId}`,
       {
         next: { revalidate: CACHE_REVALIDATE },
         headers: {
@@ -208,17 +256,40 @@ export async function getTafsirsList(): Promise<ApiResponse<Tafsir[]>> {
       }
     );
 
-    const result = await handleApiResponse<{ tafsirs: Tafsir[] }>(response);
-    
-    if (result.data) {
-      // Filter Arabic tafsirs only
-      const arabicTafsirs = result.data.tafsirs.filter(
-        (t) => t.language_name === 'arabic'
-      );
+    const result = await handleApiResponse<{
+      result: Array<{
+        id: number;
+        sura: number;
+        aya_number: number;
+        aya: string;
+        translation: string;
+        footnotes: string | null;
+      }>;
+    }>(response);
+
+    if (result.data?.result) {
+      // Transform to our format
+      const verses: VerseWithTafsir[] = result.data.result.map((v) => ({
+        id: v.id,
+        verse_number: v.aya_number,
+        verse_key: `${surahId}:${v.aya_number}`,
+        text_uthmani: v.aya,
+        text_imlaei_simple: v.aya,
+        words_count: 0,
+        tafsirs: [{
+          id: 1,
+          verse_id: v.id,
+          tafsir_id: 1,
+          text: v.translation || '',
+        }],
+      }));
+
+      console.log(`[API] Successfully fetched ${verses.length} verses for surah ${surahId}`);
+
       return {
-        data: arabicTafsirs,
+        data: verses,
         error: null,
-        status: result.status,
+        status: 200,
         isRateLimited: false,
       };
     }
@@ -230,80 +301,7 @@ export async function getTafsirsList(): Promise<ApiResponse<Tafsir[]>> {
       isRateLimited: result.isRateLimited,
     };
   } catch (error: any) {
-    return {
-      data: null,
-      error: error.message === 'timeout' ? ERROR_MESSAGES.timeout : ERROR_MESSAGES.networkError,
-      status: 0,
-      isRateLimited: false,
-    };
-  }
-}
-
-/**
- * Get Tafsir for a specific verse
- * Cached for 24 hours
- */
-export async function getVerseTafsir(
-  verseKey: string,
-  tafsirId: number = 169 // Default: Tafsir Ibn Kathir
-): Promise<ApiResponse<VerseWithTafsir>> {
-  try {
-    const response = await fetchWithTimeout(
-      `${QURAN_API_BASE}/verses/${verseKey}?language=ar&words=true&tafsirs=${tafsirId}&word_fields=verse_key,verse_id&fields=text_uthmani,text_imlaei_simple,words_count`,
-      {
-        next: { revalidate: CACHE_REVALIDATE },
-        headers: {
-          'Accept': 'application/json',
-        },
-      }
-    );
-
-    const result = await handleApiResponse<{ verse: VerseWithTafsir }>(response);
-    
-    return {
-      data: result.data?.verse || null,
-      error: result.error,
-      status: result.status,
-      isRateLimited: result.isRateLimited,
-    };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: error.message === 'timeout' ? ERROR_MESSAGES.timeout : ERROR_MESSAGES.networkError,
-      status: 0,
-      isRateLimited: false,
-    };
-  }
-}
-
-/**
- * Get Tafsir for a whole Surah
- * Cached for 24 hours
- */
-export async function getSurahTafsir(
-  surahId: number,
-  tafsirId: number = 169
-): Promise<ApiResponse<VerseWithTafsir[]>> {
-  try {
-    const response = await fetchWithTimeout(
-      `${QURAN_API_BASE}/verses/by_chapter/${surahId}?language=ar&words=false&tafsirs=${tafsirId}&fields=text_uthmani,text_imlaei_simple,words_count,verse_key,verse_number&per_page=300`,
-      {
-        next: { revalidate: CACHE_REVALIDATE },
-        headers: {
-          'Accept': 'application/json',
-        },
-      }
-    );
-
-    const result = await handleApiResponse<{ verses: VerseWithTafsir[] }>(response);
-    
-    return {
-      data: result.data?.verses || null,
-      error: result.error,
-      status: result.status,
-      isRateLimited: result.isRateLimited,
-    };
-  } catch (error: any) {
+    console.error(`[API] Error fetching surah ${surahId}:`, error);
     return {
       data: null,
       error: error.message === 'timeout' ? ERROR_MESSAGES.timeout : ERROR_MESSAGES.networkError,
@@ -315,62 +313,28 @@ export async function getSurahTafsir(
 
 /**
  * Get list of Hadith books
- * Cached for 24 hours
  */
 export async function getHadithBooks(): Promise<ApiResponse<HadithBook[]>> {
-  try {
-    const response = await fetchWithTimeout(
-      `${HADITH_API_BASE}/books`,
-      {
-        next: { revalidate: CACHE_REVALIDATE },
-        headers: {
-          'Accept': 'application/json',
-        },
-      }
-    );
+  const books: HadithBook[] = Object.entries(HADITH_BOOKS_MAP).map(([id, info]) => ({
+    id,
+    name: info.name,
+    hadiths_count: 0,
+    available: true,
+  }));
 
-    const result = await handleApiResponse<{ data: { id: string; name: string; hadiths_count: number; available: boolean }[] }>(response);
-    
-    // Standard Hadith books in Arabic
-    const standardBooks: HadithBook[] = [
-      { id: 'bukhari', name: 'صحيح البخاري', hadiths_count: 7008, available: true },
-      { id: 'muslim', name: 'صحيح مسلم', hadiths_count: 5362, available: true },
-      { id: 'abu-daud', name: 'سنن أبي داود', hadiths_count: 4590, available: true },
-      { id: 'tirmidzi', name: 'سنن الترمذي', hadiths_count: 3891, available: true },
-      { id: 'nasai', name: 'سنن النسائي', hadiths_count: 5364, available: true },
-      { id: 'ibnu-majah', name: 'سنن ابن ماجه', hadiths_count: 4285, available: true },
-      { id: 'malik', name: 'موطأ مالك', hadiths_count: 1594, available: true },
-      { id: 'ahmad', name: 'مسند أحمد', hadiths_count: 26398, available: true },
-      { id: 'darimi', name: 'سنن الدارمي', hadiths_count: 2949, available: true },
-    ];
-
-    return {
-      data: standardBooks,
-      error: null,
-      status: 200,
-      isRateLimited: false,
-    };
-  } catch (error: any) {
-    // Return default books even on error
-    return {
-      data: [
-        { id: 'bukhari', name: 'صحيح البخاري', hadiths_count: 7008, available: true },
-        { id: 'muslim', name: 'صحيح مسلم', hadiths_count: 5362, available: true },
-        { id: 'abu-daud', name: 'سنن أبي داود', hadiths_count: 4590, available: true },
-        { id: 'tirmidzi', name: 'سنن الترمذي', hadiths_count: 3891, available: true },
-        { id: 'nasai', name: 'سنن النسائي', hadiths_count: 5364, available: true },
-        { id: 'ibnu-majah', name: 'سنن ابن ماجه', hadiths_count: 4285, available: true },
-      ],
-      error: null,
-      status: 200,
-      isRateLimited: false,
-    };
-  }
+  return {
+    data: books,
+    error: null,
+    status: 200,
+    isRateLimited: false,
+  };
 }
 
 /**
- * Get Hadiths from a specific book
- * Cached for 24 hours
+ * Get Hadiths from a specific book - DYNAMIC
+ * @param bookId - Book identifier (e.g., 'bukhari', 'muslim')
+ * @param page - Page number (1-indexed)
+ * @param limit - Number of items per page
  */
 export async function getHadithsFromBook(
   bookId: string,
@@ -378,8 +342,20 @@ export async function getHadithsFromBook(
   limit: number = 20
 ): Promise<ApiResponse<{ hadiths: Hadith[]; total: number; page: number }>> {
   try {
+    console.log(`[API] Fetching hadiths from book ${bookId}, page ${page}`);
+
+    const bookInfo = HADITH_BOOKS_MAP[bookId];
+    if (!bookInfo) {
+      return {
+        data: null,
+        error: ERROR_MESSAGES.notFound,
+        status: 404,
+        isRateLimited: false,
+      };
+    }
+
     const response = await fetchWithTimeout(
-      `${HADITH_API_BASE}/books/${bookId}?page=${page}&limit=${limit}`,
+      `${HADITH_API_BASE}/editions/${bookInfo.file}.json`,
       {
         next: { revalidate: CACHE_REVALIDATE },
         headers: {
@@ -389,21 +365,41 @@ export async function getHadithsFromBook(
     );
 
     const result = await handleApiResponse<{
-      data: Hadith[];
-      total: number;
-      current_page: number;
-      last_page: number;
+      hadiths: Array<{
+        hadithnumber: number;
+        arabnumber: number | string;
+        text: string;
+      }>;
     }>(response);
 
-    if (result.data) {
+    if (result.data?.hadiths) {
+      const allHadiths = result.data.hadiths;
+      const total = allHadiths.length;
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedHadiths = allHadiths.slice(startIndex, endIndex);
+
+      const hadiths: Hadith[] = paginatedHadiths.map((h, index) => ({
+        id: `${bookId}-${h.hadithnumber}`,
+        hadithnumber: h.hadithnumber,
+        arabnumber: typeof h.arabnumber === 'string' ? parseInt(h.arabnumber) || h.hadithnumber : h.arabnumber || h.hadithnumber,
+        text: h.text,
+        book: {
+          id: bookId,
+          name: bookInfo.name,
+        },
+      }));
+
+      console.log(`[API] Successfully fetched ${hadiths.length} hadiths from ${bookInfo.name}`);
+
       return {
         data: {
-          hadiths: result.data.data || [],
-          total: result.data.total || 0,
-          page: result.data.current_page || page,
+          hadiths,
+          total,
+          page,
         },
         error: null,
-        status: result.status,
+        status: 200,
         isRateLimited: false,
       };
     }
@@ -415,6 +411,7 @@ export async function getHadithsFromBook(
       isRateLimited: result.isRateLimited,
     };
   } catch (error: any) {
+    console.error(`[API] Error fetching hadiths from ${bookId}:`, error);
     return {
       data: null,
       error: error.message === 'timeout' ? ERROR_MESSAGES.timeout : ERROR_MESSAGES.networkError,
@@ -425,67 +422,32 @@ export async function getHadithsFromBook(
 }
 
 /**
- * Get a specific Hadith by number
- * Cached for 24 hours
- */
-export async function getHadithByNumber(
-  bookId: string,
-  hadithNumber: number
-): Promise<ApiResponse<Hadith>> {
-  try {
-    const response = await fetchWithTimeout(
-      `${HADITH_API_BASE}/books/${bookId}/${hadithNumber}`,
-      {
-        next: { revalidate: CACHE_REVALIDATE },
-        headers: {
-          'Accept': 'application/json',
-        },
-      }
-    );
-
-    const result = await handleApiResponse<{ data: Hadith; error: { message: string } }>(response);
-
-    if (result.data) {
-      return {
-        data: result.data.data || null,
-        error: null,
-        status: result.status,
-        isRateLimited: false,
-      };
-    }
-
-    return {
-      data: null,
-      error: result.error,
-      status: result.status,
-      isRateLimited: result.isRateLimited,
-    };
-  } catch (error: any) {
-    return {
-      data: null,
-      error: error.message === 'timeout' ? ERROR_MESSAGES.timeout : ERROR_MESSAGES.networkError,
-      status: 0,
-      isRateLimited: false,
-    };
-  }
-}
-
-/**
- * Search Hadiths (client-side filtering after fetching)
- * Note: The API doesn't support full-text search, so we fetch and filter
+ * Search Hadiths
  */
 export async function searchHadiths(
   query: string,
   bookId?: string
 ): Promise<ApiResponse<Hadith[]>> {
   try {
-    // Fetch from specific book or multiple books
-    const booksToSearch = bookId ? [bookId] : ['bukhari', 'muslim'];
+    if (!query || query.length < 3) {
+      return {
+        data: [],
+        error: null,
+        status: 200,
+        isRateLimited: false,
+      };
+    }
+
+    const booksToSearch = bookId ? [bookId] : Object.keys(HADITH_BOOKS_MAP).slice(0, 3);
     const results: Hadith[] = [];
+    const queryLower = query.toLowerCase();
 
     for (const book of booksToSearch) {
+      const bookInfo = HADITH_BOOKS_MAP[book];
+      if (!bookInfo) continue;
+
       const response = await fetchWithTimeout(
-        `${HADITH_API_BASE}/books/${book}?page=1&limit=50`,
+        `${HADITH_API_BASE}/editions/${bookInfo.file}.json`,
         {
           next: { revalidate: CACHE_REVALIDATE },
           headers: {
@@ -494,23 +456,36 @@ export async function searchHadiths(
         }
       );
 
-      const result = await handleApiResponse<{ data: Hadith[] }>(response);
-      
-      if (result.data?.data) {
-        const filtered = result.data.data.filter((h: Hadith) =>
-          h.arab?.includes(query)
-        );
-        results.push(...filtered.map((h: Hadith) => ({ ...h, book: { id: book, name: book } })));
+      const result = await handleApiResponse<{
+        hadiths: Array<{
+          hadithnumber: number;
+          arabnumber: number | string;
+          text: string;
+        }>;
+      }>(response);
+
+      if (result.data?.hadiths) {
+        const filtered = result.data.hadiths
+          .filter((h) => h.text?.toLowerCase().includes(queryLower))
+          .slice(0, 10)
+          .map((h) => ({
+            id: `${book}-${h.hadithnumber}`,
+            hadithnumber: h.hadithnumber,
+            arabnumber: typeof h.arabnumber === 'string' ? parseInt(h.arabnumber) || h.hadithnumber : h.arabnumber || h.hadithnumber,
+            text: h.text,
+            book: {
+              id: book,
+              name: bookInfo.name,
+            },
+          }));
+        results.push(...filtered);
       }
 
-      // Stop if rate limited
-      if (result.isRateLimited) {
-        break;
-      }
+      if (results.length >= 20) break;
     }
 
     return {
-      data: results.slice(0, 20), // Limit results
+      data: results.slice(0, 20),
       error: null,
       status: 200,
       isRateLimited: false,
@@ -524,6 +499,3 @@ export async function searchHadiths(
     };
   }
 }
-
-// Export error messages for use in UI
-export { ERROR_MESSAGES };

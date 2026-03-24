@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 
 // Custom debounce hook
@@ -24,6 +24,7 @@ function useDebouncedCallback<T extends (...args: any[]) => any>(
 
   return debouncedCallback;
 }
+
 import { 
   BookOpen, 
   Search, 
@@ -36,7 +37,6 @@ import {
   ChevronRight,
   BookMarked,
   FileText,
-  Volume2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -74,7 +74,7 @@ export default function LibraryPage() {
   // Tafsir state
   const [tafsirs, setTafsirs] = useState<Tafsir[]>([]);
   const [selectedTafsir, setSelectedTafsir] = useState<Tafsir | null>(null);
-  const [selectedSurah, setSelectedSurah] = useState<number>(1);
+  const [selectedSurahId, setSelectedSurahId] = useState<number | null>(null);
   const [tafsirVerses, setTafsirVerses] = useState<VerseWithTafsir[]>([]);
   const [tafsirLoading, setTafsirLoading] = useState(false);
   const [tafsirError, setTafsirError] = useState<string | null>(null);
@@ -82,7 +82,7 @@ export default function LibraryPage() {
 
   // Hadith state
   const [hadithBooks, setHadithBooks] = useState<HadithBook[]>([]);
-  const [selectedBook, setSelectedBook] = useState<HadithBook | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   const [hadiths, setHadiths] = useState<Hadith[]>([]);
   const [hadithPage, setHadithPage] = useState(1);
   const [hadithTotal, setHadithTotal] = useState(0);
@@ -98,10 +98,9 @@ export default function LibraryPage() {
   // Rate limit state
   const [isRateLimited, setIsRateLimited] = useState(false);
 
-  // Load Tafsirs list
+  // Load Tafsirs list on mount
   useEffect(() => {
     const loadTafsirs = async () => {
-      setTafsirLoading(true);
       const result = await getTafsirsList();
       
       if (result.data) {
@@ -115,7 +114,6 @@ export default function LibraryPage() {
           setIsRateLimited(true);
         }
       }
-      setTafsirLoading(false);
     };
 
     if (activeTab === 'tafsir') {
@@ -123,10 +121,9 @@ export default function LibraryPage() {
     }
   }, [activeTab]);
 
-  // Load Hadith books
+  // Load Hadith books on mount
   useEffect(() => {
     const loadBooks = async () => {
-      setHadithLoading(true);
       const result = await getHadithBooks();
       
       if (result.data) {
@@ -137,7 +134,6 @@ export default function LibraryPage() {
           setIsRateLimited(true);
         }
       }
-      setHadithLoading(false);
     };
 
     if (activeTab === 'hadith') {
@@ -145,51 +141,77 @@ export default function LibraryPage() {
     }
   }, [activeTab]);
 
-  // Load Tafsir for selected surah
-  const loadTafsir = useCallback(async () => {
-    if (!selectedTafsir) return;
+  // ✅ FIX: Load Tafsir when selectedSurahId changes (with useEffect)
+  useEffect(() => {
+    const loadTafsir = async () => {
+      if (selectedSurahId === null || !selectedTafsir) return;
 
-    setTafsirLoading(true);
-    setTafsirError(null);
+      setTafsirLoading(true);
+      setTafsirError(null);
+      console.log(`[Library] Loading tafsir for surah ${selectedSurahId} with tafsir ${selectedTafsir.slug}`);
 
-    const result = await getSurahTafsir(selectedSurah, selectedTafsir.id);
+      const result = await getSurahTafsir(selectedSurahId, selectedTafsir.slug);
 
-    if (result.data) {
-      setTafsirVerses(result.data);
-      setTafsirViewState('detail');
-    } else {
-      setTafsirError(result.error);
-      if (result.isRateLimited) {
-        setIsRateLimited(true);
-        toast.error(ERROR_MESSAGES.rateLimited);
+      if (result.data) {
+        setTafsirVerses(result.data);
+        setTafsirViewState('detail');
+        console.log(`[Library] Loaded ${result.data.length} verses`);
+      } else {
+        setTafsirError(result.error);
+        if (result.isRateLimited) {
+          setIsRateLimited(true);
+          toast.error(ERROR_MESSAGES.rateLimited);
+        }
       }
-    }
 
-    setTafsirLoading(false);
-  }, [selectedSurah, selectedTafsir]);
+      setTafsirLoading(false);
+    };
 
-  // Load Hadiths from book
-  const loadHadiths = useCallback(async (bookId: string, page: number = 1) => {
-    setHadithLoading(true);
-    setHadithError(null);
+    loadTafsir();
+  }, [selectedSurahId, selectedTafsir]);
 
-    const result = await getHadithsFromBook(bookId, page, 20);
+  // ✅ FIX: Handle surah selection - just set the ID, useEffect will trigger the fetch
+  const handleSurahSelect = (surahId: number) => {
+    console.log(`[Library] User selected surah ${surahId}`);
+    setSelectedSurahId(surahId);
+  };
 
-    if (result.data) {
-      setHadiths(result.data.hadiths);
-      setHadithTotal(result.data.total);
-      setHadithPage(result.data.page);
-      setHadithViewState('detail');
-    } else {
-      setHadithError(result.error);
-      if (result.isRateLimited) {
-        setIsRateLimited(true);
-        toast.error(ERROR_MESSAGES.rateLimited);
+  // ✅ FIX: Load Hadiths when selectedBookId changes
+  useEffect(() => {
+    const loadHadiths = async () => {
+      if (selectedBookId === null) return;
+
+      setHadithLoading(true);
+      setHadithError(null);
+      console.log(`[Library] Loading hadiths from book ${selectedBookId}, page ${hadithPage}`);
+
+      const result = await getHadithsFromBook(selectedBookId, hadithPage, 20);
+
+      if (result.data) {
+        setHadiths(result.data.hadiths);
+        setHadithTotal(result.data.total);
+        setHadithViewState('detail');
+        console.log(`[Library] Loaded ${result.data.hadiths.length} hadiths`);
+      } else {
+        setHadithError(result.error);
+        if (result.isRateLimited) {
+          setIsRateLimited(true);
+          toast.error(ERROR_MESSAGES.rateLimited);
+        }
       }
-    }
 
-    setHadithLoading(false);
-  }, []);
+      setHadithLoading(false);
+    };
+
+    loadHadiths();
+  }, [selectedBookId, hadithPage]);
+
+  // ✅ FIX: Handle book selection - just set the ID
+  const handleBookSelect = (bookId: string) => {
+    console.log(`[Library] User selected book ${bookId}`);
+    setSelectedBookId(bookId);
+    setHadithPage(1); // Reset page
+  };
 
   // Debounced search
   const debouncedSearch = useDebouncedCallback(async (query: string) => {
@@ -258,6 +280,10 @@ export default function LibraryPage() {
     </div>
   );
 
+  // Get current surah info
+  const selectedSurah = selectedSurahId ? surahs.find(s => s.id === selectedSurahId) : null;
+  const selectedBook = selectedBookId ? hadithBooks.find(b => b.id === selectedBookId) : null;
+
   // Tafsir List View
   const renderTafsirList = () => (
     <div className="space-y-6">
@@ -300,11 +326,10 @@ export default function LibraryPage() {
           .map((surah) => (
             <Card
               key={surah.id}
-              className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5"
-              onClick={() => {
-                setSelectedSurah(surah.id);
-                loadTafsir();
-              }}
+              className={`cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 ${
+                selectedSurahId === surah.id ? 'ring-2 ring-emerald-500' : ''
+              }`}
+              onClick={() => handleSurahSelect(surah.id)}
             >
               <CardContent className="p-3 text-center">
                 <div className="w-10 h-10 mx-auto rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold mb-2">
@@ -324,33 +349,41 @@ export default function LibraryPage() {
   );
 
   // Tafsir Detail View
-  const renderTafsirDetail = () => {
-    const surah = surahs.find((s) => s.id === selectedSurah);
-
-    return (
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4">
-          <Button
-            variant="ghost"
-            onClick={() => setTafsirViewState('list')}
-            className="gap-2"
-          >
-            {isRTL ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-            {isRTL ? 'العودة للقائمة' : 'Back to list'}
-          </Button>
-          <div className="text-center">
-            <h2 className="font-bold text-lg text-slate-900 dark:text-white">
-              {isRTL ? surah?.nameArabic : surah?.nameEnglish}
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {selectedTafsir?.name}
-            </p>
-          </div>
-          <div className="w-24" />
+  const renderTafsirDetail = () => (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4">
+        <Button
+          variant="ghost"
+          onClick={() => {
+            setTafsirViewState('list');
+            setSelectedSurahId(null);
+            setTafsirVerses([]);
+          }}
+          className="gap-2"
+        >
+          {isRTL ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+          {isRTL ? 'العودة للقائمة' : 'Back to list'}
+        </Button>
+        <div className="text-center">
+          <h2 className="font-bold text-lg text-slate-900 dark:text-white">
+            {isRTL ? selectedSurah?.nameArabic : selectedSurah?.nameEnglish}
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {selectedTafsir?.name}
+          </p>
         </div>
+        <div className="w-24" />
+      </div>
 
-        {/* Verses with Tafsir */}
+      {/* Loading State */}
+      {tafsirLoading && renderLoading()}
+
+      {/* Error State */}
+      {tafsirError && !tafsirLoading && renderError(tafsirError)}
+
+      {/* Verses with Tafsir */}
+      {!tafsirLoading && !tafsirError && tafsirVerses.length > 0 && (
         <ScrollArea className="h-[calc(100vh-300px)]">
           <div className="space-y-4 pr-4">
             {tafsirVerses.map((verse) => (
@@ -372,7 +405,7 @@ export default function LibraryPage() {
                   </p>
 
                   {/* Tafsir */}
-                  {verse.tafsirs && verse.tafsirs.length > 0 && (
+                  {verse.tafsirs && verse.tafsirs.length > 0 && verse.tafsirs[0]?.text && (
                     <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <BookMarked className="w-4 h-4 text-emerald-500" />
@@ -381,7 +414,7 @@ export default function LibraryPage() {
                         </span>
                       </div>
                       <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-right" style={{ fontFamily: "'Cairo', 'Tajawal', sans-serif" }}>
-                        {verse.tafsirs[0]?.text?.replace(/<[^>]*>/g, '') || ''}
+                        {verse.tafsirs[0].text}
                       </p>
                     </div>
                   )}
@@ -390,9 +423,9 @@ export default function LibraryPage() {
             ))}
           </div>
         </ScrollArea>
-      </div>
-    );
-  };
+      )}
+    </div>
+  );
 
   // Hadith List View
   const renderHadithList = () => (
@@ -417,11 +450,11 @@ export default function LibraryPage() {
           </h3>
           {searchResults.length > 0 ? (
             <div className="space-y-3">
-              {searchResults.slice(0, 5).map((hadith, index) => (
-                <Card key={index} className="overflow-hidden">
+              {searchResults.slice(0, 5).map((hadith) => (
+                <Card key={hadith.id} className="overflow-hidden">
                   <CardContent className="p-4">
                     <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-right mb-2" style={{ fontFamily: "'Amiri', serif" }}>
-                      {hadith.arab?.slice(0, 200)}...
+                      {hadith.text?.slice(0, 200)}...
                     </p>
                     <Badge variant="outline">
                       {hadith.book?.name || hadith.id}
@@ -446,11 +479,10 @@ export default function LibraryPage() {
         {hadithBooks.map((book) => (
           <Card
             key={book.id}
-            className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5"
-            onClick={() => {
-              setSelectedBook(book);
-              loadHadiths(book.id);
-            }}
+            className={`cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 ${
+              selectedBookId === book.id ? 'ring-2 ring-blue-500' : ''
+            }`}
+            onClick={() => handleBookSelect(book.id)}
           >
             <CardContent className="p-4 text-center">
               <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white mb-3">
@@ -476,7 +508,11 @@ export default function LibraryPage() {
       <div className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
         <Button
           variant="ghost"
-          onClick={() => setHadithViewState('list')}
+          onClick={() => {
+            setHadithViewState('list');
+            setSelectedBookId(null);
+            setHadiths([]);
+          }}
           className="gap-2"
         >
           {isRTL ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
@@ -493,51 +529,61 @@ export default function LibraryPage() {
         <div className="w-24" />
       </div>
 
+      {/* Loading State */}
+      {hadithLoading && renderLoading()}
+
+      {/* Error State */}
+      {hadithError && !hadithLoading && renderError(hadithError)}
+
       {/* Hadiths */}
-      <ScrollArea className="h-[calc(100vh-350px)]">
-        <div className="space-y-4 pr-4">
-          {hadiths.map((hadith, index) => (
-            <Card key={hadith.number || index}>
-              <CardContent className="p-4">
-                {/* Hadith Number */}
-                <div className="flex items-center justify-between mb-3">
-                  <Badge className="bg-blue-500">
-                    #{hadith.number}
-                  </Badge>
-                </div>
+      {!hadithLoading && !hadithError && hadiths.length > 0 && (
+        <>
+          <ScrollArea className="h-[calc(100vh-400px)]">
+            <div className="space-y-4 pr-4">
+              {hadiths.map((hadith) => (
+                <Card key={hadith.id}>
+                  <CardContent className="p-4">
+                    {/* Hadith Number */}
+                    <div className="flex items-center justify-between mb-3">
+                      <Badge className="bg-blue-500">
+                        #{hadith.hadithnumber}
+                      </Badge>
+                    </div>
 
-                {/* Arabic Text */}
-                <p className="text-lg leading-loose text-slate-900 dark:text-white text-right mb-3" style={{ fontFamily: "'Amiri', serif" }}>
-                  {hadith.arab}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
+                    {/* Arabic Text */}
+                    <p className="text-lg leading-loose text-slate-900 dark:text-white text-right mb-3" style={{ fontFamily: "'Amiri', serif" }}>
+                      {hadith.text}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </ScrollArea>
 
-      {/* Pagination */}
-      <div className="flex items-center justify-center gap-4 py-4">
-        <Button
-          variant="outline"
-          disabled={hadithPage <= 1 || hadithLoading}
-          onClick={() => selectedBook && loadHadiths(selectedBook.id, hadithPage - 1)}
-        >
-          {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          {isRTL ? 'السابق' : 'Previous'}
-        </Button>
-        <span className="text-sm text-slate-500">
-          {hadithPage} / {Math.ceil(hadithTotal / 20)}
-        </span>
-        <Button
-          variant="outline"
-          disabled={hadithPage >= Math.ceil(hadithTotal / 20) || hadithLoading}
-          onClick={() => selectedBook && loadHadiths(selectedBook.id, hadithPage + 1)}
-        >
-          {isRTL ? 'التالي' : 'Next'}
-          {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-        </Button>
-      </div>
+          {/* Pagination */}
+          <div className="flex items-center justify-center gap-4 py-4">
+            <Button
+              variant="outline"
+              disabled={hadithPage <= 1 || hadithLoading}
+              onClick={() => setHadithPage(p => p - 1)}
+            >
+              {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+              {isRTL ? 'السابق' : 'Previous'}
+            </Button>
+            <span className="text-sm text-slate-500">
+              {hadithPage} / {Math.ceil(hadithTotal / 20) || 1}
+            </span>
+            <Button
+              variant="outline"
+              disabled={hadithPage >= Math.ceil(hadithTotal / 20) || hadithLoading}
+              onClick={() => setHadithPage(p => p + 1)}
+            >
+              {isRTL ? 'التالي' : 'Next'}
+              {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 
@@ -592,24 +638,12 @@ export default function LibraryPage() {
 
             {/* Tafsir Tab */}
             <TabsContent value="tafsir" className="outline-none">
-              {tafsirLoading && tafsirs.length === 0 ? (
-                renderLoading()
-              ) : tafsirError && tafsirs.length === 0 ? (
-                renderError(tafsirError)
-              ) : (
-                tafsirViewState === 'list' ? renderTafsirList() : renderTafsirDetail()
-              )}
+              {tafsirViewState === 'list' ? renderTafsirList() : renderTafsirDetail()}
             </TabsContent>
 
             {/* Hadith Tab */}
             <TabsContent value="hadith" className="outline-none">
-              {hadithLoading && hadithBooks.length === 0 ? (
-                renderLoading()
-              ) : hadithError && hadithBooks.length === 0 ? (
-                renderError(hadithError)
-              ) : (
-                hadithViewState === 'list' ? renderHadithList() : renderHadithDetail()
-              )}
+              {hadithViewState === 'list' ? renderHadithList() : renderHadithDetail()}
             </TabsContent>
           </Tabs>
         )}
