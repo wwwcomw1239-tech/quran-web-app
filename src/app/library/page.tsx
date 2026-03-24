@@ -39,6 +39,7 @@ import {
   FileText,
   X,
   Filter,
+  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -82,10 +83,10 @@ export default function LibraryPage() {
   const [tafsirError, setTafsirError] = useState<string | null>(null);
   const [tafsirViewState, setTafsirViewState] = useState<ViewState>('list');
 
-  // ✅ NEW: Local search for displayed verses/tafsir
+  // Local search for displayed verses/tafsir
   const [localTafsirSearch, setLocalTafsirSearch] = useState('');
 
-  // ✅ NEW: Search for surah list
+  // Search for surah list
   const [surahSearchQuery, setSurahSearchQuery] = useState('');
 
   // Hadith state
@@ -98,7 +99,7 @@ export default function LibraryPage() {
   const [hadithError, setHadithError] = useState<string | null>(null);
   const [hadithViewState, setHadithViewState] = useState<ViewState>('list');
 
-  // ✅ NEW: Local search for displayed hadiths
+  // Local search for displayed hadiths
   const [localHadithSearch, setLocalHadithSearch] = useState('');
 
   // Search state (global hadith search)
@@ -115,7 +116,7 @@ export default function LibraryPage() {
     const query = localTafsirSearch.toLowerCase();
     return tafsirVerses.filter(verse => 
       verse.text_uthmani?.includes(localTafsirSearch) ||
-      verse.tafsirs?.some(t => t.text?.toLowerCase().includes(query))
+      (verse.tafsir_text && verse.tafsir_text.toLowerCase().includes(query))
     );
   }, [tafsirVerses, localTafsirSearch]);
 
@@ -179,14 +180,20 @@ export default function LibraryPage() {
       setTafsirLoading(true);
       setTafsirError(null);
       setLocalTafsirSearch(''); // Reset local search
-      console.log(`[Library] Loading tafsir for surah ${selectedSurahId} with tafsir ${selectedTafsir.slug}`);
+      console.log(`[Library] Loading tafsir for surah ${selectedSurahId} with tafsir ID ${selectedTafsir.id}`);
 
-      const result = await getSurahTafsir(selectedSurahId, selectedTafsir.slug);
+      const result = await getSurahTafsir(selectedSurahId, selectedTafsir.id);
 
       if (result.data) {
         setTafsirVerses(result.data);
         setTafsirViewState('detail');
         console.log(`[Library] Loaded ${result.data.length} verses`);
+        
+        // Check if any tafsir is available
+        const hasTafsir = result.data.some(v => v.tafsir_available);
+        if (!hasTafsir) {
+          toast.warning(ERROR_MESSAGES.tafsirNotAvailable);
+        }
       } else {
         setTafsirError(result.error);
         if (result.isRateLimited) {
@@ -319,6 +326,14 @@ export default function LibraryPage() {
         <AlertCircle className="w-8 h-8 text-red-500" />
       </div>
       <p className="text-slate-500 dark:text-slate-400 text-center">{error}</p>
+      <Button
+        variant="outline"
+        className="mt-4"
+        onClick={() => window.location.reload()}
+      >
+        <RefreshCw className="w-4 h-4 mr-2" />
+        {isRTL ? 'إعادة المحاولة' : 'Retry'}
+      </Button>
     </div>
   );
 
@@ -374,6 +389,13 @@ export default function LibraryPage() {
         </div>
       </div>
 
+      {/* Selected Tafsir Info */}
+      {selectedTafsir && (
+        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-sm text-emerald-700 dark:text-emerald-300">
+          {isRTL ? 'التفسير المحدد:' : 'Selected Tafsir:'} <strong>{selectedTafsir.name}</strong>
+        </div>
+      )}
+
       {/* Results count */}
       {surahSearchQuery && (
         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -419,7 +441,7 @@ export default function LibraryPage() {
     </div>
   );
 
-  // Tafsir Detail View
+  // ✅ IMPROVED: Tafsir Detail View with proper data binding
   const renderTafsirDetail = () => (
     <div className="space-y-4">
       {/* Header */}
@@ -449,7 +471,7 @@ export default function LibraryPage() {
           <div className="w-24" />
         </div>
 
-        {/* ✅ NEW: Tafsir selector and local search */}
+        {/* Tafsir selector and local search */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -498,12 +520,12 @@ export default function LibraryPage() {
       {/* Error State */}
       {tafsirError && !tafsirLoading && renderError(tafsirError)}
 
-      {/* Verses with Tafsir */}
+      {/* ✅ CRITICAL FIX: Verses with Tafsir - Proper data binding */}
       {!tafsirLoading && !tafsirError && filteredVerses.length > 0 && (
         <ScrollArea className="h-[calc(100vh-350px)]">
           <div className="space-y-4 pr-4">
             {filteredVerses.map((verse) => (
-              <Card key={verse.id} className="overflow-hidden">
+              <Card key={verse.id} className="overflow-hidden shadow-md">
                 <CardContent className="p-5">
                   {/* Verse Number */}
                   <div className="flex items-center gap-3 mb-4">
@@ -515,7 +537,7 @@ export default function LibraryPage() {
                     </Badge>
                   </div>
 
-                  {/* ✅ Arabic Text - Prominent Display */}
+                  {/* ✅ CRITICAL: Arabic Text - ALWAYS RENDERED */}
                   <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800/30 rounded-xl p-5 mb-4 border border-slate-200 dark:border-slate-700">
                     <p 
                       className="text-2xl leading-loose text-slate-900 dark:text-white text-right"
@@ -524,12 +546,12 @@ export default function LibraryPage() {
                         lineHeight: '2.2'
                       }}
                     >
-                      {verse.text_uthmani}
+                      {verse.text_uthmani || verse.text_imlaei_simple || 'النص غير متوفر'}
                     </p>
                   </div>
 
-                  {/* ✅ Tafsir - Distinct styling */}
-                  {verse.tafsirs && verse.tafsirs.length > 0 && verse.tafsirs[0]?.text && (
+                  {/* ✅ CRITICAL: Tafsir - With fallback */}
+                  {verse.tafsir_available && verse.tafsir_text ? (
                     <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-5 border border-emerald-200 dark:border-emerald-800">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
@@ -543,8 +565,17 @@ export default function LibraryPage() {
                         className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed text-right"
                         style={{ fontFamily: "'Cairo', 'Tajawal', sans-serif" }}
                       >
-                        {verse.tafsirs[0].text}
+                        {verse.tafsir_text}
                       </p>
+                    </div>
+                  ) : (
+                    <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-5 h-5 text-amber-500" />
+                        <span className="text-amber-700 dark:text-amber-300 text-sm">
+                          {ERROR_MESSAGES.tafsirNotAvailable}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </CardContent>
@@ -671,7 +702,7 @@ export default function LibraryPage() {
           <div className="w-24" />
         </div>
 
-        {/* ✅ NEW: Local search in displayed hadiths */}
+        {/* Local search in displayed hadiths */}
         <div className="relative">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
@@ -706,7 +737,7 @@ export default function LibraryPage() {
       {/* Error State */}
       {hadithError && !hadithLoading && renderError(hadithError)}
 
-      {/* ✅ IMPROVED: Hadith Cards with better structure */}
+      {/* Hadith Cards */}
       {!hadithLoading && !hadithError && filteredHadiths.length > 0 && (
         <>
           <ScrollArea className="h-[calc(100vh-400px)]">
@@ -749,7 +780,7 @@ export default function LibraryPage() {
             </div>
           </ScrollArea>
 
-          {/* ✅ IMPROVED: Pagination with better UX */}
+          {/* Pagination */}
           <div className="flex items-center justify-center gap-2 py-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
             <Button
               variant="outline"
