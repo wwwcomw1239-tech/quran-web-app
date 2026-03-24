@@ -97,12 +97,13 @@ export const ERROR_MESSAGES = {
   unknown: 'حدث خطأ غير متوقع',
 };
 
-// Available translations/tafsirs
+// Available translations/tafsirs - Updated with Ibn Kathir
 const AVAILABLE_TRANSLATIONS = [
   { id: 1, name: 'التفسير الميسر', slug: 'arabic_moyassar', language: 'arabic' },
-  { id: 2, name: 'تفسير الجلالين', slug: 'arabic_jalalayn', language: 'arabic' },
-  { id: 3, name: 'تفسير السعدي', slug: 'arabic_saadi', language: 'arabic' },
-  { id: 4, name: 'ترجمة معاني القرآن', slug: 'arabic_mokhtasar', language: 'arabic' },
+  { id: 2, name: 'تفسير السعدي', slug: 'arabic_saadi', language: 'arabic' },
+  { id: 3, name: 'تفسير ابن كثير', slug: 'arabic_ibn_katheer', language: 'arabic' },
+  { id: 4, name: 'المختصر في التفسير', slug: 'arabic_mokhtasar', language: 'arabic' },
+  { id: 5, name: 'تفسير الجلالين', slug: 'arabic_jalalayn', language: 'arabic' },
 ];
 
 // Available hadith books mapping
