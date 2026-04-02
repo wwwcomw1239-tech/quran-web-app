@@ -2571,7 +2571,7 @@ export function BooksLibrary() {
             </div>
             <div>
               <h2 className="text-xl font-bold">المكتبة الإسلامية الشاملة</h2>
-              <p className="text-purple-100 text-sm">كتب PDF من علماء أهل السنة والجماعة</p>
+              <p className="text-purple-100 text-sm">كتب PDF إسلامية شاملة</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-3 mt-3">

@@ -730,7 +730,7 @@ export function QuranShorts() {
           </div>
           <div>
             <h2 className="text-lg font-bold">السلاسل والقوائم</h2>
-            <p className="text-purple-200 text-xs">{SERIES.length} سلسلة موضوعية من علماء أهل السنة</p>
+            <p className="text-purple-200 text-xs">{SERIES.length} سلسلة موضوعية</p>
           </div>
         </div>
       </div>
@@ -1172,14 +1172,7 @@ export function QuranShorts() {
       {viewMode === 'series' && renderSeriesView()}
       {viewMode === 'browse' && renderBrowseView()}
 
-      {/* Disclaimer */}
-      {!isFullscreen && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800">
-          <p className="text-xs text-amber-700 dark:text-amber-300 text-center">
-            جميع المقاطع من علماء أهل السنة والجماعة الموثوقين فقط
-          </p>
-        </div>
-      )}
+
     </div>
   );
 }

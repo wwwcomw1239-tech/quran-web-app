@@ -43,7 +43,7 @@ const CATEGORY_CONFIG: Record<VideoCategory, { icon: any; color: string; bgColor
     icon: BookMarked,
     color: 'text-emerald-700 dark:text-emerald-300',
     bgColor: 'from-emerald-500 to-teal-600',
-    description: 'دروس تفسير القرآن الكريم من علماء أهل السنة'
+    description: 'دروس تفسير القرآن الكريم'
   },
   'تدبر وتأملات': {
     icon: Lightbulb,
@@ -78,7 +78,7 @@ const CATEGORY_CONFIG: Record<VideoCategory, { icon: any; color: string; bgColor
 };
 
 // ============================================
-// VIDEOS DATABASE - علماء أهل السنة والجماعة الموثوقين فقط
+// VIDEOS DATABASE
 // جميع المعرفات مأخوذة من فيديوهات يوتيوب حقيقية
 // ============================================
 
@@ -205,7 +205,7 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'e6', youtubeId: 'Z1zX7-wXuMU', title: 'لمسات بيانية متنوعة', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'أسئلة وأجوبة في الإعجاز البياني للقرآن' },
 
   // ═══════════════════════════════════════════
-  // إضافات جديدة - مقاطع إضافية من علماء أهل السنة
+  // إضافات جديدة - مقاطع إضافية
   // ═══════════════════════════════════════════
 
   // الشيخ محمد العريفي - قصص ومواعظ
@@ -261,7 +261,7 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'n38', youtubeId: '0T44uSaSNuU', title: 'مات الطيبين', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'موعظة عن فقد الأحبة والصالحين' },
 
   // ═══════════════════════════════════════════
-  // إضافات جديدة - الدفعة الثانية - علماء إضافيون
+  // إضافات جديدة - الدفعة الثانية
   // ═══════════════════════════════════════════
 
   // الشيخ الشعراوي رحمه الله - تفسير وخواطر قرآنية
@@ -386,7 +386,7 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'mq42', youtubeId: 'b2FrEMuOSzc', title: 'سر الاتصال بالقوة الإلهية', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'تجربة روحية في القرب من الله عز وجل' },
 
   // ═══════════════════════════════════════════
-  // علماء إضافيون - تفسير وعلوم قرآن
+  // تفسير وعلوم قرآن - إضافات
   // ═══════════════════════════════════════════
 
   // الشيخ صالح آل الشيخ
@@ -717,7 +717,7 @@ export function QuranVideos() {
           </div>
           <div>
             <h2 className="text-xl font-bold">المقاطع القرآنية المرئية</h2>
-            <p className="text-rose-100 text-sm">دروس ومقاطع من علماء أهل السنة والجماعة الموثوقين</p>
+            <p className="text-rose-100 text-sm">دروس ومقاطع قرآنية مرئية</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-3 mt-3">
@@ -860,12 +860,7 @@ export function QuranVideos() {
         </div>
       )}
 
-      {/* Disclaimer */}
-      <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
-        <p className="text-sm text-amber-700 dark:text-amber-300 text-center">
-          جميع المقاطع من علماء أهل السنة والجماعة الموثوقين فقط
-        </p>
-      </div>
+
     </div>
   );
 }

@@ -725,7 +725,7 @@ export default function LibraryPage() {
           </div>
           <div>
             <h2 className="text-xl font-bold">الأحاديث النبوية الشريفة</h2>
-            <p className="text-blue-100 text-sm">من أصح الكتب عند أهل السنة والجماعة</p>
+            <p className="text-blue-100 text-sm">من أصح كتب الحديث النبوي</p>
           </div>
         </div>
         <div className="flex items-center gap-2 mt-3 text-blue-100 text-sm">
@@ -1016,7 +1016,7 @@ export default function LibraryPage() {
       <footer className="border-t border-slate-200 dark:border-slate-800 py-6 mt-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            جميع المحتويات من مصادر أهل السنة والجماعة فقط
+            نور القرآن - تطوير داوود الاحمدي
           </p>
         </div>
       </footer>

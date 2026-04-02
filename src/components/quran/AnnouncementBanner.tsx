@@ -21,7 +21,7 @@ interface AnnouncementBannerProps {
 const announcements: Announcement[] = [
   {
     id: 'new_books_videos',
-    messageAr: '📚 تم إضافة مئات الكتب الجديدة وعشرات المقاطع المرئية لعلماء أهل السنة',
+    messageAr: '📚 تم إضافة مئات الكتب الجديدة وعشرات المقاطع المرئية وقسم مقاطع الأطفال',
     messageEn: '📚 Hundreds of new books and dozens of video clips from Sunni scholars added',
     type: 'update',
     isActive: true,

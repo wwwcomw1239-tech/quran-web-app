@@ -8,6 +8,7 @@ export { Footer } from './Footer';
 export { BooksLibrary } from './BooksLibrary';
 export { QuranVideos } from './QuranVideos';
 export { QuranShorts } from './QuranShorts';
+export { KidsVideos } from './KidsVideos';
 export { AnnouncementBanner } from './AnnouncementBanner';
 export { FloatingScrollButtons } from './FloatingScrollButtons';
 export type { Announcement } from './AnnouncementBanner';

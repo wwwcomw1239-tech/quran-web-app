@@ -14,11 +14,12 @@ import {
   BooksLibrary,
   QuranVideos,
   QuranShorts,
+  KidsVideos,
   AnnouncementBanner,
   FloatingScrollButtons,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library, Video, Flame } from 'lucide-react';
+import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library, Video, Flame, Baby } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { useAudioQuality } from '@/lib/audioQuality';
 import { useAudioPlayer } from '@/lib/AudioPlayerContext';
@@ -237,6 +238,13 @@ function QuranWebAppContent() {
               <span className="font-medium hidden sm:inline">{isRTL ? 'مقاطع قصيرة' : 'Shorts'}</span>
             </TabsTrigger>
             <TabsTrigger
+              value="kids"
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-orange-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
+            >
+              <Baby className="w-5 h-5" />
+              <span className="font-medium hidden sm:inline">{isRTL ? 'مقاطع الأطفال' : 'Kids'}</span>
+            </TabsTrigger>
+            <TabsTrigger
               value="library"
               className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-purple-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
               onClick={() => window.location.href = '/library'}
@@ -313,6 +321,11 @@ function QuranWebAppContent() {
           {/* Quran Shorts Tab */}
           <TabsContent value="shorts" className="outline-none">
             <QuranShorts />
+          </TabsContent>
+
+          {/* Kids Videos Tab */}
+          <TabsContent value="kids" className="outline-none">
+            <KidsVideos />
           </TabsContent>
         </Tabs>
       </main>
