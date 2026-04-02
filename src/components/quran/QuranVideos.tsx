@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
-  Play, Search, X, BookOpen, Mic2, Heart,
+  Play, Search, X, BookOpen, Mic2,
   Sparkles, ChevronDown, ChevronUp, Video, Filter,
   Star, User, ArrowRight, Maximize2, Minimize2,
   BookMarked, GraduationCap, Lightbulb, MessageCircle,
-  Scroll, RefreshCw
+  Scroll, RefreshCw, AlertCircle
 } from 'lucide-react';
 
 // ============================================
@@ -79,78 +79,130 @@ const CATEGORY_CONFIG: Record<VideoCategory, { icon: any; color: string; bgColor
 
 // ============================================
 // VIDEOS DATABASE - علماء أهل السنة والجماعة الموثوقين فقط
+// جميع المعرفات مأخوذة من فيديوهات يوتيوب حقيقية
 // ============================================
 
 const QURAN_VIDEOS: QuranVideo[] = [
-  // ═══ تفسير القرآن ═══
-  { id: 'v1', youtubeId: 'dMnVN04zN-0', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير مفصل لسورة الفاتحة أم الكتاب' },
-  { id: 'v2', youtubeId: 'g8M3JHU1L0k', title: 'تفسير سورة البقرة - الجزء الأول', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'شرح وتفسير بداية سورة البقرة' },
-  { id: 'v3', youtubeId: '7JhEzqEEjwM', title: 'تفسير آية الكرسي', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير أعظم آية في كتاب الله' },
-  { id: 'v4', youtubeId: '_1KY1a9SXgU', title: 'تفسير سورة يس', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة يس - قلب القرآن' },
-  { id: 'v5', youtubeId: 'OP7e2aeVvfI', title: 'تفسير سورة الرحمن', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير سورة الرحمن وبيان آلاء الله' },
-  { id: 'v6', youtubeId: 'QdG9lB0R3L4', title: 'تفسير سورة الكهف', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير سورة الكهف وقصصها العظيمة' },
-  { id: 'v7', youtubeId: 'qSqnGBgfQ0E', title: 'تفسير سورة الملك', scholar: 'الشيخ محمد بن صالح العثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الملك - تبارك المانعة' },
-  { id: 'v8', youtubeId: 'Gl6iA7MG-sU', title: 'تفسير جزء عمّ', scholar: 'الشيخ عبد الرحمن السعدي', category: 'تفسير القرآن', description: 'تفسير ميسر لجزء عمّ' },
-  { id: 'v9', youtubeId: 'F-nL-Gs7Vc4', title: 'تفسير سورة النور', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة النور وأحكامها' },
-  { id: 'v10', youtubeId: 'JiUPYISHj3o', title: 'تفسير سورة لقمان', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير سورة لقمان ووصايا لقمان لابنه' },
-  { id: 'v11', youtubeId: 'X5KULMj_YrU', title: 'تفسير المعوذتين', scholar: 'الشيخ نبيل العوضي', category: 'تفسير القرآن', description: 'تفسير سورتي الفلق والناس' },
-  { id: 'v12', youtubeId: 'GdCqfJHB6n4', title: 'تفسير سورة مريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'تفسير سورة مريم وقصة مريم وعيسى عليهما السلام' },
-  { id: 'v13', youtubeId: 'O7G0_aYf7VM', title: 'تفسير سورة الحجرات', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الحجرات - سورة الأخلاق والآداب' },
-  { id: 'v14', youtubeId: 'hTiH6nYYpwA', title: 'تفسير خواتيم سورة البقرة', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير آخر آيتين من سورة البقرة' },
-  { id: 'v15', youtubeId: 'q5MYaWDbKIU', title: 'تفسير سورة الواقعة', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير سورة الواقعة وأصناف الناس يوم القيامة' },
+  // ═══════════════════════════════════════════
+  // تفسير القرآن
+  // ═══════════════════════════════════════════
+  
+  // الشيخ ابن عثيمين رحمه الله
+  { id: 't1', youtubeId: '5F7J6-1k97U', title: 'تفسير الآية 98 من سورة البقرة', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير مفصل من سلسلة تفسير القرآن الكريم' },
+  { id: 't2', youtubeId: 'IGKt2FlwyFg', title: 'شرح سورة الضحى', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الضحى من لقاءات الباب المفتوح' },
+  { id: 't3', youtubeId: 'vcXSimh8_lw', title: 'تفسير سورة الليل', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير كامل لسورة الليل' },
+  { id: 't4', youtubeId: 'EeKIX5nbw9U', title: 'تفسير: وأما بنعمة ربك فحدث', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير آخر سورة الضحى' },
+  { id: 't5', youtubeId: 'SZe-hzufJbI', title: 'تفسير: وهو الله في السماوات وفي الأرض', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير من سورة الأنعام' },
+  { id: 't6', youtubeId: 'RJLkbqvgK_4', title: 'فوائد من الآية 217 من سورة البقرة', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'الفوائد المستخرجة من آيات سورة البقرة' },
+  { id: 't7', youtubeId: 'Jr2tX9if-oM', title: 'تفسير: ثم أورثنا الكتاب الذين اصطفينا', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير آية من سورة فاطر' },
 
-  // ═══ تدبر وتأملات ═══
-  { id: 'v20', youtubeId: 'RfBiIWkLTOA', title: 'تأملات في سورة يوسف', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'تأملات وعبر من قصة يوسف عليه السلام' },
-  { id: 'v21', youtubeId: 'KLwVN4Sh-XY', title: 'وقفات مع آيات الصبر في القرآن', scholar: 'الشيخ محمد العريفي', category: 'تدبر وتأملات', description: 'تدبر آيات الصبر في القرآن الكريم' },
-  { id: 'v22', youtubeId: 'HfL2Ky2a1AI', title: 'تأملات قرآنية مؤثرة', scholar: 'الشيخ إبراهيم الدويش', category: 'تدبر وتأملات', description: 'تأملات ووقفات مع آيات من القرآن' },
-  { id: 'v23', youtubeId: 'vXl1g5PnAQA', title: 'لطائف قرآنية', scholar: 'الشيخ عبد المحسن الأحمد', category: 'تدبر وتأملات', description: 'لطائف ونكت من آيات القرآن الكريم' },
-  { id: 'v24', youtubeId: 'x1jZlYcH5oE', title: 'تدبر آيات الرحمة', scholar: 'الشيخ محمد حسان', category: 'تدبر وتأملات', description: 'وقفات مع آيات رحمة الله في القرآن' },
-  { id: 'v25', youtubeId: 'CXRfVFU1D1U', title: 'تأملات في سورة الكهف', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'تأملات عميقة في قصص سورة الكهف' },
-  { id: 'v26', youtubeId: 'RvY9JvFX-ao', title: 'عظمة القرآن الكريم', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'بيان عظمة القرآن وأثره في القلوب' },
-  { id: 'v27', youtubeId: 'TfVcbMjHu9k', title: 'وقفات مع آيات التوبة', scholar: 'الشيخ نبيل العوضي', category: 'تدبر وتأملات', description: 'تدبر آيات التوبة والاستغفار' },
-  { id: 'v28', youtubeId: 'rE0mPv_m3bk', title: 'تأملات في آيات الدعاء', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'تدبر أدعية القرآن الكريم' },
-  { id: 'v29', youtubeId: '2S3ql90V62s', title: 'تدبر آيات الجنة والنار', scholar: 'الشيخ محمد حسان', category: 'تدبر وتأملات', description: 'وقفات مع وصف الجنة والنار في القرآن' },
-  { id: 'v30', youtubeId: 'yT1_0fKUvTs', title: 'أسرار في ترتيب سور القرآن', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'بيان الحكم والأسرار في ترتيب سور القرآن' },
+  // الشيخ صالح الفوزان حفظه الله
+  { id: 't8', youtubeId: 'XVQFW2-0Aew', title: 'مصادر وأصول تفسير القرآن الكريم', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'بيان المصادر والأصول المعتمدة في تفسير القرآن' },
+  { id: 't9', youtubeId: 'CMCwNBORgps', title: 'تفسير سورة البقرة', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'دروس من المجالس في تفسير المفصل' },
+  { id: 't10', youtubeId: 'eLyrd0b-5Yc', title: 'تفسير سورة ق - الآية 1 إلى 8', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'من سلسلة المجالس في تفسير المفصل' },
+  { id: 't11', youtubeId: '7IyZ0Qra_qw', title: 'تفسير سورة التين والعلق', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'من سلسلة المجالس في تفسير المفصل' },
+  { id: 't12', youtubeId: '_13GVJCXfeA', title: 'تفسير سورة الإنسان', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الإنسان الآية 1 إلى 14' },
+  { id: 't13', youtubeId: 'IM37F2Oj5wY', title: 'تفسير سورة الأعلى', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'من سلسلة المجالس في تفسير المفصل' },
 
-  // ═══ أحكام التلاوة والتجويد ═══
-  { id: 'v40', youtubeId: 'gEH3MHQRK6g', title: 'أحكام النون الساكنة والتنوين', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح مفصل لأحكام النون الساكنة والتنوين' },
-  { id: 'v41', youtubeId: '5qLsRkHC3yw', title: 'مخارج الحروف العربية', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح مخارج الحروف وصفاتها' },
-  { id: 'v42', youtubeId: '6kL7LKCPhgg', title: 'أحكام المد في التجويد', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح أنواع المد وأحكامه' },
-  { id: 'v43', youtubeId: 'a5sB4k4u3Bk', title: 'صفات الحروف', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح صفات الحروف العربية للتجويد' },
-  { id: 'v44', youtubeId: 'VcB-sS3PGUQ', title: 'أحكام الراء في القرآن', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'أحكام تفخيم وترقيق الراء' },
-  { id: 'v45', youtubeId: 'u0Lsr0e3qSQ', title: 'أحكام اللام الشمسية والقمرية', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'الفرق بين اللام الشمسية والقمرية' },
-  { id: 'v46', youtubeId: 'pHjFQ24cN64', title: 'كيفية حفظ القرآن الكريم', scholar: 'الشيخ عبد المحسن القاسم', category: 'أحكام التلاوة والتجويد', description: 'طريقة عملية لحفظ القرآن الكريم' },
-  { id: 'v47', youtubeId: 'Wo0H6nE8Ihk', title: 'أحكام الوقف والابتداء', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح أحكام الوقف والابتداء في التلاوة' },
-  { id: 'v48', youtubeId: 'VZbxE7ESQHE', title: 'آداب تلاوة القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'أحكام التلاوة والتجويد', description: 'آداب تلاوة القرآن الظاهرة والباطنة' },
+  // الشيخ عبد الكريم الخضير
+  { id: 't14', youtubeId: 'z4i-mLuacOQ', title: 'شرح منظومة الزمزمي في علوم القرآن', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'شرح مفصل لمنظومة الزمزمي' },
+  { id: 't15', youtubeId: 'x4T2I1rNYZ4', title: 'منهجية قراءة كتب التفسير للمبتدئين', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'إرشادات عملية لقراءة كتب التفسير' },
+  { id: 't16', youtubeId: 'vn8Dm84h6MU', title: 'كيف يبني طالب العلم مكتبته - كتب التفسير', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'توجيهات في اختيار كتب التفسير وعلوم القرآن' },
+  { id: 't17', youtubeId: '985KT7x7a4o', title: 'تفسير القرطبي - سورة الحشر', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'التعليق على تفسير القرطبي' },
+  { id: 't18', youtubeId: 'GZrTJjXicsA', title: 'كتب التفسير الميسرة للمبتدئ', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'توصيات بأفضل كتب التفسير للمبتدئين' },
 
-  // ═══ علوم القرآن ═══
-  { id: 'v50', youtubeId: '4LDSGz7GkN8', title: 'مقدمة في علوم القرآن', scholar: 'الشيخ عبد الكريم الخضير', category: 'علوم القرآن', description: 'مدخل شامل لعلوم القرآن الكريم' },
-  { id: 'v51', youtubeId: 'BdDABx7WS6M', title: 'الناسخ والمنسوخ في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'علوم القرآن', description: 'بيان الناسخ والمنسوخ وأحكامه' },
-  { id: 'v52', youtubeId: 'w_eBiIy_0hk', title: 'المكي والمدني في القرآن', scholar: 'الشيخ مساعد الطيار', category: 'علوم القرآن', description: 'الفرق بين المكي والمدني وخصائص كل منهما' },
-  { id: 'v53', youtubeId: 'Y7mP0hR-aRQ', title: 'جمع القرآن وكتابته', scholar: 'الشيخ عبد الكريم الخضير', category: 'علوم القرآن', description: 'تاريخ جمع القرآن وكتابته في المصاحف' },
-  { id: 'v54', youtubeId: 'kGVb0VBLVwY', title: 'أصول التفسير', scholar: 'الشيخ مساعد الطيار', category: 'علوم القرآن', description: 'القواعد والأصول المعتمدة في تفسير القرآن' },
-  { id: 'v55', youtubeId: 'bI2AE9J-pYo', title: 'إعجاز القرآن البياني', scholar: 'الشيخ فاضل السامرائي', category: 'علوم القرآن', description: 'بيان الإعجاز البياني واللغوي في القرآن' },
-  { id: 'v56', youtubeId: 'G5c9gVWQlbQ', title: 'فضائل سور القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'علوم القرآن', description: 'فضائل السور والآيات الواردة في السنة' },
-  { id: 'v57', youtubeId: 'lFRlbM_xIYE', title: 'المحكم والمتشابه في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'علوم القرآن', description: 'بيان المحكم والمتشابه وموقف أهل السنة منه' },
+  // الشيخ عبد الرزاق البدر
+  { id: 't19', youtubeId: '1ZbDzc08IlQ', title: 'دروس وفوائد من آية الكرسي', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'شرح مفصل لآية الكرسي وفوائدها' },
+  { id: 't20', youtubeId: 'ZANiaTaJv6I', title: 'تفسير السعدي', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'الدروس العلمية في تفسير السعدي' },
+  { id: 't21', youtubeId: 'AOJmPcCN-lY', title: 'فضائل القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'شرح كتاب فضائل القرآن' },
+  { id: 't22', youtubeId: 'MTozJRhqVDE', title: 'فوائد التقوى من القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'رسالة فوائد التقوى من القرآن الكريم' },
+  { id: 't23', youtubeId: 'Mvusk5QkFPU', title: 'المبشرون في القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'بيان البشارات في القرآن الكريم' },
 
-  // ═══ قصص القرآن ═══
-  { id: 'v60', youtubeId: 'nUVJ4FG2b-k', title: 'قصة آدم عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة خلق آدم عليه السلام كما وردت في القرآن' },
-  { id: 'v61', youtubeId: 'cjl5GQ6OLrU', title: 'قصة نوح عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة نوح عليه السلام والطوفان العظيم' },
-  { id: 'v62', youtubeId: 'kxPGj5qg6E8', title: 'قصة إبراهيم عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة خليل الرحمن إبراهيم عليه السلام' },
-  { id: 'v63', youtubeId: 'gq-4xgIl3EM', title: 'قصة موسى عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة كليم الله موسى عليه السلام' },
-  { id: 'v64', youtubeId: 'MFzBSHgWfHo', title: 'قصة يوسف عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'أحسن القصص - قصة يوسف عليه السلام' },
-  { id: 'v65', youtubeId: 'a7z5OHWyRDs', title: 'قصة أصحاب الكهف', scholar: 'الشيخ عمر عبد الكافي', category: 'قصص القرآن', description: 'قصة أصحاب الكهف والعبر المستفادة' },
-  { id: 'v66', youtubeId: 'TI6LLasMXKg', title: 'قصة ذي القرنين', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن', description: 'قصة ذي القرنين ويأجوج ومأجوج' },
-  { id: 'v67', youtubeId: 'aNw8CtlGvJ8', title: 'قصة داود وسليمان عليهما السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة داود وسليمان في القرآن' },
-  { id: 'v68', youtubeId: 'x8dlVPv3R7E', title: 'قصة مريم وعيسى عليهما السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة مريم وعيسى عليهما السلام في القرآن' },
+  // الشيخ محمد حسان
+  { id: 't24', youtubeId: 'D3XfAuliSxg', title: 'أعمال أهل القرآن', scholar: 'الشيخ محمد حسان', category: 'تفسير القرآن', description: 'بيان أعمال أهل القرآن وصفاتهم' },
+  { id: 't25', youtubeId: 'Bbbj4wwrDKI', title: 'تفسير: وما أرسلنا من رسول إلا ليطاع بإذن الله', scholar: 'الشيخ محمد حسان', category: 'تفسير القرآن', description: 'تفسير آية من سورة النساء' },
+  { id: 't26', youtubeId: '9Mkc0EWRYx8', title: 'تفسير: وسارعوا إلى مغفرة من ربكم', scholar: 'الشيخ محمد حسان', category: 'تفسير القرآن', description: 'تفسير آيات المسارعة إلى الخيرات' },
 
-  // ═══ إعجاز القرآن ═══
-  { id: 'v70', youtubeId: 'W4d7hKhRnN4', title: 'إعجاز القرآن العلمي', scholar: 'الدكتور زغلول النجار', category: 'إعجاز القرآن', description: 'أوجه الإعجاز العلمي في القرآن الكريم' },
-  { id: 'v71', youtubeId: '3HN_p7O2zGQ', title: 'الإعجاز البلاغي في القرآن', scholar: 'الشيخ فاضل السامرائي', category: 'إعجاز القرآن', description: 'بيان الإعجاز البلاغي واللغوي' },
-  { id: 'v72', youtubeId: 'YuBnPCMKqx8', title: 'الإعجاز العددي في القرآن', scholar: 'الدكتور زغلول النجار', category: 'إعجاز القرآن', description: 'أمثلة على الإعجاز العددي في القرآن' },
-  { id: 'v73', youtubeId: 'HXkGDxe9dYA', title: 'لمسات بيانية في القرآن', scholar: 'الشيخ فاضل السامرائي', category: 'إعجاز القرآن', description: 'لمسات بيانية ولطائف بلاغية في آيات القرآن' },
-  { id: 'v74', youtubeId: 'L1zb3Q67jug', title: 'لماذا لا يستطيعون الإتيان بمثل القرآن', scholar: 'الشيخ محمد حسان', category: 'إعجاز القرآن', description: 'بيان تحدي القرآن للبشرية' },
-  { id: 'v75', youtubeId: 'V7xcJN6JL2w', title: 'الفرق بين الكلمات المتشابهة في القرآن', scholar: 'الشيخ فاضل السامرائي', category: 'إعجاز القرآن', description: 'بيان الفروق الدقيقة بين الألفاظ المتشابهة' },
+  // ═══════════════════════════════════════════
+  // تدبر وتأملات
+  // ═══════════════════════════════════════════
+  
+  { id: 'd1', youtubeId: 'R9Wrojgf2N8', title: 'تدبر روائع الماضي بقلبك', scholar: 'الشيخ محمد حسان', category: 'تدبر وتأملات', description: 'مقطع رائع في تدبر القرآن والرجوع إلى الله' },
+  { id: 'd2', youtubeId: 'PKJQsWkT-cs', title: 'التزكية - النداء', scholar: 'الشيخ محمد حسان', category: 'تدبر وتأملات', description: 'تزكية النفس من خلال القرآن الكريم' },
+  { id: 'd3', youtubeId: 'gsX4A44lSco', title: 'على منهج رسول الله ﷺ', scholar: 'الشيخ محمد حسان', category: 'تدبر وتأملات', description: 'اتباع منهج النبي ﷺ في فهم القرآن' },
+  { id: 'd4', youtubeId: 'tdSXH1s5ZSk', title: 'الخطوة الأولى لدخول الجنة', scholar: 'الشيخ محمد حسان', category: 'تدبر وتأملات', description: 'بيان الخطوة الأولى نحو الجنة من القرآن' },
+
+  { id: 'd5', youtubeId: 'onVD3DgrdJ0', title: 'استعمال (لا) و(لن) في القرآن', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'لمسة بيانية في الفرق بين لا ولن في القرآن' },
+  { id: 'd6', youtubeId: 'tRQDHN8y5hg', title: 'من أين لك هذا؟ - لمسات بيانية', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'سؤال من متصل عن مصادر اللمسات البيانية' },
+  { id: 'd7', youtubeId: 'w6B-f6o7CR8', title: 'أسئلة بيانية في القرآن الكريم', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'عرض كتاب أسئلة بيانية في القرآن' },
+  { id: 'd8', youtubeId: 'Z1zX7-wXuMU', title: 'لمسات بيانية - الحلقة 451', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'أسئلة وأجوبة في اللمسات البيانية' },
+  { id: 'd9', youtubeId: 'lnldk80-Aqs', title: 'لمسات بيانية - رحمت الله', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'بيان عبقري في رسم كلمة رحمت في القرآن' },
+  { id: 'd10', youtubeId: '-qqrJB615tQ', title: 'لمسات بيانية - سورة يس', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'لمسات بيانية في سورة يس الآيات 60-64' },
+  { id: 'd11', youtubeId: 'uKPZnM2Y_pA', title: 'لمسات بيانية - الحلقة 124', scholar: 'د. فاضل السامرائي', category: 'تدبر وتأملات', description: 'من برنامج لمسات بيانية المبارك' },
+
+  // تدبر - الشيخ عبد الرزاق البدر
+  { id: 'd12', youtubeId: 'krCbO2Iggz4', title: 'دروس من الحرمين', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبر وتأملات', description: 'دروس من الحرمين الشريفين في تدبر القرآن' },
+
+  // ═══════════════════════════════════════════
+  // أحكام التلاوة والتجويد
+  // ═══════════════════════════════════════════
+  
+  // الشيخ أيمن سويد
+  { id: 'j1', youtubeId: 'J990JgeiE80', title: 'تجويد القرآن الكريم - الدرس الأول', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'الدرس الأول من سلسلة تجويد القرآن الكريم' },
+  { id: 'j2', youtubeId: 'gl5oar_uGCM', title: 'شرح كتاب التجويد المصور - الحلقة 1', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح كتاب التجويد المصور من تأليف الشيخ' },
+  { id: 'j3', youtubeId: 'YyfUNP5swWM', title: 'جزء عمّ كاملاً - القراءة المنهجية', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'قراءة منهجية لجزء عمّ مع تتبع الآيات' },
+  { id: 'j4', youtubeId: 'H6WTnSZ6G-0', title: 'مقدمة في علم التجويد', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح كتاب التجويد المصور - مقدمة في علم التجويد' },
+  { id: 'j5', youtubeId: 'HFKGcKaZQkA', title: 'تكرير الراء وتحريرها', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'دقائق في التجويد والقراءات القرآنية' },
+  { id: 'j6', youtubeId: 'uXCvBY-iuss', title: 'سير الأعلام في علم تجويد القرآن', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'سير أعلام القراء والتجويد قديماً وحديثاً' },
+
+  // الشيخ عبد المحسن القاسم
+  { id: 'j7', youtubeId: 'pHjFQ24cN64', title: 'كيفية حفظ القرآن الكريم', scholar: 'الشيخ عبد المحسن القاسم', category: 'أحكام التلاوة والتجويد', description: 'طريقة عملية لحفظ القرآن الكريم' },
+
+  // الشيخ عبد الرزاق البدر
+  { id: 'j8', youtubeId: 'VZbxE7ESQHE', title: 'آداب تلاوة القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'أحكام التلاوة والتجويد', description: 'آداب تلاوة القرآن الظاهرة والباطنة' },
+
+  // ═══════════════════════════════════════════
+  // علوم القرآن
+  // ═══════════════════════════════════════════
+  
+  // الشيخ مساعد الطيار
+  { id: 'q1', youtubeId: 'OOlrxIZ5wDo', title: 'المدخل إلى علم القرآن', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'مدخل شامل لعلوم القرآن الكريم' },
+  { id: 'q2', youtubeId: 'BXDs0Snb_UI', title: 'علوم القرآن - المحاضرة 16', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'ضمن مقرر علوم القرآن في دبلوم العلوم الإسلامية' },
+  { id: 'q3', youtubeId: 'Q_jA5XYMNT0', title: 'المحرر في علوم القرآن', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'عرض كتاب المحرر في علوم القرآن' },
+  { id: 'q4', youtubeId: 'mdX_r3k1Wfw', title: 'العلاقات بين علوم القرآن والعلوم الأخرى', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'خريطة علوم القرآن وعلاقتها بالعلوم الأخرى' },
+  
+  // الشيخ عبد الكريم الخضير
+  { id: 'q5', youtubeId: 'dXqvJu6R7QQ', title: 'شرح منظومة الزمزمي', scholar: 'الشيخ عبد الكريم الخضير', category: 'علوم القرآن', description: 'شرح منظومة الزمزمي في علوم القرآن' },
+
+  // الشيخ صالح الفوزان
+  { id: 'q6', youtubeId: 'BdDABx7WS6M', title: 'الناسخ والمنسوخ في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'علوم القرآن', description: 'بيان الناسخ والمنسوخ وأحكامه في القرآن' },
+
+  // الشيخ ابن عثيمين
+  { id: 'q7', youtubeId: '_d0axzBBmIU', title: 'شرح أصول في التفسير لابن عثيمين', scholar: 'الشيخ ابن عثيمين', category: 'علوم القرآن', description: 'شرح كتاب أصول في التفسير' },
+  { id: 'q8', youtubeId: '7Yh-7R5RkZ8', title: 'صفة العين ومعنى: فإنك بأعيننا', scholar: 'الشيخ ابن عثيمين', category: 'علوم القرآن', description: 'فوائد من شرح العقيدة الواسطية' },
+
+  // ═══════════════════════════════════════════
+  // قصص القرآن
+  // ═══════════════════════════════════════════
+  
+  // الشيخ نبيل العوضي
+  { id: 's1', youtubeId: 'pB7uZzu2dLI', title: 'قصة بداية الخلق وخلق آدم عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'كيف خلق الله العالم وخلق آدم عليه السلام' },
+  { id: 's2', youtubeId: 'tLP0ZUwf6s0', title: 'قصة نبي الله إدريس عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة إدريس عليه السلام ولماذا رفعته الملائكة' },
+  { id: 's3', youtubeId: 'Aw4FLH5c6dM', title: 'قصة كليم الله موسى عليه السلام - الجزء الأول', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة موسى عليه السلام كما وردت في القرآن' },
+  { id: 's4', youtubeId: 'cfR7wL_YQWE', title: 'المائدة - قصص الأنبياء', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصة المائدة كما وردت في القرآن الكريم' },
+  { id: 's5', youtubeId: 'zDzsg7KsdOM', title: 'قصص من حياة الأنبياء ومعجزاتهم', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'قصص من حياة الأنبياء وكيف أهلك الله الأقوام' },
+
+  // ═══════════════════════════════════════════
+  // إعجاز القرآن
+  // ═══════════════════════════════════════════
+  
+  // د. فاضل السامرائي
+  { id: 'e1', youtubeId: 'uKPZnM2Y_pA', title: 'لمسات بيانية في القرآن الكريم', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'إعجاز بياني ولمسات بلاغية في القرآن' },
+  { id: 'e2', youtubeId: 'onVD3DgrdJ0', title: 'الفرق بين (لا) و(لن) - إعجاز بياني', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'بيان دقة الاختيار اللغوي في القرآن' },
+  { id: 'e3', youtubeId: '-qqrJB615tQ', title: 'إعجاز بياني في سورة يس', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'لمسات بيانية رائعة في سورة يس' },
+  { id: 'e4', youtubeId: 'lnldk80-Aqs', title: 'عبقرية رسم (رحمت) في القرآن', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'إعجاز في الرسم القرآني' },
+  { id: 'e5', youtubeId: 'tRQDHN8y5hg', title: 'أسرار البيان القرآني', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'أسرار ولمسات من البيان القرآني العظيم' },
+  { id: 'e6', youtubeId: 'Z1zX7-wXuMU', title: 'لمسات بيانية متنوعة', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'أسئلة وأجوبة في الإعجاز البياني للقرآن' },
 ];
 
 // ============================================
@@ -163,6 +215,7 @@ export function QuranVideos() {
   const [activeVideo, setActiveVideo] = useState<QuranVideo | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedScholar, setSelectedScholar] = useState<string | 'all'>('all');
+  const [videoError, setVideoError] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
   // Get unique scholars
@@ -193,9 +246,9 @@ export function QuranVideos() {
 
   // Group by category
   const videosByCategory = useMemo(() => {
-    const categories = Object.keys(CATEGORY_CONFIG) as VideoCategory[];
+    const cats = Object.keys(CATEGORY_CONFIG) as VideoCategory[];
     const grouped: Record<VideoCategory, QuranVideo[]> = {} as any;
-    categories.forEach(cat => {
+    cats.forEach(cat => {
       grouped[cat] = filteredVideos.filter(v => v.category === cat);
     });
     return grouped;
@@ -208,7 +261,7 @@ export function QuranVideos() {
   const playVideo = useCallback((video: QuranVideo) => {
     setActiveVideo(video);
     setIsFullscreen(false);
-    // Scroll to top of video container
+    setVideoError(false);
     setTimeout(() => {
       videoContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
@@ -217,13 +270,15 @@ export function QuranVideos() {
   const closeVideo = useCallback(() => {
     setActiveVideo(null);
     setIsFullscreen(false);
+    setVideoError(false);
   }, []);
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen(prev => !prev);
   }, []);
 
-  // Get embed URL - youtube-nocookie.com for privacy, playsinline for in-app play
+  // Get embed URL - youtube-nocookie.com for privacy
+  // IMPORTANT: No sandbox attribute to allow proper YouTube playback
   const getEmbedUrl = (youtubeId: string): string => {
     const params = new URLSearchParams({
       playsinline: '1',
@@ -231,8 +286,11 @@ export function QuranVideos() {
       rel: '0',
       autoplay: '1',
       controls: '1',
-      fs: '0',
+      fs: '1',
       iv_load_policy: '3',
+      disablekb: '0',
+      cc_load_policy: '0',
+      origin: typeof window !== 'undefined' ? window.location.origin : '',
     });
     return `https://www.youtube-nocookie.com/embed/${youtubeId}?${params.toString()}`;
   };
@@ -280,18 +338,37 @@ export function QuranVideos() {
           </Button>
         </div>
 
-        {/* Video iframe - embedded inside the site */}
+        {/* Video iframe - NO sandbox attribute to allow proper YouTube playback */}
         <div className={`relative bg-black ${
           isFullscreen ? 'flex-1' : 'aspect-video rounded-b-2xl overflow-hidden'
         }`}>
-          <iframe
-            src={getEmbedUrl(activeVideo.youtubeId)}
-            className="w-full h-full border-0"
-            title={activeVideo.title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; playsinline"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
-            allowFullScreen={false}
-          />
+          {videoError ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white">
+              <AlertCircle className="w-12 h-12 text-amber-400 mb-3" />
+              <p className="text-sm font-medium mb-2">تعذّر تحميل الفيديو</p>
+              <p className="text-xs text-slate-400 mb-4">قد يكون الفيديو غير متاح حالياً</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setVideoError(false)}
+                className="gap-2 text-white border-white/30 hover:bg-white/10"
+              >
+                <RefreshCw className="w-4 h-4" />
+                إعادة المحاولة
+              </Button>
+            </div>
+          ) : (
+            <iframe
+              key={activeVideo.id}
+              src={getEmbedUrl(activeVideo.youtubeId)}
+              className="w-full h-full border-0"
+              title={activeVideo.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; playsinline"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+              onError={() => setVideoError(true)}
+            />
+          )}
         </div>
 
         {/* Video Info (non-fullscreen only) */}
