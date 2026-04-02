@@ -95,14 +95,15 @@ export const ERROR_MESSAGES = {
 };
 
 // ✅ VERIFIED Tafsirs from Quran.com API - Ahl al-Sunnah wal-Jama'ah ONLY
+// All IDs tested and confirmed working
 const AVAILABLE_TAFSIRS: Array<{ id: number; name: string; slug: string; language: string; author: string }> = [
   { id: 16, name: 'التفسير الميسر', slug: 'ar-tafsir-muyassar', language: 'arabic', author: 'مجمع الملك فهد' },
   { id: 91, name: 'تفسير السعدي', slug: 'ar-tafseer-al-saddi', language: 'arabic', author: 'الشيخ عبد الرحمن السعدي' },
   { id: 14, name: 'تفسير ابن كثير', slug: 'ar-tafsir-ibn-kathir', language: 'arabic', author: 'الإمام الحافظ ابن كثير' },
   { id: 15, name: 'تفسير الطبري', slug: 'ar-tafsir-al-tabari', language: 'arabic', author: 'الإمام محمد بن جرير الطبري' },
   { id: 90, name: 'تفسير القرطبي', slug: 'ar-tafseer-al-qurtubi', language: 'arabic', author: 'الإمام القرطبي' },
-  { id: 93, name: 'تفسير البغوي', slug: 'ar-tafseer-al-baghawi', language: 'arabic', author: 'الإمام البغوي' },
-  { id: 381, name: 'تفسير الوسيط - الزحيلي', slug: 'ar-tafsir-al-waseet', language: 'arabic', author: 'د. وهبة الزحيلي' },
+  { id: 94, name: 'تفسير البغوي', slug: 'ar-tafsir-al-baghawi', language: 'arabic', author: 'الإمام البغوي' },
+  { id: 93, name: 'التفسير الوسيط - الطنطاوي', slug: 'ar-tafsir-al-wasit', language: 'arabic', author: 'محمد سيد طنطاوي' },
 ];
 
 // Available hadith books mapping - Ahl al-Sunnah wal-Jama'ah only
