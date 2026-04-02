@@ -6,6 +6,7 @@ export { AudioPlayerBar } from './AudioPlayerBar';
 export { DownloadDialog } from './DownloadDialog';
 export { Footer } from './Footer';
 export { BooksLibrary } from './BooksLibrary';
+export { QuranVideos } from './QuranVideos';
 export { AnnouncementBanner } from './AnnouncementBanner';
 export { FloatingScrollButtons } from './FloatingScrollButtons';
 export type { Announcement } from './AnnouncementBanner';
