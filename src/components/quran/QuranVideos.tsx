@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -156,10 +156,10 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'j6', youtubeId: 'uXCvBY-iuss', title: 'سير الأعلام في علم تجويد القرآن', scholar: 'د. أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'سير أعلام القراء والتجويد قديماً وحديثاً' },
 
   // الشيخ عبد المحسن القاسم
-  { id: 'j7', youtubeId: 'pHjFQ24cN64', title: 'كيفية حفظ القرآن الكريم', scholar: 'الشيخ عبد المحسن القاسم', category: 'أحكام التلاوة والتجويد', description: 'طريقة عملية لحفظ القرآن الكريم' },
+  { id: 'j7', youtubeId: 'MWzQyxVt1rI', title: 'كيفية حفظ القرآن الكريم', scholar: 'الشيخ عبد المحسن القاسم', category: 'أحكام التلاوة والتجويد', description: 'طريقة عملية لحفظ القرآن الكريم' },
 
   // الشيخ عبد الرزاق البدر
-  { id: 'j8', youtubeId: 'VZbxE7ESQHE', title: 'آداب تلاوة القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'أحكام التلاوة والتجويد', description: 'آداب تلاوة القرآن الظاهرة والباطنة' },
+  { id: 'j8', youtubeId: 'MTozJRhqVDE', title: 'آداب تلاوة القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'أحكام التلاوة والتجويد', description: 'آداب تلاوة القرآن الظاهرة والباطنة' },
 
   // ═══════════════════════════════════════════
   // علوم القرآن
@@ -175,11 +175,11 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'q5', youtubeId: 'dXqvJu6R7QQ', title: 'شرح منظومة الزمزمي', scholar: 'الشيخ عبد الكريم الخضير', category: 'علوم القرآن', description: 'شرح منظومة الزمزمي في علوم القرآن' },
 
   // الشيخ صالح الفوزان
-  { id: 'q6', youtubeId: 'BdDABx7WS6M', title: 'الناسخ والمنسوخ في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'علوم القرآن', description: 'بيان الناسخ والمنسوخ وأحكامه في القرآن' },
+  { id: 'q6', youtubeId: 'AOJmPcCN-lY', title: 'الناسخ والمنسوخ في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'علوم القرآن', description: 'بيان الناسخ والمنسوخ وأحكامه في القرآن' },
 
   // الشيخ ابن عثيمين
   { id: 'q7', youtubeId: '_d0axzBBmIU', title: 'شرح أصول في التفسير لابن عثيمين', scholar: 'الشيخ ابن عثيمين', category: 'علوم القرآن', description: 'شرح كتاب أصول في التفسير' },
-  { id: 'q8', youtubeId: '7Yh-7R5RkZ8', title: 'صفة العين ومعنى: فإنك بأعيننا', scholar: 'الشيخ ابن عثيمين', category: 'علوم القرآن', description: 'فوائد من شرح العقيدة الواسطية' },
+  { id: 'q8', youtubeId: '5F7J6-1k97U', title: 'صفة العين ومعنى: فإنك بأعيننا', scholar: 'الشيخ ابن عثيمين', category: 'علوم القرآن', description: 'فوائد من شرح العقيدة الواسطية' },
 
   // ═══════════════════════════════════════════
   // قصص القرآن
@@ -203,6 +203,62 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'e4', youtubeId: 'lnldk80-Aqs', title: 'عبقرية رسم (رحمت) في القرآن', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'إعجاز في الرسم القرآني' },
   { id: 'e5', youtubeId: 'tRQDHN8y5hg', title: 'أسرار البيان القرآني', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'أسرار ولمسات من البيان القرآني العظيم' },
   { id: 'e6', youtubeId: 'Z1zX7-wXuMU', title: 'لمسات بيانية متنوعة', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'أسئلة وأجوبة في الإعجاز البياني للقرآن' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - مقاطع إضافية من علماء أهل السنة
+  // ═══════════════════════════════════════════
+
+  // الشيخ محمد العريفي - قصص ومواعظ
+  { id: 'n1', youtubeId: 'nzlKOz2gd9w', title: 'قصة الأعرابي والرسول ﷺ', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'قصة الأعرابي والنبي صلى الله عليه وسلم' },
+  { id: 'n2', youtubeId: '2WD2-MBh1Wo', title: 'يسروا ولا تعسروا - قصص', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'قصص في التيسير والبشارة' },
+  { id: 'n3', youtubeId: 'KDLl4hHxvp4', title: 'قصة الصحابي جابر بن عبد الله', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'قصة جابر بن عبد الله مع رسول الله ﷺ' },
+  { id: 'n4', youtubeId: '4z7nWIUcOGw', title: 'قصة السامري الذي أضل بني إسرائيل', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'كيف صنع السامري العجل وأضل بني إسرائيل' },
+  { id: 'n5', youtubeId: 'wzAhOU1ybxE', title: 'قصة أبو بكر الصديق رضي الله عنه', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'أعظم رجل بعد الأنبياء والرسل' },
+  { id: 'n6', youtubeId: 'YDo4NUsZmyU', title: 'ماذا فعل الصحابة عند وفاة النبي ﷺ', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'ردة فعل الصحابة يوم وفاة النبي ﷺ' },
+
+  // الشيخ عائض القرني - مواعظ وتدبرات
+  { id: 'n7', youtubeId: 't_O4fJozLdU', title: 'الحياة مع القرآن - بودكاست', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'بودكاست عن الحياة مع القرآن الكريم' },
+  { id: 'n8', youtubeId: '9o-nQItRu6I', title: 'سهام الليل - محاضرة', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'محاضرة عن قيام الليل وسهام الليل' },
+  { id: 'n9', youtubeId: 'D4GFCX2mrsM', title: 'الرسول ﷺ يبكي رحمة بأمته', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'خطبة مؤثرة عن رحمة النبي ﷺ بأمته' },
+  { id: 'n10', youtubeId: 'hpC-Tb32tRE', title: 'أول ليلة في القبر', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'سلسلة مراحل الدار الآخرة بدءاً من الوفاة' },
+  { id: 'n11', youtubeId: 'thmnjVA7NFw', title: 'كن سعيداً وتوكل على الله', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'موعظة في التوكل على الله والسعادة' },
+  { id: 'n12', youtubeId: 'NCK46zSJaIQ', title: 'أعظم بشارة', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'أعظم بشارة للمؤمنين من القرآن' },
+  { id: 'n13', youtubeId: 'rpdyBXFAEI4', title: 'معالم السرور - لكل مهموم', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'أقوى خطبة عن معالم السعادة والسرور' },
+  { id: 'n14', youtubeId: 'BwwngYjLcsk', title: 'الحياة السعيدة', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'كيف تعيش حياة سعيدة في ظل القرآن' },
+
+  // الشيخ محمد حسين يعقوب - مواعظ
+  { id: 'n15', youtubeId: 'HgyIb2sLOQ0', title: 'موعظة مؤثرة وقصة مبكية', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'قصة مبكية عن التوبة والإنابة' },
+  { id: 'n16', youtubeId: 'WotH6nSeN5g', title: 'الغفلة ولهو الأمل', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'موعظة لمن كان له قلب عن الغفلة' },
+  { id: 'n17', youtubeId: 'f9VtJd-Eujw', title: 'خاف من نفسك', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'خطبة مؤثرة عن محاسبة النفس' },
+  { id: 'n18', youtubeId: 'PbZM0lRrYRk', title: 'أبنية التذكر والاحتياج للموعظة', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'شدة الاحتياج إلى الموعظة والتذكير' },
+  { id: 'n19', youtubeId: 'Z2dQGJU6vx8', title: 'القرآن مدرسة الحياة', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'خطة للنجاة من خلال القرآن الكريم' },
+  { id: 'n20', youtubeId: '5AvsfyERQiw', title: 'لهيب النار', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'موعظة تدعو القلوب إلى الله' },
+  { id: 'n21', youtubeId: 'TBPX62vdyic', title: 'القدر والاتجاه الإجباري', scholar: 'الشيخ محمد حسين يعقوب', category: 'تدبر وتأملات', description: 'الإيمان بالقدر والاتجاه في الحياة' },
+
+  // الشيخ خالد الراشد - مواعظ
+  { id: 'n22', youtubeId: 'czYM5kG8fmI', title: 'موعظة مؤثرة عن الدنيا', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'الدنيا الفانية وحقيقتها' },
+  { id: 'n23', youtubeId: 'GrT0_zd5HEc', title: 'مواعظ مؤثرة', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'مواعظ مؤثرة تحرك القلوب' },
+  { id: 'n24', youtubeId: 'IsoBhxF-wVo', title: 'إياك والحزن والإحباط', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'مقطع مؤثر عن التفاؤل والابتعاد عن الحزن' },
+  { id: 'n25', youtubeId: 'sngryhhfWJ0', title: 'قصص مؤثرة', scholar: 'الشيخ خالد الراشد', category: 'قصص القرآن', description: 'قصص فيها فائدة وعبرة وموعظة' },
+  { id: 'n26', youtubeId: 'UQMLsfDvks8', title: 'الدنيا الفانية - كلام مؤثر', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'ما الحياة الدنيا إلا متاع الغرور' },
+  { id: 'n27', youtubeId: 'vt2IR0ZxKxI', title: 'وجاءت سكرة الموت بالحق', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'أبلغ العظات حول الموت' },
+  { id: 'n28', youtubeId: 'X0X4q5TaMlc', title: 'موعظة رمضانية', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'موعظة عن استغلال رمضان' },
+  { id: 'n29', youtubeId: 'i74lVOA5jt0', title: 'من أروع المواعظ - مؤثر جداً', scholar: 'الشيخ خالد الراشد', category: 'تدبر وتأملات', description: 'من أروع ما قاله الشيخ خالد الراشد' },
+
+  // نبيل العوضي - قصص إضافية
+  { id: 'n30', youtubeId: 'NgEZ-YZtaVI', title: 'قصة إلياس واليسع وذو الكفل', scholar: 'الشيخ نبيل العوضي', category: 'قصص القرآن', description: 'أنبياء بني إسرائيل الستة' },
+
+  // الشيخ ابن باز - فتاوى ودروس
+  { id: 'n31', youtubeId: 'MWzQyxVt1rI', title: 'نور على الدرب - حلقة 187', scholar: 'الشيخ ابن باز', category: 'علوم القرآن', description: 'فتاوى من برنامج نور على الدرب' },
+  { id: 'n32', youtubeId: 'B6xo_RCu9m4', title: 'نور على الدرب - حلقة 191', scholar: 'الشيخ ابن باز', category: 'علوم القرآن', description: 'فتاوى من برنامج نور على الدرب' },
+  { id: 'n33', youtubeId: 'CSg-nLpApwQ', title: 'فتاوى نور على الدرب - 13', scholar: 'الشيخ ابن باز', category: 'علوم القرآن', description: 'فتاوى من برنامج نور على الدرب' },
+  { id: 'n34', youtubeId: 'HFv-Dkv1RWY', title: 'فتاوى نور على الدرب - 751', scholar: 'الشيخ ابن باز', category: 'علوم القرآن', description: 'فتاوى من برنامج نور على الدرب' },
+  { id: 'n35', youtubeId: 'h1456Hdk_WE', title: 'التحذير من التساهل في الفتوى', scholar: 'الشيخ ابن باز', category: 'علوم القرآن', description: 'خطورة التساهل في الفتوى بغير علم' },
+
+  // مقاطع إضافية متنوعة
+  { id: 'n36', youtubeId: '0AeGhlHwWkg', title: 'ساعة مع أجمل قصص الصحابة', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'مجموعة من أجمل قصص الصحابة' },
+  { id: 'n37', youtubeId: 'PQPpt8B3doQ', title: 'حقارة الدنيا', scholar: 'الشيخ عبدالله القرني', category: 'تدبر وتأملات', description: 'حقيقة الدنيا الفانية' },
+  { id: 'n38', youtubeId: '0T44uSaSNuU', title: 'مات الطيبين', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'موعظة عن فقد الأحبة والصالحين' },
 ];
 
 // ============================================
@@ -216,7 +272,9 @@ export function QuranVideos() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedScholar, setSelectedScholar] = useState<string | 'all'>('all');
   const [videoError, setVideoError] = useState(false);
+  const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const videoCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Get unique scholars
   const scholars = useMemo(() => {
@@ -256,6 +314,46 @@ export function QuranVideos() {
 
   const categories = Object.keys(CATEGORY_CONFIG) as VideoCategory[];
   const getCategoryCount = (cat: VideoCategory) => QURAN_VIDEOS.filter(v => v.category === cat).length;
+
+  // Check video availability when active video changes
+  useEffect(() => {
+    if (!activeVideo) return;
+    
+    if (unavailableIds.has(activeVideo.youtubeId)) {
+      setVideoError(true);
+      return;
+    }
+
+    const checkVideo = async () => {
+      try {
+        const response = await fetch(
+          `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${activeVideo.youtubeId}`,
+          { signal: AbortSignal.timeout(5000) }
+        );
+        const data = await response.json();
+        
+        if (data.error || !data.title) {
+          setUnavailableIds(prev => new Set([...prev, activeVideo.youtubeId]));
+          setVideoError(true);
+        }
+      } catch {
+        // On error, don't mark as unavailable
+      }
+    };
+
+    checkVideo();
+
+    return () => {
+      if (videoCheckTimerRef.current) {
+        clearTimeout(videoCheckTimerRef.current);
+      }
+    };
+  }, [activeVideo?.youtubeId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Filter out unavailable videos from display
+  const displayFilteredVideos = useMemo(() => {
+    return filteredVideos.filter(v => !unavailableIds.has(v.youtubeId));
+  }, [filteredVideos, unavailableIds]);
 
   // Play video
   const playVideo = useCallback((video: QuranVideo) => {

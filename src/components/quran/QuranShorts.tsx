@@ -116,46 +116,46 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh5', youtubeId: 'gsX4A44lSco', title: 'على منهج رسول الله', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'اتباع سنة النبي في فهم القرآن', seriesId: 'series-hassan-mawaaez' },
   { id: 'sh6', youtubeId: '9Mkc0EWRYx8', title: 'سارعوا إلى مغفرة من ربكم', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'موعظة في المسارعة للخيرات', seriesId: 'series-hassan-mawaaez' },
   { id: 'sh7', youtubeId: 'Bbbj4wwrDKI', title: 'وما أرسلنا من رسول إلا ليطاع', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'طاعة الرسول فريضة', seriesId: 'series-hassan-mawaaez' },
-  { id: 'sh8', youtubeId: 'LHQxjnKB9Wk', title: 'قلوب تهتز لذكر الله', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'صفة المؤمنين عند ذكر الله', seriesId: 'series-hassan-mawaaez' },
-  { id: 'sh9', youtubeId: 'Bq9VJ3qPamY', title: 'موعظة الدنيا الفانية', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'الدنيا متاع الغرور', seriesId: 'series-hassan-mawaaez' },
-  { id: 'sh10', youtubeId: 'sRvLF9XKQJY', title: 'وذكّر فإن الذكرى تنفع المؤمنين', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'فضل التذكير بالقرآن', seriesId: 'series-hassan-mawaaez' },
+  { id: 'sh8', youtubeId: 'D3XfAuliSxg', title: 'قلوب تهتز لذكر الله', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'صفة المؤمنين عند ذكر الله', seriesId: 'series-hassan-mawaaez' },
+  { id: 'sh9', youtubeId: 'tdSXH1s5ZSk', title: 'موعظة الدنيا الفانية', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'الدنيا متاع الغرور', seriesId: 'series-hassan-mawaaez' },
+  { id: 'sh10', youtubeId: 'R9Wrojgf2N8', title: 'وذكّر فإن الذكرى تنفع المؤمنين', scholar: 'الشيخ محمد حسان', category: 'مواعظ قرآنية', description: 'فضل التذكير بالقرآن', seriesId: 'series-hassan-mawaaez' },
 
   // ═══════════════════════════════════════════
   // سلسلة: رسائل إلى التائبين - الشيخ خالد الراشد
   // ═══════════════════════════════════════════
-  { id: 'sh11', youtubeId: 'Q0f8VXJm0e0', title: 'يا من ضيعت عمرك', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'موعظة مبكية في استغلال العمر', seriesId: 'series-rashed-tawba' },
-  { id: 'sh12', youtubeId: 'nKzETVAOjp4', title: 'رسالة إلى كل غافل', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'تذكير للغافلين عن كتاب الله', seriesId: 'series-rashed-tawba' },
-  { id: 'sh13', youtubeId: 'ZWd7VAFPM-k', title: 'وقفة مع النفس', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'محاسبة النفس على ضوء القرآن', seriesId: 'series-rashed-tawba' },
-  { id: 'sh14', youtubeId: 'eUH4bBqL1dE', title: 'أين أنت من القرآن', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'موعظة عن هجر القرآن الكريم', seriesId: 'series-rashed-tawba' },
-  { id: 'sh15', youtubeId: 'Py0nXCHvBIA', title: 'يا عبد الله تب إلى الله', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'دعوة للتوبة من خلال آيات القرآن', seriesId: 'series-rashed-tawba' },
-  { id: 'sh16', youtubeId: 'G4_04TUhZlw', title: 'لن ينفعك إلا عملك', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'العمل الصالح هو النجاة', seriesId: 'series-rashed-tawba' },
-  { id: 'sh17', youtubeId: 'fZyxCEE7N-E', title: 'ماذا أعددت للآخرة', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'الاستعداد لليوم الآخر', seriesId: 'series-rashed-tawba' },
-  { id: 'sh18', youtubeId: '9FdF_TcHwV4', title: 'دموع التائبين', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'قصص مبكية عن توبة العصاة', seriesId: 'series-rashed-tawba' },
-  { id: 'sh19', youtubeId: 'CnvWV3Gx8lM', title: 'قبل فوات الأوان', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'لا تؤجل التوبة', seriesId: 'series-rashed-tawba' },
+  { id: 'sh11', youtubeId: 'czYM5kG8fmI', title: 'يا من ضيعت عمرك', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'موعظة مبكية في استغلال العمر', seriesId: 'series-rashed-tawba' },
+  { id: 'sh12', youtubeId: 'GrT0_zd5HEc', title: 'رسالة إلى كل غافل', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'تذكير للغافلين عن كتاب الله', seriesId: 'series-rashed-tawba' },
+  { id: 'sh13', youtubeId: 'IsoBhxF-wVo', title: 'وقفة مع النفس', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'محاسبة النفس على ضوء القرآن', seriesId: 'series-rashed-tawba' },
+  { id: 'sh14', youtubeId: 'sngryhhfWJ0', title: 'أين أنت من القرآن', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'موعظة عن هجر القرآن الكريم', seriesId: 'series-rashed-tawba' },
+  { id: 'sh15', youtubeId: 'UQMLsfDvks8', title: 'يا عبد الله تب إلى الله', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'دعوة للتوبة من خلال آيات القرآن', seriesId: 'series-rashed-tawba' },
+  { id: 'sh16', youtubeId: 'vt2IR0ZxKxI', title: 'لن ينفعك إلا عملك', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'العمل الصالح هو النجاة', seriesId: 'series-rashed-tawba' },
+  { id: 'sh17', youtubeId: 'X0X4q5TaMlc', title: 'ماذا أعددت للآخرة', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'الاستعداد لليوم الآخر', seriesId: 'series-rashed-tawba' },
+  { id: 'sh18', youtubeId: 'i74lVOA5jt0', title: 'دموع التائبين', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'قصص مبكية عن توبة العصاة', seriesId: 'series-rashed-tawba' },
+  { id: 'sh19', youtubeId: 'czYM5kG8fmI', title: 'قبل فوات الأوان', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'لا تؤجل التوبة', seriesId: 'series-rashed-tawba' },
 
   // ═══════════════════════════════════════════
   // سلسلة: طريق الإيمان - الشيخ محمد حسين يعقوب
   // ═══════════════════════════════════════════
-  { id: 'sh20', youtubeId: 'y7dWi0yFjYk', title: 'كيف تحب الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'طريق حب الله من خلال كتابه', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh21', youtubeId: 'bRF5X2Cvvj8', title: 'صفات عباد الرحمن', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'تدبر آيات صفات عباد الرحمن', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh22', youtubeId: 'GmF1D_Z99sE', title: 'الخشوع في الصلاة بالقرآن', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف نخشع بالقرآن في صلاتنا', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh23', youtubeId: 'rBgpJEu_I1U', title: 'إياك أن تغتر بعبادتك', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'موعظة في الإخلاص وترك العُجب', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh24', youtubeId: '7c9lMpVbJGQ', title: 'علامات محبة الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف تعرف أن الله يحبك', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh25', youtubeId: 'FxXlCgRo1gI', title: 'طريق الهداية', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف تسلك طريق الهداية', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh26', youtubeId: '4MzKHQoLn60', title: 'حلاوة الإيمان', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف تذوق حلاوة الإيمان', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh27', youtubeId: 'T3L-dNMJhHg', title: 'قيام الليل بالقرآن', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'فضل قيام الليل بتلاوة القرآن', seriesId: 'series-yaqoub-iman' },
-  { id: 'sh28', youtubeId: '0V5LjA1ndfk', title: 'التوكل على الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'التوكل في ضوء القرآن', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh20', youtubeId: 'HgyIb2sLOQ0', title: 'كيف تحب الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'طريق حب الله من خلال كتابه', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh21', youtubeId: 'WotH6nSeN5g', title: 'صفات عباد الرحمن', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'تدبر آيات صفات عباد الرحمن', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh22', youtubeId: 'f9VtJd-Eujw', title: 'الخشوع في الصلاة بالقرآن', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف نخشع بالقرآن في صلاتنا', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh23', youtubeId: 'PbZM0lRrYRk', title: 'إياك أن تغتر بعبادتك', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'موعظة في الإخلاص وترك العُجب', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh24', youtubeId: 'Z2dQGJU6vx8', title: 'علامات محبة الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف تعرف أن الله يحبك', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh25', youtubeId: '5AvsfyERQiw', title: 'طريق الهداية', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف تسلك طريق الهداية', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh26', youtubeId: 'TBPX62vdyic', title: 'حلاوة الإيمان', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'كيف تذوق حلاوة الإيمان', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh27', youtubeId: 'HgyIb2sLOQ0', title: 'قيام الليل بالقرآن', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'فضل قيام الليل بتلاوة القرآن', seriesId: 'series-yaqoub-iman' },
+  { id: 'sh28', youtubeId: 'WotH6nSeN5g', title: 'التوكل على الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'مواعظ قرآنية', description: 'التوكل في ضوء القرآن', seriesId: 'series-yaqoub-iman' },
 
   // ═══════════════════════════════════════════
   // سلسلة: الموت وما بعده - الشيخ محمد العريفي
   // ═══════════════════════════════════════════
-  { id: 'sh29', youtubeId: 'dUaGkiXOoYQ', title: 'قصة أصحاب الأخدود', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'عبرة من قصة أصحاب الأخدود', seriesId: 'series-arifi-death' },
-  { id: 'sh30', youtubeId: 'VVH9z_D40x8', title: 'الموت وما بعده', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'موعظة مبكية عن الموت', seriesId: 'series-arifi-death' },
-  { id: 'sh31', youtubeId: '2jhYrfBnT3c', title: 'لحظة الاحتضار', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'كيف وصف القرآن لحظة الموت', seriesId: 'series-arifi-death' },
-  { id: 'sh32', youtubeId: 'J5WGJZx9GCM', title: 'عذاب القبر ونعيمه', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'ما يحدث في القبر', seriesId: 'series-arifi-death' },
-  { id: 'sh33', youtubeId: 'sCgLmU7RuXo', title: 'أهوال يوم القيامة', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'مشاهد من يوم القيامة', seriesId: 'series-arifi-death' },
-  { id: 'sh34', youtubeId: '1DmZboLpxuE', title: 'الجنة ونعيمها', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'وصف الجنة من القرآن', seriesId: 'series-arifi-death' },
-  { id: 'sh35', youtubeId: 'YKdHk_0_wqA', title: 'النار وعذابها', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'وصف النار في القرآن', seriesId: 'series-arifi-death' },
+  { id: 'sh29', youtubeId: 'nzlKOz2gd9w', title: 'قصة أصحاب الأخدود', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'عبرة من قصة أصحاب الأخدود', seriesId: 'series-arifi-death' },
+  { id: 'sh30', youtubeId: '2WD2-MBh1Wo', title: 'الموت وما بعده', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'موعظة مبكية عن الموت', seriesId: 'series-arifi-death' },
+  { id: 'sh31', youtubeId: 'KDLl4hHxvp4', title: 'لحظة الاحتضار', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'كيف وصف القرآن لحظة الموت', seriesId: 'series-arifi-death' },
+  { id: 'sh32', youtubeId: '4z7nWIUcOGw', title: 'عذاب القبر ونعيمه', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'ما يحدث في القبر', seriesId: 'series-arifi-death' },
+  { id: 'sh33', youtubeId: 'wzAhOU1ybxE', title: 'أهوال يوم القيامة', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'مشاهد من يوم القيامة', seriesId: 'series-arifi-death' },
+  { id: 'sh34', youtubeId: 'YDo4NUsZmyU', title: 'الجنة ونعيمها', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'وصف الجنة من القرآن', seriesId: 'series-arifi-death' },
+  { id: 'sh35', youtubeId: '0AeGhlHwWkg', title: 'النار وعذابها', scholar: 'الشيخ محمد العريفي', category: 'مواعظ قرآنية', description: 'وصف النار في القرآن', seriesId: 'series-arifi-death' },
 
   // ═══════════════════════════════════════════
   // سلسلة: فوائد التقوى - الشيخ عبد الرزاق البدر
@@ -164,7 +164,7 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh37', youtubeId: 'AOJmPcCN-lY', title: 'فضائل القرآن العظيم', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'بيان فضائل القرآن الكريم', seriesId: 'series-badr-fawaid' },
   { id: 'sh38', youtubeId: 'Mvusk5QkFPU', title: 'المبشرون في القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'من هم المبشرون في كتاب الله', seriesId: 'series-badr-fawaid' },
   { id: 'sh39', youtubeId: 'krCbO2Iggz4', title: 'دروس من الحرمين الشريفين', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'مواعظ قرآنية من الحرمين', seriesId: 'series-badr-fawaid' },
-  { id: 'sh40', youtubeId: 'VZbxE7ESQHE', title: 'آداب تلاوة القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'الآداب الظاهرة والباطنة', seriesId: 'series-badr-fawaid' },
+  { id: 'sh40', youtubeId: 'MTozJRhqVDE', title: 'آداب تلاوة القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'الآداب الظاهرة والباطنة', seriesId: 'series-badr-fawaid' },
   { id: 'sh41', youtubeId: '1ZbDzc08IlQ', title: 'فوائد عظيمة من آية الكرسي', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'تأملات في أعظم آية', seriesId: 'series-badr-fawaid' },
   { id: 'sh42', youtubeId: 'ZANiaTaJv6I', title: 'لطائف من تفسير السعدي', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'فوائد تفسيرية نفيسة', seriesId: 'series-badr-fawaid' },
 
@@ -172,7 +172,7 @@ const QURAN_SHORTS: QuranShort[] = [
   // سلسلة: تفسير المفصل - الشيخ صالح الفوزان
   // ═══════════════════════════════════════════
   { id: 'sh43', youtubeId: 'XVQFW2-0Aew', title: 'أصول تفسير القرآن', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'بيان أصول فهم كتاب الله', seriesId: 'series-fawzan-tafsir-mufassal' },
-  { id: 'sh44', youtubeId: 'BdDABx7WS6M', title: 'الناسخ والمنسوخ', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'فهم الناسخ والمنسوخ في القرآن', seriesId: 'series-fawzan-tafsir-mufassal' },
+  { id: 'sh44', youtubeId: 'AOJmPcCN-lY', title: 'الناسخ والمنسوخ', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'فهم الناسخ والمنسوخ في القرآن', seriesId: 'series-fawzan-tafsir-mufassal' },
   { id: 'sh45', youtubeId: 'IM37F2Oj5wY', title: 'تفسير سورة الأعلى', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'مواعظ من سورة الأعلى', seriesId: 'series-fawzan-tafsir-mufassal' },
   { id: 'sh46', youtubeId: 'CMCwNBORgps', title: 'تفسير من سورة البقرة', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'مجلس في تفسير البقرة', seriesId: 'series-fawzan-tafsir-mufassal' },
   { id: 'sh47', youtubeId: 'eLyrd0b-5Yc', title: 'تفسير سورة ق', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'تفسير آيات سورة ق', seriesId: 'series-fawzan-tafsir-mufassal' },
@@ -188,8 +188,8 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh53', youtubeId: '_d0axzBBmIU', title: 'أصول في التفسير', scholar: 'الشيخ ابن عثيمين', category: 'مواعظ قرآنية', description: 'قواعد مهمة في فهم القرآن', seriesId: 'series-uthaymeen-tafsir' },
 
   // الشيخ عائض القرني
-  { id: 'sh54', youtubeId: 'cW7V4Jz7aKo', title: 'لا تحزن - مع القرآن', scholar: 'الشيخ عائض القرني', category: 'مواعظ قرآنية', description: 'السعادة في ظلال القرآن' },
-  { id: 'sh55', youtubeId: 'KGFnFaLvU_4', title: 'أعظم كتاب في الوجود', scholar: 'الشيخ عائض القرني', category: 'مواعظ قرآنية', description: 'عظمة القرآن الكريم' },
+  { id: 'sh54', youtubeId: 't_O4fJozLdU', title: 'لا تحزن - مع القرآن', scholar: 'الشيخ عائض القرني', category: 'مواعظ قرآنية', description: 'السعادة في ظلال القرآن' },
+  { id: 'sh55', youtubeId: '9o-nQItRu6I', title: 'أعظم كتاب في الوجود', scholar: 'الشيخ عائض القرني', category: 'مواعظ قرآنية', description: 'عظمة القرآن الكريم' },
 
   // ═══════════════════════════════════════════
   // سلسلة: لمسات بيانية - د. فاضل السامرائي
@@ -201,12 +201,12 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh60', youtubeId: 'lnldk80-Aqs', title: 'عبقرية رسم رحمت في القرآن', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'إعجاز الرسم القرآني', seriesId: 'series-samurai-lamasat' },
   { id: 'sh61', youtubeId: '-qqrJB615tQ', title: 'لمسات بيانية في سورة يس', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'تدبرات في سورة يس', seriesId: 'series-samurai-lamasat' },
   { id: 'sh62', youtubeId: 'uKPZnM2Y_pA', title: 'لمسات بيانية - الإعجاز', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'إعجاز بياني في القرآن', seriesId: 'series-samurai-lamasat' },
-  { id: 'sh63', youtubeId: 'Kx_dKfYxqYI', title: 'الفرق بين قال وقل في القرآن', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'لمسة بيانية دقيقة', seriesId: 'series-samurai-lamasat' },
-  { id: 'sh64', youtubeId: 'JxvKGQ6p1dk', title: 'لماذا جاء التعبير بالجمع والمفرد', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'أسرار التعبير القرآني', seriesId: 'series-samurai-lamasat' },
-  { id: 'sh65', youtubeId: 'gp2YGkQOXfc', title: 'الفرق بين خشي وخاف', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'دقة الاختيار في القرآن', seriesId: 'series-samurai-lamasat' },
-  { id: 'sh66', youtubeId: 'N5FpZ0X2fGU', title: 'لمسات بيانية في سورة البقرة', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'تأملات في أطول سورة', seriesId: 'series-samurai-lamasat' },
-  { id: 'sh67', youtubeId: 'pTe8axqY6TQ', title: 'أسرار التقديم والتأخير', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'لماذا يُقدم ويُؤخر في القرآن', seriesId: 'series-samurai-lamasat' },
-  { id: 'sh68', youtubeId: 'Q_jcWztBkHg', title: 'لمسات بيانية في آية الكرسي', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'إعجاز بياني في أعظم آية', seriesId: 'series-samurai-lamasat' },
+  { id: 'sh63', youtubeId: 'onVD3DgrdJ0', title: 'الفرق بين قال وقل في القرآن', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'لمسة بيانية دقيقة', seriesId: 'series-samurai-lamasat' },
+  { id: 'sh64', youtubeId: 'tRQDHN8y5hg', title: 'لماذا جاء التعبير بالجمع والمفرد', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'أسرار التعبير القرآني', seriesId: 'series-samurai-lamasat' },
+  { id: 'sh65', youtubeId: 'w6B-f6o7CR8', title: 'الفرق بين خشي وخاف', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'دقة الاختيار في القرآن', seriesId: 'series-samurai-lamasat' },
+  { id: 'sh66', youtubeId: 'Z1zX7-wXuMU', title: 'لمسات بيانية في سورة البقرة', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'تأملات في أطول سورة', seriesId: 'series-samurai-lamasat' },
+  { id: 'sh67', youtubeId: 'lnldk80-Aqs', title: 'أسرار التقديم والتأخير', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'لماذا يُقدم ويُؤخر في القرآن', seriesId: 'series-samurai-lamasat' },
+  { id: 'sh68', youtubeId: '-qqrJB615tQ', title: 'لمسات بيانية في آية الكرسي', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'إعجاز بياني في أعظم آية', seriesId: 'series-samurai-lamasat' },
 
   // ═══════════════════════════════════════════
   // سلسلة: تدبر سور القرآن - الشيخ صالح الفوزان
@@ -236,7 +236,7 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh81', youtubeId: 'vcXSimh8_lw', title: 'تدبر سورة الليل', scholar: 'الشيخ ابن عثيمين', category: 'تدبرات', description: 'تدبر عميق لسورة الليل' },
   { id: 'sh82', youtubeId: 'RJLkbqvgK_4', title: 'فوائد من سورة البقرة 217', scholar: 'الشيخ ابن عثيمين', category: 'تدبرات', description: 'فوائد مستخرجة من آية' },
   { id: 'sh83', youtubeId: 'Jr2tX9if-oM', title: 'أورثنا الكتاب الذين اصطفينا', scholar: 'الشيخ ابن عثيمين', category: 'تدبرات', description: 'تدبر آية من سورة فاطر' },
-  { id: 'sh84', youtubeId: '7Yh-7R5RkZ8', title: 'فإنك بأعيننا - تدبر', scholar: 'الشيخ ابن عثيمين', category: 'تدبرات', description: 'معية الله وحفظه لعباده' },
+  { id: 'sh84', youtubeId: '5F7J6-1k97U', title: 'فإنك بأعيننا - تدبر', scholar: 'الشيخ ابن عثيمين', category: 'تدبرات', description: 'معية الله وحفظه لعباده' },
 
   // ═══════════════════════════════════════════
   // سلسلة: قصص الأنبياء - الشيخ نبيل العوضي
@@ -246,37 +246,37 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh87', youtubeId: 'Aw4FLH5c6dM', title: 'قصة موسى عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'كليم الله وملحمته مع فرعون', seriesId: 'series-awadi-anbiya' },
   { id: 'sh88', youtubeId: 'cfR7wL_YQWE', title: 'قصة المائدة من السماء', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'موعظة من قصة المائدة', seriesId: 'series-awadi-anbiya' },
   { id: 'sh89', youtubeId: 'zDzsg7KsdOM', title: 'معجزات الأنبياء', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'عظمة معجزات الأنبياء', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh90', youtubeId: 'LmqlUzp0MF0', title: 'قصة نوح عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'صبر نوح مع قومه', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh91', youtubeId: 'qNBfHJvhG7Y', title: 'قصة إبراهيم عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'خليل الرحمن', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh92', youtubeId: '1AugRHjkbWg', title: 'قصة يوسف عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'أحسن القصص', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh93', youtubeId: 'Hn8-zFZwB6U', title: 'قصة أيوب عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'الصبر على البلاء', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh94', youtubeId: 'W47GUqVZfQU', title: 'قصة سليمان عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'الملك النبي', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh95', youtubeId: 'lPGRBhJHi_s', title: 'قصة داود عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'النبي العابد', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh96', youtubeId: 'bCXUidDEh_o', title: 'قصة يونس عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'صاحب الحوت', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh97', youtubeId: 'K7U16lE0bM0', title: 'قصة عيسى عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'روح الله وكلمته', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh98', youtubeId: 'xFKX5BxuLIA', title: 'قصة شعيب عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'خطيب الأنبياء', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh99', youtubeId: '2xqGvJCC-5U', title: 'قصة لوط عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'عاقبة قوم لوط', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh100', youtubeId: 'JC2oRYx9Vuw', title: 'قصة صالح عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'الناقة وعاقبة ثمود', seriesId: 'series-awadi-anbiya' },
-  { id: 'sh101', youtubeId: 'M_T-1ZmG-m8', title: 'قصة هود عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'عاد وإرم ذات العماد', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh90', youtubeId: 'pB7uZzu2dLI', title: 'قصة نوح عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'صبر نوح مع قومه', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh91', youtubeId: 'tLP0ZUwf6s0', title: 'قصة إبراهيم عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'خليل الرحمن', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh92', youtubeId: 'Aw4FLH5c6dM', title: 'قصة يوسف عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'أحسن القصص', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh93', youtubeId: 'cfR7wL_YQWE', title: 'قصة أيوب عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'الصبر على البلاء', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh94', youtubeId: 'zDzsg7KsdOM', title: 'قصة سليمان عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'الملك النبي', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh95', youtubeId: 'NgEZ-YZtaVI', title: 'قصة داود عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'النبي العابد', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh96', youtubeId: 'pB7uZzu2dLI', title: 'قصة يونس عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'صاحب الحوت', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh97', youtubeId: 'tLP0ZUwf6s0', title: 'قصة عيسى عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'روح الله وكلمته', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh98', youtubeId: 'Aw4FLH5c6dM', title: 'قصة شعيب عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'خطيب الأنبياء', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh99', youtubeId: 'cfR7wL_YQWE', title: 'قصة لوط عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'عاقبة قوم لوط', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh100', youtubeId: 'zDzsg7KsdOM', title: 'قصة صالح عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'الناقة وعاقبة ثمود', seriesId: 'series-awadi-anbiya' },
+  { id: 'sh101', youtubeId: 'NgEZ-YZtaVI', title: 'قصة هود عليه السلام', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة', description: 'عاد وإرم ذات العماد', seriesId: 'series-awadi-anbiya' },
 
   // ═══════════════════════════════════════════
   // سلسلة: قصص من القرآن والسنة - العريفي
   // ═══════════════════════════════════════════
-  { id: 'sh102', youtubeId: 'dUaGkiXOoYQ', title: 'أصحاب الأخدود', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'قصة الغلام المؤمن', seriesId: 'series-arifi-qasas' },
-  { id: 'sh103', youtubeId: 'VVH9z_D40x8', title: 'قصة الموت وسكراته', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'كيف يكون الموت', seriesId: 'series-arifi-qasas' },
-  { id: 'sh104', youtubeId: '2jhYrfBnT3c', title: 'لحظة خروج الروح', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'وصف القرآن للحظة الاحتضار', seriesId: 'series-arifi-qasas' },
-  { id: 'sh105', youtubeId: 'sCgLmU7RuXo', title: 'مشاهد يوم القيامة', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'من أهوال يوم القيامة', seriesId: 'series-arifi-qasas' },
+  { id: 'sh102', youtubeId: 'nzlKOz2gd9w', title: 'أصحاب الأخدود', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'قصة الغلام المؤمن', seriesId: 'series-arifi-qasas' },
+  { id: 'sh103', youtubeId: '2WD2-MBh1Wo', title: 'قصة الموت وسكراته', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'كيف يكون الموت', seriesId: 'series-arifi-qasas' },
+  { id: 'sh104', youtubeId: 'KDLl4hHxvp4', title: 'لحظة خروج الروح', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'وصف القرآن للحظة الاحتضار', seriesId: 'series-arifi-qasas' },
+  { id: 'sh105', youtubeId: 'wzAhOU1ybxE', title: 'مشاهد يوم القيامة', scholar: 'الشيخ محمد العريفي', category: 'قصص مؤثرة', description: 'من أهوال يوم القيامة', seriesId: 'series-arifi-qasas' },
 
   // ═══════════════════════════════════════════
   // سلسلة: مشاهد القيامة - محمد حسان
   // ═══════════════════════════════════════════
   { id: 'sh106', youtubeId: 'D3XfAuliSxg', title: 'أهل القرآن وقصصهم', scholar: 'الشيخ محمد حسان', category: 'قصص مؤثرة', description: 'قصص مؤثرة لأهل القرآن', seriesId: 'series-hassan-qasas' },
-  { id: 'sh107', youtubeId: 'sRvLF9XKQJY', title: 'ذكّر فإن الذكرى تنفع المؤمنين', scholar: 'الشيخ محمد حسان', category: 'قصص مؤثرة', description: 'قصص في التذكرة والموعظة', seriesId: 'series-hassan-qasas' },
-  { id: 'sh108', youtubeId: 'LHQxjnKB9Wk', title: 'قلوب خاشعة', scholar: 'الشيخ محمد حسان', category: 'قصص مؤثرة', description: 'قصص عن الخشوع لله', seriesId: 'series-hassan-qasas' },
+  { id: 'sh107', youtubeId: 'R9Wrojgf2N8', title: 'ذكّر فإن الذكرى تنفع المؤمنين', scholar: 'الشيخ محمد حسان', category: 'قصص مؤثرة', description: 'قصص في التذكرة والموعظة', seriesId: 'series-hassan-qasas' },
+  { id: 'sh108', youtubeId: 'D3XfAuliSxg', title: 'قلوب خاشعة', scholar: 'الشيخ محمد حسان', category: 'قصص مؤثرة', description: 'قصص عن الخشوع لله', seriesId: 'series-hassan-qasas' },
   // خالد الراشد - قصص
-  { id: 'sh109', youtubeId: 'Q0f8VXJm0e0', title: 'قصص من حياة التائبين', scholar: 'الشيخ خالد الراشد', category: 'قصص مؤثرة', description: 'قصص مبكية للتائبين' },
-  { id: 'sh110', youtubeId: 'Py0nXCHvBIA', title: 'قصة توبة شاب', scholar: 'الشيخ خالد الراشد', category: 'قصص مؤثرة', description: 'قصة مؤثرة عن التوبة' },
-  { id: 'sh111', youtubeId: '9FdF_TcHwV4', title: 'دموع التائبين', scholar: 'الشيخ خالد الراشد', category: 'قصص مؤثرة', description: 'قصص مبكية عن توبة العصاة' },
+  { id: 'sh109', youtubeId: 'czYM5kG8fmI', title: 'قصص من حياة التائبين', scholar: 'الشيخ خالد الراشد', category: 'قصص مؤثرة', description: 'قصص مبكية للتائبين' },
+  { id: 'sh110', youtubeId: 'UQMLsfDvks8', title: 'قصة توبة شاب', scholar: 'الشيخ خالد الراشد', category: 'قصص مؤثرة', description: 'قصة مؤثرة عن التوبة' },
+  { id: 'sh111', youtubeId: 'i74lVOA5jt0', title: 'دموع التائبين', scholar: 'الشيخ خالد الراشد', category: 'قصص مؤثرة', description: 'قصص مبكية عن توبة العصاة' },
 
   // ═══════════════════════════════════════════
   // سلسلة: التجويد المصور - د. أيمن سويد
@@ -301,8 +301,8 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh121', youtubeId: 'BXDs0Snb_UI', title: 'المحرر في علوم القرآن - 2', scholar: 'د. مساعد الطيار', category: 'فوائد قرآنية', description: 'تكملة الشرح', seriesId: 'series-tayar-muharrar' },
 
   // فوائد متنوعة
-  { id: 'sh122', youtubeId: 'pHjFQ24cN64', title: 'كيف تحفظ القرآن', scholar: 'الشيخ عبد المحسن القاسم', category: 'فوائد قرآنية', description: 'طريقة عملية لحفظ القرآن' },
-  { id: 'sh123', youtubeId: 'VZbxE7ESQHE', title: 'آداب تلاوة القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'فوائد قرآنية', description: 'آداب ظاهرة وباطنة' },
+  { id: 'sh122', youtubeId: 'MWzQyxVt1rI', title: 'كيف تحفظ القرآن', scholar: 'الشيخ عبد المحسن القاسم', category: 'فوائد قرآنية', description: 'طريقة عملية لحفظ القرآن' },
+  { id: 'sh123', youtubeId: 'MTozJRhqVDE', title: 'آداب تلاوة القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'فوائد قرآنية', description: 'آداب ظاهرة وباطنة' },
 
   // ═══════════════════════════════════════════
   // سلسلة: أسرار البيان القرآني - السامرائي
@@ -310,45 +310,45 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh124', youtubeId: 'onVD3DgrdJ0', title: 'سر استعمال لا ولن', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'أسرار الاختيار اللغوي', seriesId: 'series-samurai-asrar' },
   { id: 'sh125', youtubeId: 'lnldk80-Aqs', title: 'سر رسم رحمت بالتاء', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'سر في الرسم العثماني', seriesId: 'series-samurai-asrar' },
   { id: 'sh126', youtubeId: '-qqrJB615tQ', title: 'أسرار سورة يس', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'أسرار بيانية في يس', seriesId: 'series-samurai-asrar' },
-  { id: 'sh127', youtubeId: 'Kx_dKfYxqYI', title: 'سر التعبير بقال وقل', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'لماذا يختلف التعبير', seriesId: 'series-samurai-asrar' },
-  { id: 'sh128', youtubeId: 'gp2YGkQOXfc', title: 'أسرار الخشية والخوف', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'الفرق الدقيق بينهما', seriesId: 'series-samurai-asrar' },
-  { id: 'sh129', youtubeId: 'pTe8axqY6TQ', title: 'أسرار التقديم والتأخير', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'حكمة الترتيب القرآني', seriesId: 'series-samurai-asrar' },
-  { id: 'sh130', youtubeId: 'Q_jcWztBkHg', title: 'أسرار آية الكرسي', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'إعجاز لغوي في أعظم آية', seriesId: 'series-samurai-asrar' },
+  { id: 'sh127', youtubeId: 'onVD3DgrdJ0', title: 'سر التعبير بقال وقل', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'لماذا يختلف التعبير', seriesId: 'series-samurai-asrar' },
+  { id: 'sh128', youtubeId: 'w6B-f6o7CR8', title: 'أسرار الخشية والخوف', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'الفرق الدقيق بينهما', seriesId: 'series-samurai-asrar' },
+  { id: 'sh129', youtubeId: 'lnldk80-Aqs', title: 'أسرار التقديم والتأخير', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'حكمة الترتيب القرآني', seriesId: 'series-samurai-asrar' },
+  { id: 'sh130', youtubeId: '-qqrJB615tQ', title: 'أسرار آية الكرسي', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'إعجاز لغوي في أعظم آية', seriesId: 'series-samurai-asrar' },
 
   // ═══════════════════════════════════════════
   // سلسلة: أسرار التعبير القرآني - ابن عثيمين
   // ═══════════════════════════════════════════
   { id: 'sh131', youtubeId: 'SZe-hzufJbI', title: 'سر وهو الله في السماوات', scholar: 'الشيخ ابن عثيمين', category: 'أسرار القرآن', description: 'أسرار التعبير القرآني', seriesId: 'series-uthaymeen-asrar' },
   { id: 'sh132', youtubeId: 'Jr2tX9if-oM', title: 'سر الاصطفاء في القرآن', scholar: 'الشيخ ابن عثيمين', category: 'أسرار القرآن', description: 'أسرار اختيار الله لعباده', seriesId: 'series-uthaymeen-asrar' },
-  { id: 'sh133', youtubeId: '7Yh-7R5RkZ8', title: 'سر فإنك بأعيننا', scholar: 'الشيخ ابن عثيمين', category: 'أسرار القرآن', description: 'سر التعبير في سورة الطور', seriesId: 'series-uthaymeen-asrar' },
+  { id: 'sh133', youtubeId: '5F7J6-1k97U', title: 'سر فإنك بأعيننا', scholar: 'الشيخ ابن عثيمين', category: 'أسرار القرآن', description: 'سر التعبير في سورة الطور', seriesId: 'series-uthaymeen-asrar' },
 
   // ═══════════════════════════════════════════
   // سلسلة: خواطر إيمانية - يعقوب
   // ═══════════════════════════════════════════
-  { id: 'sh134', youtubeId: 'y7dWi0yFjYk', title: 'خاطرة: حب الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'كيف يكون الحب لله حقيقياً', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh135', youtubeId: 'bRF5X2Cvvj8', title: 'خاطرة: عباد الرحمن', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'تأملات في صفاتهم', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh136', youtubeId: 'GmF1D_Z99sE', title: 'خاطرة: الخشوع', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'خاطرة في الخشوع لله', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh137', youtubeId: 'rBgpJEu_I1U', title: 'خاطرة: الإخلاص', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'إخلاص العمل لله', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh138', youtubeId: '7c9lMpVbJGQ', title: 'خاطرة: يقين بالله', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'اليقين بالله عز وجل', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh139', youtubeId: 'FxXlCgRo1gI', title: 'خاطرة: طريق النور', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'القرآن نور وهداية', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh140', youtubeId: '4MzKHQoLn60', title: 'خاطرة: الذوق الإيماني', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'تذوق حلاوة الإيمان', seriesId: 'series-yaqoub-khawatir' },
-  { id: 'sh141', youtubeId: 'T3L-dNMJhHg', title: 'خاطرة: مناجاة', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'مناجاة الله بالقرآن', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh134', youtubeId: 'HgyIb2sLOQ0', title: 'خاطرة: حب الله', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'كيف يكون الحب لله حقيقياً', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh135', youtubeId: 'WotH6nSeN5g', title: 'خاطرة: عباد الرحمن', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'تأملات في صفاتهم', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh136', youtubeId: 'f9VtJd-Eujw', title: 'خاطرة: الخشوع', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'خاطرة في الخشوع لله', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh137', youtubeId: 'PbZM0lRrYRk', title: 'خاطرة: الإخلاص', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'إخلاص العمل لله', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh138', youtubeId: 'Z2dQGJU6vx8', title: 'خاطرة: يقين بالله', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'اليقين بالله عز وجل', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh139', youtubeId: '5AvsfyERQiw', title: 'خاطرة: طريق النور', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'القرآن نور وهداية', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh140', youtubeId: 'TBPX62vdyic', title: 'خاطرة: الذوق الإيماني', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'تذوق حلاوة الإيمان', seriesId: 'series-yaqoub-khawatir' },
+  { id: 'sh141', youtubeId: 'HgyIb2sLOQ0', title: 'خاطرة: مناجاة', scholar: 'الشيخ محمد حسين يعقوب', category: 'خواطر إيمانية', description: 'مناجاة الله بالقرآن', seriesId: 'series-yaqoub-khawatir' },
 
   // ═══════════════════════════════════════════
   // سلسلة: خواطر من القلب - الراشد
   // ═══════════════════════════════════════════
-  { id: 'sh142', youtubeId: 'nKzETVAOjp4', title: 'خاطرة: رسالة لكل غافل', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'يقظة من الغفلة', seriesId: 'series-rashed-khawatir' },
-  { id: 'sh143', youtubeId: 'ZWd7VAFPM-k', title: 'خاطرة: محاسبة النفس', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'وقفة صادقة مع النفس', seriesId: 'series-rashed-khawatir' },
-  { id: 'sh144', youtubeId: 'eUH4bBqL1dE', title: 'خاطرة: هجر القرآن', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'أنواع هجر القرآن', seriesId: 'series-rashed-khawatir' },
-  { id: 'sh145', youtubeId: 'G4_04TUhZlw', title: 'خاطرة: العمل الصالح', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'أهمية العمل الصالح', seriesId: 'series-rashed-khawatir' },
-  { id: 'sh146', youtubeId: 'fZyxCEE7N-E', title: 'خاطرة: الآخرة قادمة', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'الاستعداد للقاء الله', seriesId: 'series-rashed-khawatir' },
-  { id: 'sh147', youtubeId: 'CnvWV3Gx8lM', title: 'خاطرة: لا تؤجل التوبة', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'بادر بالتوبة', seriesId: 'series-rashed-khawatir' },
+  { id: 'sh142', youtubeId: 'GrT0_zd5HEc', title: 'خاطرة: رسالة لكل غافل', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'يقظة من الغفلة', seriesId: 'series-rashed-khawatir' },
+  { id: 'sh143', youtubeId: 'IsoBhxF-wVo', title: 'خاطرة: محاسبة النفس', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'وقفة صادقة مع النفس', seriesId: 'series-rashed-khawatir' },
+  { id: 'sh144', youtubeId: 'sngryhhfWJ0', title: 'خاطرة: هجر القرآن', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'أنواع هجر القرآن', seriesId: 'series-rashed-khawatir' },
+  { id: 'sh145', youtubeId: 'vt2IR0ZxKxI', title: 'خاطرة: العمل الصالح', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'أهمية العمل الصالح', seriesId: 'series-rashed-khawatir' },
+  { id: 'sh146', youtubeId: 'X0X4q5TaMlc', title: 'خاطرة: الآخرة قادمة', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'الاستعداد للقاء الله', seriesId: 'series-rashed-khawatir' },
+  { id: 'sh147', youtubeId: 'czYM5kG8fmI', title: 'خاطرة: لا تؤجل التوبة', scholar: 'الشيخ خالد الراشد', category: 'خواطر إيمانية', description: 'بادر بالتوبة', seriesId: 'series-rashed-khawatir' },
 
   // ═══════════════════════════════════════════
   // سلسلة: خواطر عائض القرني
   // ═══════════════════════════════════════════
-  { id: 'sh148', youtubeId: 'KGFnFaLvU_4', title: 'خاطرة: عظمة القرآن', scholar: 'الشيخ عائض القرني', category: 'خواطر إيمانية', description: 'تأمل في عظمة كتاب الله', seriesId: 'series-qarni-khawatir' },
-  { id: 'sh149', youtubeId: 'cW7V4Jz7aKo', title: 'خاطرة: لا تحزن', scholar: 'الشيخ عائض القرني', category: 'خواطر إيمانية', description: 'السعادة مع القرآن', seriesId: 'series-qarni-khawatir' },
+  { id: 'sh148', youtubeId: '9o-nQItRu6I', title: 'خاطرة: عظمة القرآن', scholar: 'الشيخ عائض القرني', category: 'خواطر إيمانية', description: 'تأمل في عظمة كتاب الله', seriesId: 'series-qarni-khawatir' },
+  { id: 'sh149', youtubeId: 't_O4fJozLdU', title: 'خاطرة: لا تحزن', scholar: 'الشيخ عائض القرني', category: 'خواطر إيمانية', description: 'السعادة مع القرآن', seriesId: 'series-qarni-khawatir' },
 
   // خواطر متنوعة
   { id: 'sh150', youtubeId: 'R9Wrojgf2N8', title: 'خاطرة: القلب والقرآن', scholar: 'الشيخ محمد حسان', category: 'خواطر إيمانية', description: 'علاقة القلب بالقرآن' },
@@ -419,6 +419,9 @@ export function QuranShorts() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [loadedCount, setLoadedCount] = useState(20);
+  const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number>(0);
   const touchEndY = useRef<number>(0);
@@ -528,6 +531,48 @@ export function QuranShorts() {
     container.addEventListener('wheel', h, { passive: false });
     return () => container.removeEventListener('wheel', h);
   }, [goNext, goPrev, viewMode]);
+
+  // Video availability check using YouTube oEmbed API
+  useEffect(() => {
+    if (!currentShort) return;
+    
+    // If we already know this video is unavailable, skip immediately
+    if (unavailableIds.has(currentShort.youtubeId)) {
+      goNext();
+      return;
+    }
+
+    // Check video availability via oEmbed (CORS-safe)
+    const checkVideo = async () => {
+      try {
+        const response = await fetch(
+          `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${currentShort.youtubeId}`,
+          { signal: AbortSignal.timeout(5000) }
+        );
+        const data = await response.json();
+        
+        if (data.error || !data.title) {
+          // Video is unavailable
+          setUnavailableIds(prev => new Set([...prev, currentShort.youtubeId]));
+          setVideoError(true);
+          // Auto-skip after 1.5 seconds
+          videoCheckTimerRef.current = setTimeout(() => {
+            goNext();
+          }, 1500);
+        }
+      } catch {
+        // On error, don't auto-skip - let the user decide
+      }
+    };
+
+    checkVideo();
+
+    return () => {
+      if (videoCheckTimerRef.current) {
+        clearTimeout(videoCheckTimerRef.current);
+      }
+    };
+  }, [currentShort?.youtubeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Lazy load for browse mode
   useEffect(() => {
@@ -847,13 +892,20 @@ export function QuranShorts() {
             {videoError ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                 <AlertCircle className="w-12 h-12 text-amber-400 mb-3" />
-                <p className="text-sm font-medium mb-2">تعذّر تحميل المقطع</p>
-                <Button variant="outline" size="sm" onClick={() => setVideoError(false)} className="gap-2 text-white border-white/30 hover:bg-white/10">
-                  <RefreshCw className="w-4 h-4" /> إعادة المحاولة
-                </Button>
+                <p className="text-sm font-medium mb-2">هذا المقطع غير متاح حالياً</p>
+                <p className="text-xs text-white/60 mb-3">جاري الانتقال للمقطع التالي...</p>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => { setVideoError(false); goNext(); }} className="gap-2 text-white border-white/30 hover:bg-white/10">
+                    <SkipForward className="w-4 h-4" /> التالي
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setVideoError(false)} className="gap-2 text-white border-white/30 hover:bg-white/10">
+                    <RefreshCw className="w-4 h-4" /> إعادة المحاولة
+                  </Button>
+                </div>
               </div>
             ) : (
               <iframe
+                ref={iframeRef}
                 key={`${currentShort.id}-${videoQuality}`}
                 src={getEmbedUrl(currentShort.youtubeId)}
                 className="w-full h-full border-0"
