@@ -41,6 +41,17 @@ import {
   Filter,
   AlertTriangle,
   Hash,
+  Star,
+  Copy,
+  Check,
+  BookOpenCheck,
+  ScrollText,
+  Library,
+  Sparkles,
+  GraduationCap,
+  Bookmark,
+  ExternalLink,
+  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,6 +67,7 @@ import {
   getHadithBooks,
   getHadithsFromBook,
   searchHadiths,
+  getHadithBookInfo,
   Tafsir,
   VerseWithTafsir,
   HadithBook,
@@ -66,7 +78,10 @@ import {
 // Surah list for tafsir selection
 import { surahs } from '@/data/surahs';
 
-type LibraryTab = 'tafsir' | 'hadith';
+// Books library data
+import { BooksLibrary } from '@/components/quran/BooksLibrary';
+
+type LibraryTab = 'tafsir' | 'hadith' | 'books';
 type ViewState = 'list' | 'detail';
 
 export default function LibraryPage() {
@@ -111,16 +126,18 @@ export default function LibraryPage() {
   // Rate limit state
   const [isRateLimited, setIsRateLimited] = useState(false);
 
-  // ✅ NEW: Selected ayah for scroll-to feature
-  const [selectedAyah, setSelectedAyah] = useState<number | null>(null);
-  const verseListRef = useRef<HTMLDivElement>(null);
+  // Copied state
+  const [copiedVerse, setCopiedVerse] = useState<number | null>(null);
+  const [copiedHadith, setCopiedHadith] = useState<string | null>(null);
 
-  // ✅ NEW: Scroll to specific ayah
+  // Selected ayah for scroll-to feature
+  const [selectedAyah, setSelectedAyah] = useState<number | null>(null);
+
+  // Scroll to specific ayah
   const scrollToAyah = useCallback((ayahNumber: number) => {
     const element = document.getElementById(`verse-${ayahNumber}`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Add highlight effect
       element.classList.add('ring-2', 'ring-emerald-400');
       setTimeout(() => {
         element.classList.remove('ring-2', 'ring-emerald-400');
@@ -128,13 +145,33 @@ export default function LibraryPage() {
     }
   }, []);
 
-  // ✅ NEW: Handle ayah selection from dropdown
+  // Handle ayah selection from dropdown
   const handleAyahSelect = useCallback((ayahNumber: number) => {
     setSelectedAyah(ayahNumber);
     scrollToAyah(ayahNumber);
   }, [scrollToAyah]);
 
-  // ✅ NEW: Filtered verses based on local search
+  // Copy verse text
+  const handleCopyVerse = useCallback((verse: VerseWithTafsir) => {
+    const text = `${verse.text_uthmani}\n\n${verse.tafsir_text ? `التفسير: ${verse.tafsir_text}` : ''}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedVerse(verse.verse_number);
+      toast.success('تم نسخ الآية والتفسير');
+      setTimeout(() => setCopiedVerse(null), 2000);
+    });
+  }, []);
+
+  // Copy hadith text
+  const handleCopyHadith = useCallback((hadith: Hadith) => {
+    const text = `${hadith.text}\n\n[${hadith.book?.name} - حديث رقم ${hadith.hadithnumber}]`;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedHadith(hadith.id);
+      toast.success('تم نسخ الحديث');
+      setTimeout(() => setCopiedHadith(null), 2000);
+    });
+  }, []);
+
+  // Filtered verses based on local search
   const filteredVerses = useMemo(() => {
     if (!localTafsirSearch.trim()) return tafsirVerses;
     const query = localTafsirSearch.toLowerCase();
@@ -144,7 +181,7 @@ export default function LibraryPage() {
     );
   }, [tafsirVerses, localTafsirSearch]);
 
-  // ✅ NEW: Filtered hadiths based on local search
+  // Filtered hadiths based on local search
   const filteredHadiths = useMemo(() => {
     if (!localHadithSearch.trim()) return hadiths;
     const query = localHadithSearch.toLowerCase();
@@ -196,24 +233,21 @@ export default function LibraryPage() {
     }
   }, [activeTab]);
 
-  // ✅ FIX: Load Tafsir when selectedSurahId OR selectedTafsir changes
+  // Load Tafsir when selectedSurahId OR selectedTafsir changes
   useEffect(() => {
     const loadTafsir = async () => {
       if (selectedSurahId === null || !selectedTafsir) return;
 
       setTafsirLoading(true);
       setTafsirError(null);
-      setLocalTafsirSearch(''); // Reset local search
-      console.log(`[Library] Loading tafsir for surah ${selectedSurahId} with tafsir ID ${selectedTafsir.id}`);
+      setLocalTafsirSearch('');
 
       const result = await getSurahTafsir(selectedSurahId, selectedTafsir.id);
 
       if (result.data) {
         setTafsirVerses(result.data);
         setTafsirViewState('detail');
-        console.log(`[Library] Loaded ${result.data.length} verses`);
         
-        // Check if any tafsir is available
         const hasTafsir = result.data.some(v => v.tafsir_available);
         if (!hasTafsir) {
           toast.warning(ERROR_MESSAGES.tafsirNotAvailable);
@@ -234,17 +268,14 @@ export default function LibraryPage() {
 
   // Handle surah selection
   const handleSurahSelect = (surahId: number) => {
-    console.log(`[Library] User selected surah ${surahId}`);
     setSelectedSurahId(surahId);
   };
 
-  // ✅ FIX: Handle tafsir change - reload data
+  // Handle tafsir change
   const handleTafsirChange = (tafsirId: number) => {
     const tafsir = tafsirs.find(t => t.id === tafsirId);
     if (tafsir && tafsir.id !== selectedTafsir?.id) {
-      console.log(`[Library] User changed tafsir to ${tafsir.name}`);
       setSelectedTafsir(tafsir);
-      // The useEffect will trigger reload because selectedTafsir changed
     }
   };
 
@@ -255,8 +286,7 @@ export default function LibraryPage() {
 
       setHadithLoading(true);
       setHadithError(null);
-      setLocalHadithSearch(''); // Reset local search
-      console.log(`[Library] Loading hadiths from book ${selectedBookId}, page ${hadithPage}`);
+      setLocalHadithSearch('');
 
       const result = await getHadithsFromBook(selectedBookId, hadithPage, 20);
 
@@ -264,7 +294,6 @@ export default function LibraryPage() {
         setHadiths(result.data.hadiths);
         setHadithTotal(result.data.total);
         setHadithViewState('detail');
-        console.log(`[Library] Loaded ${result.data.hadiths.length} hadiths`);
       } else {
         setHadithError(result.error);
         if (result.isRateLimited) {
@@ -281,9 +310,8 @@ export default function LibraryPage() {
 
   // Handle book selection
   const handleBookSelect = (bookId: string) => {
-    console.log(`[Library] User selected book ${bookId}`);
     setSelectedBookId(bookId);
-    setHadithPage(1); // Reset page
+    setHadithPage(1);
   };
 
   // Debounced search
@@ -318,17 +346,14 @@ export default function LibraryPage() {
         <AlertCircle className="w-10 h-10 text-red-500" />
       </div>
       <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">
-        {isRTL ? 'المكتبة تواجه ضغطاً كبيراً' : 'Library Under Heavy Load'}
+        المكتبة تواجه ضغطاً كبيراً
       </h3>
       <p className="text-slate-500 dark:text-slate-400 text-center mb-6 max-w-md">
         {ERROR_MESSAGES.rateLimited}
       </p>
-      <Button
-        onClick={() => window.location.reload()}
-        className="gap-2"
-      >
+      <Button onClick={() => window.location.reload()} className="gap-2">
         <RefreshCw className="w-4 h-4" />
-        {isRTL ? 'إعادة المحاولة' : 'Retry'}
+        إعادة المحاولة
       </Button>
     </div>
   );
@@ -336,9 +361,15 @@ export default function LibraryPage() {
   // Render loading state
   const renderLoading = () => (
     <div className="flex flex-col items-center justify-center py-16">
-      <Loader2 className="w-12 h-12 text-emerald-500 animate-spin mb-4" />
-      <p className="text-slate-500 dark:text-slate-400">
-        {isRTL ? 'جاري التحميل...' : 'Loading...'}
+      <div className="relative">
+        <div className="w-16 h-16 rounded-full border-4 border-emerald-200 dark:border-emerald-800"></div>
+        <div className="w-16 h-16 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin absolute top-0 left-0"></div>
+      </div>
+      <p className="text-slate-500 dark:text-slate-400 mt-4 text-lg">
+        جاري التحميل...
+      </p>
+      <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">
+        يرجى الانتظار قليلاً
       </p>
     </div>
   );
@@ -350,13 +381,9 @@ export default function LibraryPage() {
         <AlertCircle className="w-8 h-8 text-red-500" />
       </div>
       <p className="text-slate-500 dark:text-slate-400 text-center">{error}</p>
-      <Button
-        variant="outline"
-        className="mt-4"
-        onClick={() => window.location.reload()}
-      >
-        <RefreshCw className="w-4 h-4 mr-2" />
-        {isRTL ? 'إعادة المحاولة' : 'Retry'}
+      <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+        <RefreshCw className="w-4 h-4 ml-2" />
+        إعادة المحاولة
       </Button>
     </div>
   );
@@ -364,6 +391,7 @@ export default function LibraryPage() {
   // Get current surah info
   const selectedSurah = selectedSurahId ? surahs.find(s => s.id === selectedSurahId) : null;
   const selectedBook = selectedBookId ? hadithBooks.find(b => b.id === selectedBookId) : null;
+  const selectedBookInfo = selectedBookId ? getHadithBookInfo(selectedBookId) : null;
 
   // Filter surahs based on search
   const filteredSurahs = useMemo(() => {
@@ -371,20 +399,49 @@ export default function LibraryPage() {
     const query = surahSearchQuery.toLowerCase();
     return surahs.filter(s => 
       s.nameArabic.includes(surahSearchQuery) ||
-      s.nameEnglish.toLowerCase().includes(query)
+      s.nameEnglish.toLowerCase().includes(query) ||
+      s.id.toString() === surahSearchQuery
     );
-  }, [surahs, surahSearchQuery]);
+  }, [surahSearchQuery]);
 
   // Tafsir List View
   const renderTafsirList = () => (
     <div className="space-y-6">
-      {/* Search & Filter */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-bl from-emerald-500 via-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <BookMarked className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">تفسير القرآن الكريم</h2>
+            <p className="text-emerald-100 text-sm">اختر سورة ثم اختر التفسير المناسب</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 mt-4">
+          {tafsirs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => handleTafsirChange(t.id)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                selectedTafsir?.id === t.id
+                  ? 'bg-white text-emerald-700 shadow-lg'
+                  : 'bg-white/20 text-white hover:bg-white/30'
+              }`}
+            >
+              {t.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <Input
-            placeholder={isRTL ? 'ابحث في السور...' : 'Search surahs...'}
-            className="pr-10"
+            placeholder="ابحث بالاسم أو الرقم..."
+            className="pr-10 h-12 rounded-xl bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
             value={surahSearchQuery}
             onChange={(e) => setSurahSearchQuery(e.target.value)}
           />
@@ -397,35 +454,12 @@ export default function LibraryPage() {
             </button>
           )}
         </div>
-        <div className="relative">
-          <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <select
-            className="pr-10 pl-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white appearance-none cursor-pointer min-w-[180px]"
-            value={selectedTafsir?.id || ''}
-            onChange={(e) => handleTafsirChange(Number(e.target.value))}
-          >
-            {tafsirs.map((tafsir) => (
-              <option key={tafsir.id} value={tafsir.id}>
-                {tafsir.name}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
-
-      {/* Selected Tafsir Info */}
-      {selectedTafsir && (
-        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 text-sm text-emerald-700 dark:text-emerald-300">
-          {isRTL ? 'التفسير المحدد:' : 'Selected Tafsir:'} <strong>{selectedTafsir.name}</strong>
-        </div>
-      )}
 
       {/* Results count */}
       {surahSearchQuery && (
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          {isRTL 
-            ? `${filteredSurahs.length} سورة مطابقة` 
-            : `${filteredSurahs.length} surahs matching`}
+          {filteredSurahs.length} سورة مطابقة
         </p>
       )}
 
@@ -434,21 +468,31 @@ export default function LibraryPage() {
         {filteredSurahs.map((surah) => (
           <Card
             key={surah.id}
-            className={`cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 ${
-              selectedSurahId === surah.id ? 'ring-2 ring-emerald-500' : ''
+            className={`cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1 group ${
+              selectedSurahId === surah.id ? 'ring-2 ring-emerald-500 shadow-emerald-100 dark:shadow-emerald-900/20' : ''
             }`}
             onClick={() => handleSurahSelect(surah.id)}
           >
             <CardContent className="p-3 text-center">
-              <div className="w-10 h-10 mx-auto rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold mb-2">
+              <div className="w-11 h-11 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold mb-2 shadow-md group-hover:scale-110 transition-transform">
                 {surah.id}
               </div>
-              <p className="font-bold text-slate-900 dark:text-white text-sm">
-                {isRTL ? surah.nameArabic : surah.nameEnglish}
+              <p className="font-bold text-slate-900 dark:text-white text-sm mb-0.5">
+                {surah.nameArabic}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {surah.versesCount} {isRTL ? 'آية' : 'verses'}
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                {surah.nameEnglish}
               </p>
+              <div className="flex items-center justify-center gap-1 mt-1">
+                <Badge variant="outline" className="text-[9px] px-1.5 py-0">
+                  {surah.versesCount} آية
+                </Badge>
+                <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${
+                  surah.type === 'مكية' ? 'text-amber-600 border-amber-300' : 'text-blue-600 border-blue-300'
+                }`}>
+                  {surah.type}
+                </Badge>
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -457,19 +501,17 @@ export default function LibraryPage() {
       {/* No results */}
       {surahSearchQuery && filteredSurahs.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-slate-500 dark:text-slate-400">
-            {isRTL ? 'لم يتم العثور على سور مطابقة' : 'No matching surahs found'}
-          </p>
+          <p className="text-slate-500 dark:text-slate-400">لم يتم العثور على سور مطابقة</p>
         </div>
       )}
     </div>
   );
 
-  // ✅ IMPROVED: Tafsir Detail View with proper data binding
+  // Tafsir Detail View
   const renderTafsirDetail = () => (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4">
+      <div className="bg-gradient-to-bl from-emerald-50 via-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:via-emerald-900/15 dark:to-teal-900/20 rounded-2xl p-5 border border-emerald-100 dark:border-emerald-800/50">
         <div className="flex items-center justify-between mb-4">
           <Button
             variant="ghost"
@@ -479,29 +521,34 @@ export default function LibraryPage() {
               setTafsirVerses([]);
               setLocalTafsirSearch('');
             }}
-            className="gap-2"
+            className="gap-2 hover:bg-emerald-100 dark:hover:bg-emerald-800/30"
           >
-            {isRTL ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-            {isRTL ? 'العودة للقائمة' : 'Back to list'}
+            <ArrowRight className="w-4 h-4" />
+            العودة للقائمة
           </Button>
           <div className="text-center">
-            <h2 className="font-bold text-lg text-slate-900 dark:text-white">
-              {isRTL ? selectedSurah?.nameArabic : selectedSurah?.nameEnglish}
+            <h2 className="font-bold text-xl text-slate-900 dark:text-white">
+              سورة {selectedSurah?.nameArabic}
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {selectedTafsir?.name}
-            </p>
+            <div className="flex items-center justify-center gap-2 mt-1">
+              <Badge className="bg-emerald-500 text-white text-xs">
+                {selectedTafsir?.name}
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                {selectedSurah?.versesCount} آية
+              </Badge>
+            </div>
           </div>
           <div className="w-24" />
         </div>
 
-        {/* Tafsir selector and local search */}
+        {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
-              placeholder={isRTL ? 'ابحث في الآيات والتفسير...' : 'Search verses & tafsir...'}
-              className="pr-9 bg-white dark:bg-slate-800"
+              placeholder="ابحث في الآيات والتفسير..."
+              className="pr-9 bg-white dark:bg-slate-800 rounded-xl"
               value={localTafsirSearch}
               onChange={(e) => setLocalTafsirSearch(e.target.value)}
             />
@@ -515,26 +562,22 @@ export default function LibraryPage() {
             )}
           </div>
           
-          {/* ✅ NEW: Ayah Selector Dropdown */}
+          {/* Ayah Selector */}
           <div className="relative">
             <Hash className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <select
-              className="pr-9 pl-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white appearance-none cursor-pointer min-w-[120px]"
+              className="pr-9 pl-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white appearance-none cursor-pointer min-w-[130px] h-10"
               value={selectedAyah || ''}
               onChange={(e) => {
                 const value = e.target.value;
-                if (value) {
-                  handleAyahSelect(Number(value));
-                }
+                if (value) handleAyahSelect(Number(value));
               }}
               disabled={tafsirLoading || tafsirVerses.length === 0}
             >
-              <option value="" disabled>
-                {isRTL ? 'اختر الآية' : 'Select Ayah'}
-              </option>
+              <option value="" disabled>الذهاب لآية</option>
               {tafsirVerses.map((verse) => (
                 <option key={verse.verse_number} value={verse.verse_number}>
-                  {isRTL ? `الآية ${verse.verse_number}` : `Verse ${verse.verse_number}`}
+                  الآية {verse.verse_number}
                 </option>
               ))}
             </select>
@@ -542,7 +585,7 @@ export default function LibraryPage() {
           
           {/* Tafsir Book Selector */}
           <select
-            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+            className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white h-10 min-w-[160px]"
             value={selectedTafsir?.id || ''}
             onChange={(e) => handleTafsirChange(Number(e.target.value))}
             disabled={tafsirLoading}
@@ -558,9 +601,7 @@ export default function LibraryPage() {
         {/* Search results count */}
         {localTafsirSearch && (
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-            {isRTL 
-              ? `${filteredVerses.length} آية مطابقة من ${tafsirVerses.length}` 
-              : `${filteredVerses.length} matching verses of ${tafsirVerses.length}`}
+            {filteredVerses.length} آية مطابقة من {tafsirVerses.length}
           </p>
         )}
       </div>
@@ -571,28 +612,41 @@ export default function LibraryPage() {
       {/* Error State */}
       {tafsirError && !tafsirLoading && renderError(tafsirError)}
 
-      {/* ✅ CRITICAL FIX: Verses with Tafsir - Proper data binding */}
+      {/* Verses with Tafsir */}
       {!tafsirLoading && !tafsirError && filteredVerses.length > 0 && (
-        <ScrollArea className="h-[calc(100vh-350px)]">
-          <div className="space-y-4 pr-4">
+        <ScrollArea className="h-[calc(100vh-380px)]">
+          <div className="space-y-4 pl-2">
             {filteredVerses.map((verse) => (
               <Card 
                 key={verse.id} 
                 id={`verse-${verse.verse_number}`}
-                className="overflow-hidden shadow-md transition-all duration-300"
+                className="overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border-slate-200 dark:border-slate-700"
               >
                 <CardContent className="p-5">
-                  {/* Verse Number */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                      {verse.verse_number}
+                  {/* Verse Number & Actions */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                        {verse.verse_number}
+                      </div>
+                      <Badge variant="outline" className="text-xs font-mono">
+                        {verse.verse_key}
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className="text-xs">
-                      {verse.verse_key}
-                    </Badge>
+                    <button
+                      onClick={() => handleCopyVerse(verse)}
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      title="نسخ الآية والتفسير"
+                    >
+                      {copiedVerse === verse.verse_number ? (
+                        <Check className="w-4 h-4 text-emerald-500" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-slate-400" />
+                      )}
+                    </button>
                   </div>
 
-                  {/* ✅ CRITICAL: Arabic Text - ALWAYS RENDERED */}
+                  {/* Arabic Text */}
                   <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800/30 rounded-xl p-5 mb-4 border border-slate-200 dark:border-slate-700">
                     <p 
                       className="text-2xl leading-loose text-slate-900 dark:text-white text-right"
@@ -605,20 +659,20 @@ export default function LibraryPage() {
                     </p>
                   </div>
 
-                  {/* ✅ CRITICAL: Tafsir - With fallback */}
+                  {/* Tafsir */}
                   {verse.tafsir_available && verse.tafsir_text ? (
                     <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-5 border border-emerald-200 dark:border-emerald-800">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
                           <BookMarked className="w-4 h-4 text-white" />
                         </div>
-                        <span className="font-bold text-emerald-700 dark:text-emerald-400">
-                          {selectedTafsir?.name || (isRTL ? 'التفسير' : 'Tafsir')}
+                        <span className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                          {selectedTafsir?.name || 'التفسير'}
                         </span>
                       </div>
                       <p 
-                        className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed text-right"
-                        style={{ fontFamily: "'Cairo', 'Tajawal', sans-serif" }}
+                        className="text-base text-slate-700 dark:text-slate-300 leading-relaxed text-right"
+                        style={{ fontFamily: "'Cairo', 'Tajawal', sans-serif", lineHeight: '2' }}
                       >
                         {verse.tafsir_text}
                       </p>
@@ -643,23 +697,38 @@ export default function LibraryPage() {
       {/* No search results */}
       {!tafsirLoading && !tafsirError && localTafsirSearch && filteredVerses.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-slate-500 dark:text-slate-400">
-            {isRTL ? 'لم يتم العثور على نتائج مطابقة' : 'No matching results found'}
-          </p>
+          <p className="text-slate-500 dark:text-slate-400">لم يتم العثور على نتائج مطابقة</p>
         </div>
       )}
     </div>
   );
 
-  // Hadith List View
+  // Hadith List View - Enhanced
   const renderHadithList = () => (
     <div className="space-y-6">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-bl from-blue-500 via-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <ScrollText className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">الأحاديث النبوية الشريفة</h2>
+            <p className="text-blue-100 text-sm">من أصح الكتب عند أهل السنة والجماعة</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 mt-3 text-blue-100 text-sm">
+          <GraduationCap className="w-4 h-4" />
+          <span>{Object.keys(HADITH_BOOKS_MAP).length} كتاب حديث متاح</span>
+        </div>
+      </div>
+
       {/* Search */}
       <div className="relative">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
         <Input
-          placeholder={isRTL ? 'ابحث في الأحاديث... (3 أحرف على الأقل)' : 'Search hadiths... (min 3 chars)'}
-          className="pr-10"
+          placeholder="ابحث في الأحاديث... (3 أحرف على الأقل)"
+          className="pr-10 h-12 rounded-xl bg-white dark:bg-slate-800"
           value={searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
         />
@@ -668,68 +737,92 @@ export default function LibraryPage() {
       {/* Search Results */}
       {searchQuery.length >= 3 && (
         <div className="mb-6">
-          <h3 className="font-bold text-slate-900 dark:text-white mb-3">
-            {isRTL ? 'نتائج البحث' : 'Search Results'}
-            {searchLoading && <Loader2 className="w-4 h-4 animate-spin inline mr-2" />}
+          <h3 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+            <Search className="w-4 h-4 text-blue-500" />
+            نتائج البحث
+            {searchLoading && <Loader2 className="w-4 h-4 animate-spin text-blue-500" />}
           </h3>
           {searchResults.length > 0 ? (
             <div className="space-y-3">
               {searchResults.slice(0, 5).map((hadith) => (
-                <Card key={hadith.id} className="overflow-hidden">
+                <Card key={hadith.id} className="overflow-hidden hover:shadow-md transition-all">
                   <CardContent className="p-4">
-                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-right mb-2" style={{ fontFamily: "'Amiri', serif" }}>
+                    <p 
+                      className="text-slate-700 dark:text-slate-300 leading-relaxed text-right mb-2" 
+                      style={{ fontFamily: "'Amiri', serif", lineHeight: '1.8' }}
+                    >
                       {hadith.text?.slice(0, 200)}...
                     </p>
-                    <Badge variant="outline">
-                      {hadith.book?.name || hadith.id}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                        {hadith.book?.name}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        حديث رقم {hadith.hadithnumber}
+                      </Badge>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : !searchLoading && (
             <p className="text-slate-500 dark:text-slate-400 text-center py-4">
-              {isRTL ? 'لم يتم العثور على نتائج' : 'No results found'}
+              لم يتم العثور على نتائج
             </p>
           )}
         </div>
       )}
 
       {/* Books Grid */}
-      <h3 className="font-bold text-slate-900 dark:text-white mb-3">
-        {isRTL ? 'كتب الحديث' : 'Hadith Books'}
+      <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <BookOpen className="w-5 h-5 text-blue-500" />
+        كتب الحديث
       </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {hadithBooks.map((book) => (
-          <Card
-            key={book.id}
-            className={`cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 ${
-              selectedBookId === book.id ? 'ring-2 ring-blue-500' : ''
-            }`}
-            onClick={() => handleBookSelect(book.id)}
-          >
-            <CardContent className="p-4 text-center">
-              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white mb-3">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="font-bold text-slate-900 dark:text-white mb-1">
-                {book.name}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {isRTL ? 'انقر للتصفح' : 'Click to browse'}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {hadithBooks.map((book) => {
+          const info = getHadithBookInfo(book.id);
+          return (
+            <Card
+              key={book.id}
+              className={`cursor-pointer hover:shadow-lg transition-all duration-200 hover:-translate-y-1 group ${
+                selectedBookId === book.id ? 'ring-2 ring-blue-500' : ''
+              }`}
+              onClick={() => handleBookSelect(book.id)}
+            >
+              <CardContent className="p-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                    <BookOpen className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-slate-900 dark:text-white mb-1">
+                      {book.name}
+                    </h3>
+                    {info && (
+                      <>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 truncate">
+                          {info.author}
+                        </p>
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500 line-clamp-2">
+                          {info.description}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
 
-  // Hadith Detail View
+  // Hadith Detail View - Enhanced
   const renderHadithDetail = () => (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
+      <div className="bg-gradient-to-bl from-blue-50 via-blue-50 to-indigo-50 dark:from-blue-900/20 dark:via-blue-900/15 dark:to-indigo-900/20 rounded-2xl p-5 border border-blue-100 dark:border-blue-800/50">
         <div className="flex items-center justify-between mb-4">
           <Button
             variant="ghost"
@@ -739,30 +832,38 @@ export default function LibraryPage() {
               setHadiths([]);
               setLocalHadithSearch('');
             }}
-            className="gap-2"
+            className="gap-2 hover:bg-blue-100 dark:hover:bg-blue-800/30"
           >
-            {isRTL ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-            {isRTL ? 'العودة للكتب' : 'Back to books'}
+            <ArrowRight className="w-4 h-4" />
+            العودة للكتب
           </Button>
           <div className="text-center">
             <h2 className="font-bold text-lg text-slate-900 dark:text-white">
               {selectedBook?.name}
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {isRTL 
-                ? `الصفحة ${hadithPage} من ${Math.ceil(hadithTotal / 20)}` 
-                : `Page ${hadithPage} of ${Math.ceil(hadithTotal / 20)}`}
-            </p>
+            {selectedBookInfo && (
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {selectedBookInfo.author}
+              </p>
+            )}
+            <div className="flex items-center justify-center gap-2 mt-1">
+              <Badge className="bg-blue-500 text-white text-xs">
+                الصفحة {hadithPage} من {Math.ceil(hadithTotal / 20) || 1}
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                {hadithTotal} حديث
+              </Badge>
+            </div>
           </div>
           <div className="w-24" />
         </div>
 
-        {/* Local search in displayed hadiths */}
+        {/* Local search */}
         <div className="relative">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
-            placeholder={isRTL ? 'ابحث في الأحاديث المعروضة...' : 'Search displayed hadiths...'}
-            className="pr-9 bg-white dark:bg-slate-800"
+            placeholder="ابحث في الأحاديث المعروضة..."
+            className="pr-9 bg-white dark:bg-slate-800 rounded-xl"
             value={localHadithSearch}
             onChange={(e) => setLocalHadithSearch(e.target.value)}
           />
@@ -776,12 +877,9 @@ export default function LibraryPage() {
           )}
         </div>
 
-        {/* Search results count */}
         {localHadithSearch && (
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-            {isRTL 
-              ? `${filteredHadiths.length} حديث مطابق من ${hadiths.length}` 
-              : `${filteredHadiths.length} matching hadiths of ${hadiths.length}`}
+            {filteredHadiths.length} حديث مطابق من {hadiths.length}
           </p>
         )}
       </div>
@@ -795,32 +893,41 @@ export default function LibraryPage() {
       {/* Hadith Cards */}
       {!hadithLoading && !hadithError && filteredHadiths.length > 0 && (
         <>
-          <ScrollArea className="h-[calc(100vh-400px)]">
-            <div className="space-y-4 pr-4">
+          <ScrollArea className="h-[calc(100vh-430px)]">
+            <div className="space-y-4 pl-2">
               {filteredHadiths.map((hadith) => (
-                <Card key={hadith.id} className="overflow-hidden shadow-md">
+                <Card key={hadith.id} className="overflow-hidden shadow-sm hover:shadow-md transition-all">
                   <CardContent className="p-5">
-                    {/* Hadith Number Badge - Prominent */}
+                    {/* Hadith Number & Actions */}
                     <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg">
-                          #{hadith.hadithnumber}
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md text-sm">
+                          {hadith.hadithnumber}
                         </div>
                         <div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {isRTL ? 'رقم الحديث' : 'Hadith Number'}
-                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">رقم الحديث</p>
                           <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                             {selectedBook?.name}
                           </p>
                         </div>
                       </div>
+                      <button
+                        onClick={() => handleCopyHadith(hadith)}
+                        className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        title="نسخ الحديث"
+                      >
+                        {copiedHadith === hadith.id ? (
+                          <Check className="w-4 h-4 text-blue-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-slate-400" />
+                        )}
+                      </button>
                     </div>
 
-                    {/* Arabic Text - Clean display */}
+                    {/* Arabic Text */}
                     <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5">
                       <p 
-                        className="text-xl leading-loose text-slate-900 dark:text-white text-right"
+                        className="text-lg leading-loose text-slate-900 dark:text-white text-right"
                         style={{ 
                           fontFamily: "'Amiri', 'Traditional Arabic', serif",
                           lineHeight: '2'
@@ -836,20 +943,20 @@ export default function LibraryPage() {
           </ScrollArea>
 
           {/* Pagination */}
-          <div className="flex items-center justify-center gap-2 py-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-center gap-2 py-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <Button
               variant="outline"
               size="sm"
               disabled={hadithPage <= 1 || hadithLoading}
               onClick={() => setHadithPage(p => p - 1)}
-              className="gap-1"
+              className="gap-1 rounded-xl"
             >
-              {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-              {isRTL ? 'السابق' : 'Previous'}
+              <ChevronRight className="w-4 h-4" />
+              السابق
             </Button>
             
             <div className="flex items-center gap-2 px-4">
-              <Badge variant="secondary" className="px-3 py-1">
+              <Badge className="bg-blue-500 text-white px-3 py-1">
                 {hadithPage}
               </Badge>
               <span className="text-slate-400">/</span>
@@ -863,10 +970,10 @@ export default function LibraryPage() {
               size="sm"
               disabled={hadithPage >= Math.ceil(hadithTotal / 20) || hadithLoading}
               onClick={() => setHadithPage(p => p + 1)}
-              className="gap-1"
+              className="gap-1 rounded-xl"
             >
-              {isRTL ? 'التالي' : 'Next'}
-              {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              التالي
+              <ChevronLeft className="w-4 h-4" />
             </Button>
           </div>
         </>
@@ -875,31 +982,34 @@ export default function LibraryPage() {
       {/* No search results */}
       {!hadithLoading && !hadithError && localHadithSearch && filteredHadiths.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-slate-500 dark:text-slate-400">
-            {isRTL ? 'لم يتم العثور على أحاديث مطابقة' : 'No matching hadiths found'}
-          </p>
+          <p className="text-slate-500 dark:text-slate-400">لم يتم العثور على أحاديث مطابقة</p>
         </div>
       )}
     </div>
   );
 
+  // Hadith book info constant
+  const HADITH_BOOKS_MAP: Record<string, any> = {};
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-black dark:to-black" dir={direction}>
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-        <div className="container mx-auto px-4 py-4">
+      <div className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link
               href="/"
               className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
             >
-              {isRTL ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
-              <span className="font-medium">{isRTL ? 'الرئيسية' : 'Home'}</span>
+              <ArrowRight className="w-5 h-5" />
+              <span className="font-medium text-sm">الرئيسية</span>
             </Link>
 
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-emerald-500" />
-              {isRTL ? 'المكتبة الشاملة' : 'Islamic Library'}
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                <Library className="w-4 h-4 text-white" />
+              </div>
+              المكتبة الشاملة
             </h1>
 
             <div className="w-24" />
@@ -918,17 +1028,24 @@ export default function LibraryPage() {
             <TabsList className="bg-white dark:bg-slate-900 shadow-lg rounded-2xl p-1.5 mx-auto flex justify-center mb-6 border border-slate-200 dark:border-slate-800">
               <TabsTrigger
                 value="tafsir"
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
+                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all"
               >
                 <BookMarked className="w-5 h-5" />
-                <span className="font-medium">{isRTL ? 'التفسير' : 'Tafsir'}</span>
+                <span className="font-medium text-sm sm:text-base">التفسير</span>
               </TabsTrigger>
               <TabsTrigger
                 value="hadith"
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
+                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all"
               >
-                <FileText className="w-5 h-5" />
-                <span className="font-medium">{isRTL ? 'الحديث' : 'Hadith'}</span>
+                <ScrollText className="w-5 h-5" />
+                <span className="font-medium text-sm sm:text-base">الحديث</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="books"
+                className="flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-purple-500 data-[state=active]:text-white transition-all"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span className="font-medium text-sm sm:text-base">الكتب</span>
               </TabsTrigger>
             </TabsList>
 
@@ -941,9 +1058,23 @@ export default function LibraryPage() {
             <TabsContent value="hadith" className="outline-none">
               {hadithViewState === 'list' ? renderHadithList() : renderHadithDetail()}
             </TabsContent>
+
+            {/* Books Tab */}
+            <TabsContent value="books" className="outline-none">
+              <BooksLibrary />
+            </TabsContent>
           </Tabs>
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 py-6 mt-8">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            جميع المحتويات من مصادر أهل السنة والجماعة فقط
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
