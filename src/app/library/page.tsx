@@ -31,27 +31,18 @@ import {
   Loader2, 
   AlertCircle, 
   ArrowRight, 
-  ArrowLeft,
   RefreshCw,
   ChevronLeft,
   ChevronRight,
   BookMarked,
-  FileText,
   X,
-  Filter,
   AlertTriangle,
   Hash,
-  Star,
   Copy,
   Check,
-  BookOpenCheck,
   ScrollText,
   Library,
-  Sparkles,
   GraduationCap,
-  Bookmark,
-  ExternalLink,
-  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -719,7 +710,7 @@ export default function LibraryPage() {
         </div>
         <div className="flex items-center gap-2 mt-3 text-blue-100 text-sm">
           <GraduationCap className="w-4 h-4" />
-          <span>{Object.keys(HADITH_BOOKS_MAP).length} كتاب حديث متاح</span>
+          <span>{hadithBooks.length || 9} كتاب حديث متاح</span>
         </div>
       </div>
 
@@ -987,9 +978,6 @@ export default function LibraryPage() {
       )}
     </div>
   );
-
-  // Hadith book info constant
-  const HADITH_BOOKS_MAP: Record<string, any> = {};
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-black dark:to-black" dir={direction}>

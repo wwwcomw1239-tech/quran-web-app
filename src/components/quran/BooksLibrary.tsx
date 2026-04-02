@@ -489,7 +489,7 @@ export function BooksLibrary() {
         }
       }
       
-      const blob = new Blob(chunks, { type: 'application/pdf' });
+      const blob = new Blob(chunks as BlobPart[], { type: 'application/pdf' });
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
