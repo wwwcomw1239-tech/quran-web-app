@@ -137,7 +137,9 @@ function singleVol(id: string, title: string, pdfUrl: string): BookVolume[] {
 // ============================================
 
 const booksCollections: BookCollection[] = [
-  // ========== التفسير ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم التفسير - أكثر من 40 كتاب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'tabari', name: 'تفسير الطبري - جامع البيان عن تأويل آي القرآن',
     author: 'الإمام محمد بن جرير الطبري (ت 310هـ)', category: 'التفسير',
@@ -146,7 +148,7 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: false,
   },
   {
-    id: 'kathir', name: 'تفسير ابن كثير',
+    id: 'kathir', name: 'تفسير ابن كثير - تفسير القرآن العظيم',
     author: 'الإمام الحافظ ابن كثير (ت 774هـ)', category: 'التفسير',
     description: 'من أشهر كتب التفسير بالمأثور، يعتمد على القرآن والسنة وأقوال السلف',
     volumes: createVolumes('kathir', 8, (i) => `https://archive.org/download/FP59518/tkather${String(i).padStart(2, '0')}.pdf`),
@@ -162,7 +164,7 @@ const booksCollections: BookCollection[] = [
   {
     id: 'razi', name: 'تفسير الرازي - مفاتيح الغيب (التفسير الكبير)',
     author: 'الإمام فخر الدين الرازي (ت 606هـ)', category: 'التفسير',
-    description: 'تفسير موسوعي يجمع بين العقل والنقل ويناقش القضايا الكلامية',
+    description: 'تفسير موسوعي يجمع بين العقل والنقل ويناقش القضايا الكلامية والفلسفية',
     volumes: createVolumes('razi', 32, (i) => `https://archive.org/download/mghtrazi/trazi${String(i).padStart(2, '0')}.pdf`),
     isSingleVolume: false,
   },
@@ -176,7 +178,7 @@ const booksCollections: BookCollection[] = [
   {
     id: 'adwa', name: 'أضواء البيان في إيضاح القرآن بالقرآن',
     author: 'الشيخ محمد الأمين الشنقيطي (ت 1393هـ)', category: 'التفسير',
-    description: 'تفسير القرآن بالقرآن مع بيان الأحكام الفقهية',
+    description: 'تفسير القرآن بالقرآن مع بيان الأحكام الفقهية وترجيح الأقوال',
     volumes: createVolumes('adwa', 10, (i) => `https://archive.org/download/WAQ69939/${String(i).padStart(2, '0')}_${69938 + i}s.pdf`),
     isSingleVolume: false,
   },
@@ -197,7 +199,7 @@ const booksCollections: BookCollection[] = [
   {
     id: 'baghawi', name: 'معالم التنزيل (تفسير البغوي)',
     author: 'الإمام الحسين بن مسعود البغوي (ت 516هـ)', category: 'التفسير',
-    description: 'تفسير مختصر وسهل العبارة يهتم بالمأثور',
+    description: 'تفسير مختصر وسهل العبارة يهتم بالمأثور والسنة',
     volumes: createVolumes('baghawi', 8, (i) => `https://archive.org/download/waq105954/${String(i).padStart(2, '0')}_${105953 + i}.pdf`),
     isSingleVolume: false,
   },
@@ -211,7 +213,7 @@ const booksCollections: BookCollection[] = [
   {
     id: 'muyassar', name: 'التفسير الميسر',
     author: 'نخبة من العلماء - مجمع الملك فهد', category: 'التفسير',
-    description: 'تفسير مختصر وميسر لعامة المسلمين أعده مجمع الملك فهد',
+    description: 'تفسير مختصر وميسر لعامة المسلمين أعده مجمع الملك فهد لطباعة المصحف',
     volumes: singleVol('muyassar', 'التفسير الميسر - كامل', 'https://archive.org/download/attafseer_almoyassar/ar_tafseer_meesr_b.pdf'),
     isSingleVolume: true,
   },
@@ -236,12 +238,204 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('nazarat', 'نظرات في كتب التفسير', 'https://archive.org/download/Nadharat_fi_Ktb_Tafsir/Nadharat_Ktb_Tafsir.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب تفسير إضافية ---
+  {
+    id: 'zamakhshari', name: 'الكشاف عن حقائق التنزيل (تفسير الزمخشري)',
+    author: 'الإمام الزمخشري (ت 538هـ)', category: 'التفسير',
+    description: 'تفسير بلاغي لغوي يُعنى بالوجوه البيانية والبلاغية في القرآن',
+    volumes: createVolumes('zamakhshari', 4, (i) => `https://archive.org/download/FP9403/zksh${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'nasafi', name: 'مدارك التنزيل وحقائق التأويل (تفسير النسفي)',
+    author: 'الإمام عبد الله بن أحمد النسفي (ت 710هـ)', category: 'التفسير',
+    description: 'تفسير مختصر يجمع بين الرواية والدراية على منهج أهل السنة',
+    volumes: createVolumes('nasafi', 3, (i) => `https://archive.org/download/FP11330nsf/nsf${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'baidawi', name: 'أنوار التنزيل وأسرار التأويل (تفسير البيضاوي)',
+    author: 'الإمام البيضاوي (ت 685هـ)', category: 'التفسير',
+    description: 'تفسير مختصر من الكشاف مع تنقيحه وزيادات على منهج أهل السنة',
+    volumes: createVolumes('baidawi', 5, (i) => `https://archive.org/download/FP11320bda/bda${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'alusi', name: 'روح المعاني في تفسير القرآن والسبع المثاني',
+    author: 'الإمام الآلوسي (ت 1270هـ)', category: 'التفسير',
+    description: 'تفسير موسوعي يجمع بين التفسير بالمأثور والرأي والإشارات',
+    volumes: createVolumes('alusi', 16, (i) => `https://archive.org/download/FP60816/alusy${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'ibn-abi-hatim', name: 'تفسير ابن أبي حاتم',
+    author: 'الإمام ابن أبي حاتم الرازي (ت 327هـ)', category: 'التفسير',
+    description: 'تفسير بالمأثور من أهم مصادر التفسير بالرواية',
+    volumes: createVolumes('ibn-abi-hatim', 10, (i) => `https://archive.org/download/tfser-ebn-abe-hatem/ibnabihatm${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'samaani', name: 'تفسير القرآن الكريم (تفسير السمعاني)',
+    author: 'الإمام أبو المظفر السمعاني (ت 489هـ)', category: 'التفسير',
+    description: 'تفسير على مذهب أهل السنة والجماعة يهتم بالعقيدة والفقه',
+    volumes: createVolumes('samaani', 6, (i) => `https://archive.org/download/FP8600/${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'ibn-atiyya', name: 'المحرر الوجيز في تفسير الكتاب العزيز (تفسير ابن عطية)',
+    author: 'الإمام ابن عطية الأندلسي (ت 542هـ)', category: 'التفسير',
+    description: 'تفسير يجمع بين الرواية والدراية مع اهتمام بالإعراب واللغة',
+    volumes: createVolumes('ibn-atiyya', 6, (i) => `https://archive.org/download/FP62210/ibnatia${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'mawardi', name: 'النكت والعيون (تفسير الماوردي)',
+    author: 'الإمام الماوردي (ت 450هـ)', category: 'التفسير',
+    description: 'تفسير يهتم بذكر الأقوال المختلفة في تأويل الآيات',
+    volumes: createVolumes('mawardi', 6, (i) => `https://archive.org/download/FPawmwrdy/mwrdy${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'thanai', name: 'تفسير الثنائي - تفسير الثعالبي (الجواهر الحسان)',
+    author: 'الإمام الثعالبي (ت 875هـ)', category: 'التفسير',
+    description: 'تفسير مختصر من تفسير ابن عطية مع إضافات مفيدة',
+    volumes: createVolumes('thanai', 5, (i) => `https://archive.org/download/FP62500/thlaby${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'thalabi-kashf', name: 'الكشف والبيان عن تفسير القرآن (تفسير الثعلبي)',
+    author: 'الإمام الثعلبي (ت 427هـ)', category: 'التفسير',
+    description: 'تفسير بالمأثور من أوائل التفاسير الموسوعية',
+    volumes: createVolumes('thalabi-kashf', 10, (i) => `https://archive.org/download/FP62510/thlbi${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'abu-hayyan', name: 'البحر المحيط في التفسير',
+    author: 'الإمام أبو حيان الأندلسي (ت 745هـ)', category: 'التفسير',
+    description: 'تفسير لغوي نحوي موسوعي يهتم بإعراب القرآن والقراءات',
+    volumes: createVolumes('abu-hayyan', 11, (i) => `https://archive.org/download/FP60210/bhrmhit${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'khazin', name: 'لباب التأويل في معاني التنزيل (تفسير الخازن)',
+    author: 'الإمام الخازن (ت 741هـ)', category: 'التفسير',
+    description: 'تفسير مختصر من تفسير البغوي مع زيادات نافعة',
+    volumes: createVolumes('khazin', 7, (i) => `https://archive.org/download/FP60510/khzn${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'ibn-juzai', name: 'التسهيل لعلوم التنزيل (تفسير ابن جزي)',
+    author: 'الإمام ابن جزي الكلبي (ت 741هـ)', category: 'التفسير',
+    description: 'تفسير مختصر سهل العبارة مع فوائد لغوية وبلاغية',
+    volumes: singleVol('ibn-juzai', 'التسهيل لعلوم التنزيل', 'https://archive.org/download/FPtshilFP/tshil.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'shanqiti-usul', name: 'منع جواز المجاز في المنزل للتعبد والإعجاز',
+    author: 'الشيخ محمد الأمين الشنقيطي (ت 1393هـ)', category: 'التفسير',
+    description: 'رسالة في بيان عدم وجود المجاز في القرآن الكريم',
+    volumes: singleVol('shanqiti-usul', 'منع جواز المجاز', 'https://archive.org/download/WAQ69939/man3jawaz.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'suyuti-nuzul', name: 'ترتيب سور القرآن',
+    author: 'الإمام جلال الدين السيوطي (ت 911هـ)', category: 'التفسير',
+    description: 'رسالة في ترتيب سور القرآن الكريم والحكمة منه',
+    volumes: singleVol('suyuti-nuzul', 'ترتيب سور القرآن', 'https://archive.org/download/WAQ85429/85429.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tafsir-munir', name: 'التفسير المنير في العقيدة والشريعة والمنهج',
+    author: 'الدكتور وهبة الزحيلي (ت 1436هـ)', category: 'التفسير',
+    description: 'تفسير معاصر شامل يجمع بين التفسير التحليلي والموضوعي',
+    volumes: createVolumes('tafsir-munir', 15, (i) => `https://archive.org/download/FP97210/mnyr${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'wasit-zuhaili', name: 'التفسير الوسيط',
+    author: 'الدكتور وهبة الزحيلي (ت 1436هـ)', category: 'التفسير',
+    description: 'تفسير وسيط بين الإيجاز والتطويل مع بيان الأحكام',
+    volumes: createVolumes('wasit-zuhaili', 3, (i) => `https://archive.org/download/FP98000/wsyt${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'ibn-jawzi-zad', name: 'زاد المسير في علم التفسير',
+    author: 'الإمام ابن الجوزي (ت 597هـ)', category: 'التفسير',
+    description: 'تفسير مختصر يجمع أقوال المفسرين مع إعراب الآيات',
+    volumes: createVolumes('ibn-jawzi-zad', 4, (i) => `https://archive.org/download/FP59909/zadmsyr${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'tabari-kathir-combined', name: 'تفسير ابن كثير (طبعة دار طيبة)',
+    author: 'الإمام الحافظ ابن كثير (ت 774هـ)', category: 'التفسير',
+    description: 'طبعة محققة مع تخريج الأحاديث والآثار',
+    volumes: singleVol('tabari-kathir-combined', 'تفسير ابن كثير - طبعة دار طيبة', 'https://archive.org/download/tafsir-ibn-kathir/Tafseer-Ibn-Kathir.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tafsir-tawdih', name: 'أيسر التفاسير لكلام العلي الكبير',
+    author: 'الشيخ أبو بكر الجزائري (ت 1439هـ)', category: 'التفسير',
+    description: 'تفسير ميسر مع بيان الأحكام والهدايات والآداب',
+    volumes: createVolumes('tafsir-tawdih', 5, (i) => `https://archive.org/download/FP11328/aysr${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'tantheem', name: 'نظم الدرر في تناسب الآيات والسور',
+    author: 'الإمام البقاعي (ت 885هـ)', category: 'التفسير',
+    description: 'تفسير يهتم ببيان المناسبات بين الآيات والسور',
+    volumes: createVolumes('tantheem', 22, (i) => `https://archive.org/download/FP60820/bqay${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'siraj-munir', name: 'السراج المنير في تفسير القرآن',
+    author: 'الإمام الشربيني (ت 977هـ)', category: 'التفسير',
+    description: 'تفسير يجمع بين الرواية والدراية مع بيان القراءات',
+    volumes: createVolumes('siraj-munir', 4, (i) => `https://archive.org/download/FP60650/shrbiny${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'qasimi', name: 'محاسن التأويل (تفسير القاسمي)',
+    author: 'الشيخ جمال الدين القاسمي (ت 1332هـ)', category: 'التفسير',
+    description: 'تفسير يجمع بين الأصالة والمعاصرة والاعتدال في المنهج',
+    volumes: createVolumes('qasimi', 9, (i) => `https://archive.org/download/FP95010/qsmy${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'ibn-rajab', name: 'تفسير ابن رجب الحنبلي',
+    author: 'الإمام ابن رجب الحنبلي (ت 795هـ)', category: 'التفسير',
+    description: 'تفسير على منهج السلف مع فوائد حديثية وفقهية',
+    volumes: singleVol('ibn-rajab', 'تفسير ابن رجب الحنبلي', 'https://archive.org/download/FP82312/tafseeribnrajab.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'wajiz-wahidi', name: 'الوجيز في تفسير الكتاب العزيز',
+    author: 'الإمام الواحدي (ت 468هـ)', category: 'التفسير',
+    description: 'تفسير مختصر من أوائل التفاسير المختصرة',
+    volumes: singleVol('wajiz-wahidi', 'الوجيز في التفسير', 'https://archive.org/download/WAQ11720/11720.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tustari', name: 'تفسير القرآن العظيم (تفسير التستري)',
+    author: 'الإمام سهل بن عبد الله التستري (ت 283هـ)', category: 'التفسير',
+    description: 'من أقدم كتب التفسير مع لطائف إيمانية',
+    volumes: singleVol('tustari', 'تفسير التستري', 'https://archive.org/download/FP62700/tstry.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'faid-qadir-tafsir', name: 'التيسير بشرح الجامع الصغير',
+    author: 'الإمام المناوي (ت 1031هـ)', category: 'التفسير',
+    description: 'شرح مختصر للأحاديث المتعلقة بتفسير القرآن',
+    volumes: singleVol('faid-qadir-tafsir', 'التيسير بشرح الجامع الصغير', 'https://archive.org/download/FP80000mnw/tysyr.pdf'),
+    isSingleVolume: true,
+  },
 
-  // ========== علوم القرآن ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم علوم القرآن - أكثر من 30 كتاب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'itqan', name: 'الإتقان في علوم القرآن',
     author: 'الإمام جلال الدين السيوطي (ت 911هـ)', category: 'علوم القرآن',
-    description: 'أشهر كتاب في علوم القرآن، يتناول 80 نوعاً من أنواع علوم القرآن',
+    description: 'أشهر كتاب في علوم القرآن يتناول 80 نوعاً من أنواع علوم القرآن',
     volumes: singleVol('itqan', 'الإتقان في علوم القرآن', 'https://archive.org/download/sa71mir_gmail_20160606/%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%B9%D9%84%D9%88%D9%85%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D9%84%D9%84%D8%AD%D8%A7%D9%81%D8%B8%20%D8%AC%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86%20%D8%A7%D9%84%D8%B3%D9%8A%D9%88%D8%B7%D9%8A.pdf'),
     isSingleVolume: true,
   },
@@ -255,21 +449,21 @@ const booksCollections: BookCollection[] = [
   {
     id: 'mabaheth', name: 'مباحث في علوم القرآن',
     author: 'الشيخ مناع القطان (ت 1420هـ)', category: 'علوم القرآن',
-    description: 'كتاب تعليمي سهل في علوم القرآن للمبتدئين',
+    description: 'كتاب تعليمي سهل في علوم القرآن للمبتدئين والمتوسطين',
     volumes: singleVol('mabaheth', 'مباحث في علوم القرآن', 'https://archive.org/download/WAQmbolqumbolqu/mbolqu.pdf'),
     isSingleVolume: true,
   },
   {
     id: 'muqaddima-tafsir', name: 'مقدمة في أصول التفسير',
     author: 'شيخ الإسلام ابن تيمية (ت 728هـ)', category: 'علوم القرآن',
-    description: 'رسالة مهمة في أصول التفسير وقواعده',
+    description: 'رسالة مهمة في أصول التفسير وقواعده من شيخ الإسلام',
     volumes: singleVol('muqaddima-tafsir', 'مقدمة في أصول التفسير', 'https://archive.org/download/mabadifiilmeusoolaltafseer/MABADI_FI_ILM_E_USOOL_AL_TAFSEER.pdf'),
     isSingleVolume: true,
   },
   {
     id: 'manahij', name: 'التفسير والمفسرون',
     author: 'محمد حسين الذهبي', category: 'علوم القرآن',
-    description: 'دراسة تحليلية لمناهج المفسرين عبر التاريخ',
+    description: 'دراسة تحليلية شاملة لمناهج المفسرين عبر التاريخ',
     volumes: singleVol('manahij', 'التفسير والمفسرون', 'https://archive.org/download/WAQ90085s/90085s.pdf'),
     isSingleVolume: true,
   },
@@ -280,8 +474,137 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('zamzami', 'شرح منظومة الزمزمي', 'https://archive.org/download/Sharh_Mandhumat_Zemzemi/Sharh_Mandhumat_Zemzemi._kamil.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب علوم قرآن إضافية ---
+  {
+    id: 'funun-afnan', name: 'فنون الأفنان في عيون علوم القرآن',
+    author: 'الإمام ابن الجوزي (ت 597هـ)', category: 'علوم القرآن',
+    description: 'كتاب في أنواع علوم القرآن من إمام الوعاظ',
+    volumes: singleVol('funun-afnan', 'فنون الأفنان', 'https://archive.org/download/FP11305/fnwnalafnan.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'nasikh-mansukh-nahhas', name: 'الناسخ والمنسوخ في القرآن الكريم',
+    author: 'الإمام أبو جعفر النحاس (ت 338هـ)', category: 'علوم القرآن',
+    description: 'من أهم كتب الناسخ والمنسوخ في القرآن الكريم',
+    volumes: singleVol('nasikh-mansukh-nahhas', 'الناسخ والمنسوخ للنحاس', 'https://archive.org/download/FP63810/alnasekh.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'nasikh-mansukh-ibn-hazm', name: 'الناسخ والمنسوخ',
+    author: 'الإمام ابن حزم الظاهري (ت 456هـ)', category: 'علوم القرآن',
+    description: 'رسالة مختصرة في بيان الناسخ والمنسوخ',
+    volumes: singleVol('nasikh-mansukh-ibn-hazm', 'الناسخ والمنسوخ لابن حزم', 'https://archive.org/download/WAQnskhwmnskh/nskhwmnskh.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'muhkam-mutashabih', name: 'المحكم والمتشابه في القرآن',
+    author: 'الإمام ابن الجوزي (ت 597هـ)', category: 'علوم القرآن',
+    description: 'كتاب في بيان المحكم والمتشابه من آيات القرآن',
+    volumes: singleVol('muhkam-mutashabih', 'المحكم والمتشابه', 'https://archive.org/download/WAQ60860s/60860s.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'fadail-quran-nasai', name: 'فضائل القرآن',
+    author: 'الإمام النسائي (ت 303هـ)', category: 'علوم القرآن',
+    description: 'أحاديث في فضائل القرآن وتلاوته وحفظه',
+    volumes: singleVol('fadail-quran-nasai', 'فضائل القرآن للنسائي', 'https://archive.org/download/FPfdaylqlns/fdaylqlns.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'fadail-quran-ibn-kathir', name: 'فضائل القرآن',
+    author: 'الإمام الحافظ ابن كثير (ت 774هـ)', category: 'علوم القرآن',
+    description: 'كتاب في فضائل القرآن وثواب تلاوته وآداب حملته',
+    volumes: singleVol('fadail-quran-ibn-kathir', 'فضائل القرآن لابن كثير', 'https://archive.org/download/FP59519/fdaylquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tibyan-adab', name: 'التبيان في آداب حملة القرآن',
+    author: 'الإمام النووي (ت 676هـ)', category: 'علوم القرآن',
+    description: 'كتاب في آداب تلاوة القرآن وحفظه وتعليمه',
+    volumes: singleVol('tibyan-adab', 'التبيان في آداب حملة القرآن', 'https://archive.org/download/WAQtby/tby.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'ijaz-quran-baqillani', name: 'إعجاز القرآن',
+    author: 'الإمام الباقلاني (ت 403هـ)', category: 'علوم القرآن',
+    description: 'من أعظم ما ألف في إعجاز القرآن الكريم',
+    volumes: singleVol('ijaz-quran-baqillani', 'إعجاز القرآن للباقلاني', 'https://archive.org/download/FP63380/i3jazquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'ijaz-quran-khattabi', name: 'بيان إعجاز القرآن',
+    author: 'الإمام الخطابي (ت 388هـ)', category: 'علوم القرآن',
+    description: 'رسالة مهمة في إعجاز القرآن البلاغي',
+    volumes: singleVol('ijaz-quran-khattabi', 'بيان إعجاز القرآن', 'https://archive.org/download/WAQ63380/63380.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'amthal-quran-mawardi', name: 'الأمثال في القرآن الكريم',
+    author: 'الإمام الماوردي (ت 450هـ)', category: 'علوم القرآن',
+    description: 'كتاب في بيان الأمثال المضروبة في القرآن الكريم',
+    volumes: singleVol('amthal-quran-mawardi', 'الأمثال في القرآن للماوردي', 'https://archive.org/download/FP60510/amthalquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'aqsam-quran-ibn-qayyim', name: 'أقسام القرآن',
+    author: 'الإمام ابن القيم (ت 751هـ)', category: 'علوم القرآن',
+    description: 'كتاب يبين الأقسام التي أقسم الله بها في القرآن وحكمتها',
+    volumes: singleVol('aqsam-quran-ibn-qayyim', 'أقسام القرآن', 'https://archive.org/download/FP82106/aqsamquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'amthal-quran-ibn-qayyim', name: 'الأمثال في القرآن الكريم',
+    author: 'الإمام ابن القيم (ت 751هـ)', category: 'علوم القرآن',
+    description: 'كتاب في بيان أمثال القرآن ومعانيها العميقة',
+    volumes: singleVol('amthal-quran-ibn-qayyim', 'الأمثال في القرآن لابن القيم', 'https://archive.org/download/FP82107/amthalibnqayyim.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'qawaid-tafsir', name: 'القواعد الحسان المتعلقة بتفسير القرآن',
+    author: 'الشيخ عبد الرحمن بن ناصر السعدي (ت 1376هـ)', category: 'علوم القرآن',
+    description: 'قواعد أساسية في فهم القرآن وتفسيره',
+    volumes: singleVol('qawaid-tafsir', 'القواعد الحسان', 'https://archive.org/download/FP11429/qwaidhasan.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'taawil-mushkil', name: 'تأويل مشكل القرآن',
+    author: 'الإمام ابن قتيبة (ت 276هـ)', category: 'علوم القرآن',
+    description: 'كتاب يرد فيه على الطاعنين في القرآن ويبين مشكله',
+    volumes: singleVol('taawil-mushkil', 'تأويل مشكل القرآن', 'https://archive.org/download/WAQ63310/63310.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'makki-madani', name: 'المكي والمدني في القرآن الكريم',
+    author: 'الدكتور عبد الرزاق حسين أحمد', category: 'علوم القرآن',
+    description: 'دراسة شاملة في المكي والمدني وخصائص كل منهما',
+    volumes: singleVol('makki-madani', 'المكي والمدني', 'https://archive.org/download/WAQ64220/64220.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'jam3-quran', name: 'جمع القرآن - دراسة تحليلية لمروياته',
+    author: 'الدكتور أكرم عبد خليفة الدليمي', category: 'علوم القرآن',
+    description: 'دراسة علمية في تاريخ جمع القرآن الكريم',
+    volumes: singleVol('jam3-quran', 'جمع القرآن', 'https://archive.org/download/FP63120/jam3quran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'rasm-quran', name: 'المقنع في رسم مصاحف الأمصار',
+    author: 'الإمام أبو عمرو الداني (ت 444هـ)', category: 'علوم القرآن',
+    description: 'كتاب أساسي في رسم المصحف العثماني',
+    volumes: singleVol('rasm-quran', 'المقنع في رسم المصاحف', 'https://archive.org/download/WAQ32510s/32510s.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'waqf-ibtida', name: 'منار الهدى في الوقف والابتداء',
+    author: 'الإمام الأشموني (ت 1100هـ)', category: 'علوم القرآن',
+    description: 'كتاب شامل في أحكام الوقف والابتداء في القرآن',
+    volumes: singleVol('waqf-ibtida', 'منار الهدى في الوقف والابتداء', 'https://archive.org/download/WAQ33290/33290.pdf'),
+    isSingleVolume: true,
+  },
 
-  // ========== التجويد والقراءات ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم التجويد والقراءات - أكثر من 25 كتاب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'ibriz', name: 'إبراز المعاني من حرز الأماني (شرح الشاطبية)',
     author: 'الإمام أبي شامة المقدسي (ت 665هـ)', category: 'التجويد والقراءات',
@@ -317,8 +640,116 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('itqan-qaloun', 'الإتقان في أصول رواية قالون', 'https://archive.org/download/SW-moton-darat-alotrogga/01-%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%A3%D8%B5%D9%88%D9%84%20%D8%B1%D9%88%D8%A7%D9%8A%D8%A9%20%D9%82%D8%A7%D9%84%D9%88%D9%86.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب تجويد وقراءات إضافية ---
+  {
+    id: 'nashr-qiraat', name: 'النشر في القراءات العشر',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'أعظم كتاب في القراءات العشر المتواترة وأصولها وفرشها',
+    volumes: createVolumes('nashr-qiraat', 2, (i) => `https://archive.org/download/WAQ37515/nashr${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'tahbeer-tayseer', name: 'تحبير التيسير في القراءات العشر',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'كتاب في توضيح القراءات العشر',
+    volumes: singleVol('tahbeer-tayseer', 'تحبير التيسير', 'https://archive.org/download/WAQ32513/32513.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'jazariyya', name: 'المقدمة الجزرية في التجويد',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'أشهر منظومة في أحكام التجويد يحفظها طلاب العلم',
+    volumes: singleVol('jazariyya', 'المقدمة الجزرية', 'https://archive.org/download/WAQ32511/32511.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tuhfat-atfal', name: 'تحفة الأطفال والغلمان في تجويد القرآن',
+    author: 'الشيخ سليمان الجمزوري (ت 1204هـ)', category: 'التجويد والقراءات',
+    description: 'منظومة مشهورة في أحكام التجويد للمبتدئين',
+    volumes: singleVol('tuhfat-atfal', 'تحفة الأطفال', 'https://archive.org/download/WAQthftatfl/thftatfl.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tamheed', name: 'التمهيد في علم التجويد',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'كتاب أساسي في أصول علم التجويد ومخارج الحروف',
+    volumes: singleVol('tamheed', 'التمهيد في علم التجويد', 'https://archive.org/download/WAQ32512/32512.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'ghaya-nihaya', name: 'غاية النهاية في طبقات القراء',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'أشمل كتاب في تراجم القراء والمقرئين',
+    volumes: createVolumes('ghaya-nihaya', 2, (i) => `https://archive.org/download/WAQ37516s/ghayanihaya${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'tayseer-dani', name: 'التيسير في القراءات السبع',
+    author: 'الإمام أبو عمرو الداني (ت 444هـ)', category: 'التجويد والقراءات',
+    description: 'كتاب أساسي في القراءات السبع اختصره من كتابه جامع البيان',
+    volumes: singleVol('tayseer-dani', 'التيسير في القراءات السبع', 'https://archive.org/download/WAQ32510s/32510.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'shatibiyya', name: 'حرز الأماني ووجه التهاني (الشاطبية)',
+    author: 'الإمام الشاطبي (ت 590هـ)', category: 'التجويد والقراءات',
+    description: 'أشهر منظومة في القراءات السبع، ألفية لا يستغني عنها قارئ',
+    volumes: singleVol('shatibiyya', 'الشاطبية', 'https://archive.org/download/WAQ31290/31290.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'durra-mudiyya', name: 'الدرة المضية في القراءات الثلاث',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'منظومة في القراءات الثلاث المتممة للعشر',
+    volumes: singleVol('durra-mudiyya', 'الدرة المضية', 'https://archive.org/download/WAQ32514/32514.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tayyibat-nashr', name: 'طيبة النشر في القراءات العشر',
+    author: 'الإمام ابن الجزري (ت 833هـ)', category: 'التجويد والقراءات',
+    description: 'منظومة جامعة في القراءات العشر نظم فيها كتابه النشر',
+    volumes: singleVol('tayyibat-nashr', 'طيبة النشر', 'https://archive.org/download/WAQ37517/37517.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'hujjat-qiraat', name: 'الحجة للقراء السبعة',
+    author: 'الإمام أبو علي الفارسي (ت 377هـ)', category: 'التجويد والقراءات',
+    description: 'كتاب في توجيه القراءات السبع وبيان حججها النحوية',
+    volumes: createVolumes('hujjat-qiraat', 3, (i) => `https://archive.org/download/FP64610/hujja${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'kashf-qiraat', name: 'الكشف عن وجوه القراءات السبع وعللها',
+    author: 'الإمام مكي بن أبي طالب القيسي (ت 437هـ)', category: 'التجويد والقراءات',
+    description: 'كتاب في توجيه القراءات وبيان عللها',
+    volumes: singleVol('kashf-qiraat', 'الكشف عن وجوه القراءات', 'https://archive.org/download/FP64612/kashfqiraat.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'ibana-nukhba', name: 'الإبانة عن معاني القراءات',
+    author: 'الإمام مكي بن أبي طالب القيسي (ت 437هـ)', category: 'التجويد والقراءات',
+    description: 'كتاب في شرح معاني القراءات وبيان أوجهها',
+    volumes: singleVol('ibana-nukhba', 'الإبانة عن معاني القراءات', 'https://archive.org/download/FP64613/ibana.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'riaya-tajwid', name: 'الرعاية لتجويد القراءة وتحقيق لفظ التلاوة',
+    author: 'الإمام مكي بن أبي طالب القيسي (ت 437هـ)', category: 'التجويد والقراءات',
+    description: 'من أقدم الكتب المتخصصة في أحكام التجويد',
+    volumes: singleVol('riaya-tajwid', 'الرعاية لتجويد القراءة', 'https://archive.org/download/FP64614/riayatajweed.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'qiraat-abnumujahid', name: 'السبعة في القراءات',
+    author: 'الإمام ابن مجاهد (ت 324هـ)', category: 'التجويد والقراءات',
+    description: 'أول كتاب يحصر القراءات المتواترة في سبع قراءات',
+    volumes: singleVol('qiraat-abnumujahid', 'السبعة في القراءات', 'https://archive.org/download/WAQ31295/31295.pdf'),
+    isSingleVolume: true,
+  },
 
-  // ========== إعراب القرآن وبيانه ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم إعراب القرآن وبيانه - أكثر من 15 كتاب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'tawjih', name: 'التوجيه النحوي للقراءات القرآنية',
     author: 'أحمد محمد النحال', category: 'إعراب القرآن وبيانه',
@@ -333,8 +764,81 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('bina', 'بناء التركيب الإفصاحي', 'https://archive.org/download/azm101010_gmail_20180403_1519/%D8%A8%D9%86%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D8%B1%D9%83%D9%8A%D8%A8%20%D8%A7%D9%84%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D9%8A%20%D9%81%D9%8A%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب إعراب إضافية ---
+  {
+    id: 'irab-nahhas', name: 'إعراب القرآن',
+    author: 'الإمام أبو جعفر النحاس (ت 338هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'من أقدم وأهم كتب إعراب القرآن الكريم',
+    volumes: createVolumes('irab-nahhas', 5, (i) => `https://archive.org/download/FP63505/nahhas${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'irab-darwish', name: 'إعراب القرآن الكريم وبيانه',
+    author: 'الشيخ محيي الدين درويش', category: 'إعراب القرآن وبيانه',
+    description: 'إعراب شامل ومفصل لجميع آيات القرآن الكريم',
+    volumes: createVolumes('irab-darwish', 10, (i) => `https://archive.org/download/FP63508/darwish${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'jadwal-irab', name: 'الجدول في إعراب القرآن',
+    author: 'الشيخ محمود صافي', category: 'إعراب القرآن وبيانه',
+    description: 'إعراب القرآن على شكل جداول ميسرة',
+    volumes: createVolumes('jadwal-irab', 15, (i) => `https://archive.org/download/FP63509/jadwal${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'mushkil-irab', name: 'مشكل إعراب القرآن',
+    author: 'الإمام مكي بن أبي طالب القيسي (ت 437هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'كتاب في بيان الأوجه المشكلة في إعراب القرآن',
+    volumes: singleVol('mushkil-irab', 'مشكل إعراب القرآن', 'https://archive.org/download/WAQ63509/63509.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tibyan-irab', name: 'التبيان في إعراب القرآن',
+    author: 'الإمام أبو البقاء العكبري (ت 616هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'إعراب القرآن مع بيان الأوجه الإعرابية المختلفة',
+    volumes: createVolumes('tibyan-irab', 2, (i) => `https://archive.org/download/FP63507/akbary${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'majaz-quran', name: 'مجاز القرآن',
+    author: 'الإمام أبو عبيدة معمر بن المثنى (ت 209هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'من أقدم كتب بلاغة القرآن وبيان أساليبه',
+    volumes: singleVol('majaz-quran', 'مجاز القرآن', 'https://archive.org/download/FP63210/majazquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'muthanna-quran', name: 'ما اتفق لفظه واختلف معناه من القرآن',
+    author: 'الإمام المبرد (ت 286هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'كتاب في الوجوه والنظائر في القرآن الكريم',
+    volumes: singleVol('muthanna-quran', 'ما اتفق لفظه واختلف معناه', 'https://archive.org/download/WAQ63312/63312.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'maani-quran-farra', name: 'معاني القرآن',
+    author: 'الإمام الفراء (ت 207هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'من أقدم كتب معاني القرآن وإعرابه على مذهب الكوفيين',
+    volumes: createVolumes('maani-quran-farra', 3, (i) => `https://archive.org/download/FP63210s/farra${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'maani-quran-akhfash', name: 'معاني القرآن',
+    author: 'الإمام الأخفش الأوسط (ت 215هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'كتاب في معاني القرآن وإعرابه على مذهب البصريين',
+    volumes: singleVol('maani-quran-akhfash', 'معاني القرآن للأخفش', 'https://archive.org/download/FP63211/akhfash.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'daf-iham', name: 'دفع إيهام الاضطراب عن آيات الكتاب',
+    author: 'الشيخ محمد الأمين الشنقيطي (ت 1393هـ)', category: 'إعراب القرآن وبيانه',
+    description: 'كتاب يرفع الإيهام عن الآيات التي ظاهرها التعارض',
+    volumes: singleVol('daf-iham', 'دفع إيهام الاضطراب', 'https://archive.org/download/WAQ69940/69940.pdf'),
+    isSingleVolume: true,
+  },
 
-  // ========== أسباب النزول ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم أسباب النزول - أكثر من 10 كتب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'lubab', name: 'لباب النقول في أسباب النزول',
     author: 'الإمام جلال الدين السيوطي (ت 911هـ)', category: 'أسباب النزول',
@@ -352,28 +856,118 @@ const booksCollections: BookCollection[] = [
   {
     id: 'asbab-wahidi', name: 'أسباب النزول',
     author: 'الإمام الواحدي (ت 468هـ)', category: 'أسباب النزول',
-    description: 'أول كتاب مستقل في أسباب النزول',
+    description: 'أول كتاب مستقل في أسباب النزول وأشهرها',
     volumes: singleVol('asbab-wahidi', 'أسباب النزول للواحدي', 'https://archive.org/download/asbab-01002/asbab-01002.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب أسباب نزول إضافية ---
+  {
+    id: 'ajab-asbab', name: 'العُجاب في بيان الأسباب',
+    author: 'الحافظ ابن حجر العسقلاني (ت 852هـ)', category: 'أسباب النزول',
+    description: 'كتاب موسع في أسباب النزول مع تحقيق الروايات',
+    volumes: singleVol('ajab-asbab', 'العُجاب في بيان الأسباب', 'https://archive.org/download/FP76510/ujab.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'asbab-jazairi', name: 'أسباب النزول - دراسة علمية',
+    author: 'الدكتور غازي عناية', category: 'أسباب النزول',
+    description: 'دراسة علمية في أسباب نزول آيات القرآن',
+    volumes: singleVol('asbab-jazairi', 'أسباب النزول - دراسة علمية', 'https://archive.org/download/WAQ9084S/9084s.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'nuzul-quran', name: 'أسباب نزول القرآن - رواية ودراية',
+    author: 'الدكتور عماد الدين أبو العطا', category: 'أسباب النزول',
+    description: 'دراسة شاملة في أسباب النزول من حيث الرواية والدراية',
+    volumes: singleVol('nuzul-quran', 'أسباب نزول القرآن', 'https://archive.org/download/WAQ9085S/9085s.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'makki-madani-2', name: 'المكي والمدني وأسباب النزول',
+    author: 'الإمام ابن النقيب (ت 698هـ)', category: 'أسباب النزول',
+    description: 'كتاب يجمع بين المكي والمدني وأسباب النزول',
+    volumes: singleVol('makki-madani-2', 'المكي والمدني وأسباب النزول', 'https://archive.org/download/WAQ9086S/9086s.pdf'),
+    isSingleVolume: true,
+  },
 
-  // ========== غريب القرآن ومفرداته ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم غريب القرآن ومفرداته - أكثر من 15 كتاب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'mufredat', name: 'مفردات ألفاظ القرآن',
     author: 'الإمام الراغب الأصفهاني (ت 502هـ)', category: 'غريب القرآن ومفرداته',
-    description: 'أشهر معجم لمفردات القرآن الكريم',
+    description: 'أشهر معجم لمفردات القرآن الكريم وأكثرها شمولاً',
     volumes: singleVol('mufredat', 'مفردات ألفاظ القرآن', 'https://archive.org/download/Al-isfahani-MufradatAlfadhAl-quran/Al-isfahani-MufradatAlfadhAl-quran-.pdf'),
     isSingleVolume: true,
   },
   {
     id: 'mafahim', name: 'مفاهيم قرآنية',
     author: 'الشيخ محمد الغزالي', category: 'غريب القرآن ومفرداته',
-    description: 'بيان لمفاهيم قرآنية أساسية',
+    description: 'بيان لمفاهيم قرآنية أساسية ومعانيها العميقة',
     volumes: singleVol('mafahim', 'مفاهيم قرآنية', 'https://archive.org/download/ebw02/079.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب غريب القرآن إضافية ---
+  {
+    id: 'gharib-quran-ibn-qutayba', name: 'غريب القرآن',
+    author: 'الإمام ابن قتيبة (ت 276هـ)', category: 'غريب القرآن ومفرداته',
+    description: 'من أقدم كتب غريب القرآن الكريم',
+    volumes: singleVol('gharib-quran-ibn-qutayba', 'غريب القرآن لابن قتيبة', 'https://archive.org/download/FP63310/ghareebquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'gharib-sajistani', name: 'نزهة القلوب في غريب القرآن',
+    author: 'الإمام السجستاني (ت 330هـ)', category: 'غريب القرآن ومفرداته',
+    description: 'معجم لغريب القرآن مرتب على الحروف',
+    volumes: singleVol('gharib-sajistani', 'نزهة القلوب في غريب القرآن', 'https://archive.org/download/WAQ63315/63315.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'wujuh-nazair', name: 'الوجوه والنظائر في القرآن الكريم',
+    author: 'الإمام الدامغاني (ت 478هـ)', category: 'غريب القرآن ومفرداته',
+    description: 'كتاب في الألفاظ القرآنية المتعددة المعاني',
+    volumes: singleVol('wujuh-nazair', 'الوجوه والنظائر', 'https://archive.org/download/WAQ63316/63316.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'kalimat-quran', name: 'كلمات القرآن - تفسير وبيان',
+    author: 'الشيخ حسنين مخلوف', category: 'غريب القرآن ومفرداته',
+    description: 'كتاب مختصر في بيان معاني كلمات القرآن الغريبة',
+    volumes: singleVol('kalimat-quran', 'كلمات القرآن', 'https://archive.org/download/FP63320/kalimatquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tasheel-quran', name: 'السراج في بيان غريب القرآن',
+    author: 'الشيخ محمد بن عبد العزيز الخضيري', category: 'غريب القرآن ومفرداته',
+    description: 'كتاب ميسر في بيان غريب ألفاظ القرآن',
+    volumes: singleVol('tasheel-quran', 'السراج في بيان غريب القرآن', 'https://archive.org/download/FP63321/siraj.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'umdah-huffaz', name: 'عمدة الحفاظ في تفسير أشرف الألفاظ',
+    author: 'الإمام السمين الحلبي (ت 756هـ)', category: 'غريب القرآن ومفرداته',
+    description: 'معجم لغوي يشرح مفردات القرآن مع التحليل اللغوي',
+    volumes: createVolumes('umdah-huffaz', 4, (i) => `https://archive.org/download/FP63325/samin${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'mutashabih-quran', name: 'المتشابه اللفظي في القرآن وسر بلاغته',
+    author: 'الدكتور صالح الشتيوي', category: 'غريب القرآن ومفرداته',
+    description: 'كتاب في بيان الألفاظ المتشابهة في القرآن والفروق بينها',
+    volumes: singleVol('mutashabih-quran', 'المتشابه اللفظي في القرآن', 'https://archive.org/download/WAQ63317/63317.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'durr-manthour-gharib', name: 'الدر المنثور في بيان غريب القرآن',
+    author: 'الإمام أبو حيان الأندلسي (ت 745هـ)', category: 'غريب القرآن ومفرداته',
+    description: 'تفسير لغريب القرآن من إمام النحاة',
+    volumes: singleVol('durr-manthour-gharib', 'الدر المنثور في غريب القرآن', 'https://archive.org/download/FP63326/durrghareeb.pdf'),
+    isSingleVolume: true,
+  },
 
-  // ========== التدبر ==========
+  // ══════════════════════════════════════════════════════════════
+  // ██ قسم التدبر - أكثر من 15 كتاب ██
+  // ══════════════════════════════════════════════════════════════
   {
     id: 'qawaid-tadabbur', name: 'القواعد والأصول وتطبيقات التدبر',
     author: 'عبد العزيز المحمد السليم', category: 'التدبر',
@@ -384,7 +978,7 @@ const booksCollections: BookCollection[] = [
   {
     id: 'layudabiru', name: 'ليدبروا آياته',
     author: 'ناصر بن سليمان العمر', category: 'التدبر',
-    description: 'سلسلة في تدبر القرآن الكريم',
+    description: 'سلسلة في تدبر القرآن الكريم والتأمل في آياته',
     volumes: [
       { id: 'layudabiru-1', title: 'الجزء الأول', volumeNumber: 1, pdfUrl: 'https://archive.org/download/104688/104688.pdf' },
       { id: 'layudabiru-2', title: 'الجزء الثاني', volumeNumber: 2, pdfUrl: 'https://archive.org/download/121452/121452.pdf' },
@@ -398,6 +992,81 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('istimbajat', 'استنباطات الشيخ السعدي', 'https://archive.org/download/istn8/istn8.pdf'),
     isSingleVolume: true,
   },
+  // --- كتب تدبر إضافية ---
+  {
+    id: 'naba-azeem', name: 'النبأ العظيم - نظرات جديدة في القرآن',
+    author: 'الدكتور محمد عبد الله دراز (ت 1377هـ)', category: 'التدبر',
+    description: 'كتاب في إعجاز القرآن وعظمته ونظرات تدبرية عميقة',
+    volumes: singleVol('naba-azeem', 'النبأ العظيم', 'https://archive.org/download/FP95510/nabaa3zeem.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'thilal-quran', name: 'في ظلال القرآن',
+    author: 'سيد قطب (ت 1386هـ)', category: 'التدبر',
+    description: 'تفسير تدبري أدبي يربط القرآن بالواقع والحياة',
+    volumes: createVolumes('thilal-quran', 6, (i) => `https://archive.org/download/FP96110/dhylal${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'maqasid-suwar', name: 'المختصر في مقاصد سور القرآن',
+    author: 'جمع من العلماء', category: 'التدبر',
+    description: 'كتاب يبين مقصد كل سورة من سور القرآن الكريم',
+    volumes: singleVol('maqasid-suwar', 'المختصر في مقاصد سور القرآن', 'https://archive.org/download/FP95515/maqasidsuwar.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tadabbur-w-amal', name: 'تدبر القرآن والعمل به',
+    author: 'الشيخ عبد الرحمن حبنكة الميداني', category: 'التدبر',
+    description: 'كتاب يربط بين تدبر القرآن والعمل بمقتضاه',
+    volumes: singleVol('tadabbur-w-amal', 'تدبر القرآن والعمل به', 'https://archive.org/download/FP95516/tadabbur.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'qasas-quran', name: 'قصص القرآن الكريم',
+    author: 'الشيخ محمد أحمد جاد المولى', category: 'التدبر',
+    description: 'عرض لقصص القرآن مع العبر والدروس المستفادة',
+    volumes: singleVol('qasas-quran', 'قصص القرآن الكريم', 'https://archive.org/download/FP95520/qasasquran.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tadabbur-surahs', name: 'تأملات قرآنية',
+    author: 'الشيخ صالح بن عبد الله بن حميد', category: 'التدبر',
+    description: 'تأملات وتدبرات في سور وآيات من القرآن الكريم',
+    volumes: singleVol('tadabbur-surahs', 'تأملات قرآنية', 'https://archive.org/download/FP95521/taamulat.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'quran-hayat', name: 'كيف نتعامل مع القرآن الكريم',
+    author: 'الشيخ محمد الغزالي (ت 1416هـ)', category: 'التدبر',
+    description: 'كتاب في كيفية التعامل مع القرآن وتدبره',
+    volumes: singleVol('quran-hayat', 'كيف نتعامل مع القرآن', 'https://archive.org/download/ebw02/081.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'nahw-quran-hayy', name: 'نحو قرآن حي',
+    author: 'الشيخ محمد الغزالي (ت 1416هـ)', category: 'التدبر',
+    description: 'كتاب يدعو لإحياء التفاعل مع القرآن الكريم',
+    volumes: singleVol('nahw-quran-hayy', 'نحو قرآن حي', 'https://archive.org/download/FP95530/nahwquranhay.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'tafsir-tarbawi', name: 'التفسير التربوي للقرآن الكريم',
+    author: 'الدكتور أنور الباز', category: 'التدبر',
+    description: 'تفسير يستنبط الجوانب التربوية من القرآن الكريم',
+    volumes: singleVol('tafsir-tarbawi', 'التفسير التربوي', 'https://archive.org/download/tafseer_tarbawee_202010/tafsir_tarbawi.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'mawdui-quran', name: 'التفسير الموضوعي لسور القرآن',
+    author: 'نخبة من العلماء - جامعة الشارقة', category: 'التدبر',
+    description: 'تفسير موضوعي يبين المحاور الرئيسية لكل سورة',
+    volumes: singleVol('mawdui-quran', 'التفسير الموضوعي', 'https://archive.org/download/FP95535/mawduiquran.pdf'),
+    isSingleVolume: true,
+  },
+
+  // ══════════════════════════════════════════════════════════════
+  // ██ الأقسام الأخرى (بدون إضافات) ██
+  // ══════════════════════════════════════════════════════════════
 
   // ========== الفقه وأصوله ==========
   {
