@@ -233,6 +233,16 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 
+  {
+    id: 'nazarat',
+    name: 'نظرات في كتب التفسير',
+    author: 'عبد السلام الهراس',
+    category: 'التفسير',
+    description: 'دراسة نقدية في كتب التفسير المختلفة',
+    volumes: [{ id: 'nazarat', title: 'نظرات في كتب التفسير', pdfUrl: 'https://archive.org/download/Nadharat_fi_Ktb_Tafsir/Nadharat_Ktb_Tafsir.pdf' }],
+    isSingleVolume: true,
+  },
+
   // ========== علوم القرآن ==========
   {
     id: 'itqan',
@@ -280,6 +290,43 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 
+  {
+    id: 'muqaddima',
+    name: 'مقدمة التفسير',
+    author: 'الإمام جلال الدين السيوطي (ت 911هـ)',
+    category: 'علوم القرآن',
+    description: 'مقدمة مهمة في أصول التفسير وعلومه',
+    volumes: [{ id: 'muqaddima', title: 'مقدمة التفسير', pdfUrl: 'https://archive.org/download/Sharh_N_soyoti/01-Elm_tafsir_01.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'zamzami',
+    name: 'شرح منظومة الزمزمي في علوم القرآن',
+    author: 'الشيخ محمد المختار الشنقيطي',
+    category: 'علوم القرآن',
+    description: 'شرح وافٍ لمنظومة الزمزمي في علوم القرآن',
+    volumes: [{ id: 'zamzami', title: 'شرح منظومة الزمزمي', pdfUrl: 'https://archive.org/download/Sharh_Mandhumat_Zemzemi/Sharh_Mandhumat_Zemzemi._kamil.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'madkhal-mushaf',
+    name: 'مدخل إلى التعريف بالمصحف الشريف',
+    author: 'محمد سالم محيسن',
+    category: 'علوم القرآن',
+    description: 'تعريف شامل بالمصحف الشريف وتاريخه',
+    volumes: [{ id: 'madkhal-mushaf', title: 'مدخل إلى التعريف بالمصحف', pdfUrl: 'https://archive.org/download/15.8.2023/A03711.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'idawat',
+    name: 'إضاءات في تاريخ القراءات',
+    author: 'عبد الرحمن الإيوبي',
+    category: 'علوم القرآن',
+    description: 'بحث في تاريخ القراءات القرآنية وتطورها',
+    volumes: [{ id: 'idawat', title: 'إضاءات في تاريخ القراءات', pdfUrl: 'https://archive.org/download/4.4.2021/A03593.pdf' }],
+    isSingleVolume: true,
+  },
+
   // ========== التجويد والقراءات ==========
   {
     id: 'ibriz',
@@ -317,6 +364,42 @@ const booksCollections: BookCollection[] = [
     volumes: [{ id: 'tawatur', title: 'التواتر في القراءات', pdfUrl: 'https://archive.org/download/3.10.18/A03214.pdf' }],
     isSingleVolume: true,
   },
+  {
+    id: 'itqan-qaloun',
+    name: 'الإتقان في أصول رواية قالون',
+    author: 'الشيخ عبد العزيز القاري',
+    category: 'التجويد والقراءات',
+    description: 'أصول وقواعد رواية قالون عن نافع',
+    volumes: [{ id: 'itqan-qaloun', title: 'الإتقان في أصول رواية قالون', pdfUrl: 'https://archive.org/download/SW-moton-darat-alotrogga/01-%D8%A7%D9%84%D8%A5%D8%AA%D9%82%D8%A7%D9%86%20%D9%81%D9%8A%20%D8%A3%D8%B5%D9%88%D9%84%20%D8%B1%D9%88%D8%A7%D9%8A%D8%A9%20%D9%82%D8%A7%D9%84%D9%88%D9%86.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'tabhir',
+    name: 'تحبير التيسير في القراءات',
+    author: 'الإمام ابن الجزري (ت 833هـ)',
+    category: 'التجويد والقراءات',
+    description: 'كتاب في أصول القراءات العشر',
+    volumes: [{ id: 'tabhir', title: 'تحبير التيسير', pdfUrl: 'https://archive.org/download/almaktutat_gmail_1920_201905/%D8%A7%D9%84%D9%86%D8%B4%D8%B1%D8%A9%2019%20-%2020.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'tayyebat',
+    name: 'الطيبات في جمع الآيات بتحريرات الزيات',
+    author: 'عبد الرشيد علي',
+    category: 'التجويد والقراءات',
+    description: 'تحريرات في القراءات القرآنية',
+    volumes: [{ id: 'tayyebat', title: 'الطيبات', pdfUrl: 'https://archive.org/download/Tayebat/00M_Tayebat.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'najm-adhar',
+    name: 'النجم الأزهر في القراءات الأربعة عشر',
+    author: 'الإمام ابن الجزري (ت 833هـ)',
+    category: 'التجويد والقراءات',
+    description: 'القراءات الأربع عشرة المتممة للعشر',
+    volumes: [{ id: 'najm-adhar', title: 'النجم الأزهر', pdfUrl: 'https://archive.org/download/an-najm-al-adh-har/an-najm-al-adh-har.pdf' }],
+    isSingleVolume: true,
+  },
 
   // ========== إعراب القرآن ==========
   {
@@ -326,6 +409,34 @@ const booksCollections: BookCollection[] = [
     category: 'إعراب القرآن وبيانه',
     description: 'دراسة نحوية للقراءات القرآنية وتوجيهها',
     volumes: [{ id: 'tawjih', title: 'التوجيه النحوي للقراءات', pdfUrl: 'https://archive.org/download/ktp2019-tra5511/ktp2019-tra5511.pdf' }],
+    isSingleVolume: true,
+  },
+
+  {
+    id: 'irab-bahr',
+    name: 'إعراب القرآن من البحر المحيط',
+    author: 'الإمام أبي حيان الأندلسي (ت 745هـ)',
+    category: 'إعراب القرآن وبيانه',
+    description: 'إعراب القرآن مستخلص من تفسير البحر المحيط',
+    volumes: [{ id: 'irab-bahr', title: 'إعراب القرآن من البحر المحيط', pdfUrl: 'https://archive.org/download/lis_e3r17/lis_e3r1711.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'irab-muhayaa',
+    name: 'الإعراب المحلى للمفردات النحوية',
+    author: 'حسين محمد علي',
+    category: 'إعراب القرآن وبيانه',
+    description: 'تحليل نحوي لمفردات القرآن الكريم',
+    volumes: [{ id: 'irab-muhayaa', title: 'الإعراب المحلى', pdfUrl: 'https://archive.org/download/lib04109/lib04109.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'bina',
+    name: 'بناء التركيب الإفصاحي في القرآن',
+    author: 'محمد أحمد أبو الفتوح',
+    category: 'إعراب القرآن وبيانه',
+    description: 'دراسة لغوية في تراكيب القرآن الكريم',
+    volumes: [{ id: 'bina', title: 'بناء التركيب الإفصاحي', pdfUrl: 'https://archive.org/download/azm101010_gmail_20180403_1519/%D8%A8%D9%86%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D8%B1%D9%83%D9%8A%D8%A8%20%D8%A7%D9%84%D8%A5%D9%81%D8%B5%D8%A7%D8%AD%D9%8A%20%D9%81%D9%8A%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85.pdf' }],
     isSingleVolume: true,
   },
 
@@ -358,6 +469,25 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 
+  {
+    id: 'bada-wahy',
+    name: 'بدء الوحي',
+    author: 'جمع وتحقيق',
+    category: 'أسباب النزول',
+    description: 'بحث في كيفية بدء الوحي إلى النبي صلى الله عليه وسلم',
+    volumes: [{ id: 'bada-wahy', title: 'بدء الوحي', pdfUrl: 'https://archive.org/download/taha_157/%D8%A8%D8%AF%D8%A1%20%D8%A7%D9%84%D9%88%D8%AD%D9%8A.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'wahy',
+    name: 'الوحي في القرآن والسنة',
+    author: 'محمد خليفة',
+    category: 'أسباب النزول',
+    description: 'دراسة شاملة عن الوحي في القرآن والسنة النبوية',
+    volumes: [{ id: 'wahy', title: 'الوحي في القرآن والسنة', pdfUrl: 'https://archive.org/download/5_20230708_20230708_2018/%20%2873%29.pdf' }],
+    isSingleVolume: true,
+  },
+
   // ========== غريب القرآن ومفرداته ==========
   {
     id: 'mufredat',
@@ -366,6 +496,24 @@ const booksCollections: BookCollection[] = [
     category: 'غريب القرآن ومفرداته',
     description: 'أشهر معجم لمفردات القرآن الكريم',
     volumes: [{ id: 'mufredat', title: 'مفردات ألفاظ القرآن', pdfUrl: 'https://archive.org/download/Al-isfahani-MufradatAlfadhAl-quran/Al-isfahani-MufradatAlfadhAl-quran-.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'lughat-quran',
+    name: 'لغة القرآن الكريم',
+    author: 'محمود إسماعيل',
+    category: 'غريب القرآن ومفرداته',
+    description: 'دراسة لغوية في ألفاظ القرآن الكريم',
+    volumes: [{ id: 'lughat-quran', title: 'لغة القرآن الكريم', pdfUrl: 'https://archive.org/download/201802_20180209/%D9%84%D8%BA%D8%A9%20%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86%20%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85_2.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'mafahim',
+    name: 'مفاهيم قرآنية',
+    author: 'الشيخ محمد الغزالي',
+    category: 'غريب القرآن ومفرداته',
+    description: 'بيان لمفاهيم قرآنية أساسية',
+    volumes: [{ id: 'mafahim', title: 'مفاهيم قرآنية', pdfUrl: 'https://archive.org/download/ebw02/079.pdf' }],
     isSingleVolume: true,
   },
 
@@ -392,12 +540,39 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: false,
   },
   {
+    id: 'tadabbur-haqiqa',
+    name: 'التدبر حقيقته وعلاقته بمصطلحات التأويل',
+    author: 'عبد الرحمن الشهري',
+    category: 'التدبر',
+    description: 'بحث في حقيقة التدبر وعلاقته بالتأويل',
+    volumes: [{ id: 'tadabbur-haqiqa', title: 'التدبر حقيقته وعلاقته بالتأويل', pdfUrl: 'https://archive.org/download/themtef/themtef.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'khulasa',
+    name: 'الخلاصة في تدبر القرآن الكريم',
+    author: 'عبد العزيز المحمد السليم',
+    category: 'التدبر',
+    description: 'خلاصة في قواعد وأساليب تدبر القرآن',
+    volumes: [{ id: 'khulasa', title: 'الخلاصة في تدبر القرآن', pdfUrl: 'https://archive.org/download/20230708_20230708_0908/%25D8%25A7%25D9%2584%25D8%25AE%25D9%2584%25D8%25A7%25D8%25B5%25D8%25A9%2520%25D9%2581%25D9%258A%2520%25D8%25AA%25D8%25AF%25D8%25A8%25D8%25B1%2520%25D8%25A7%25D9%2584%25D9%2582%25D8%25B1%25D8%25A2%25D9%2586.PDF' }],
+    isSingleVolume: true,
+  },
+  {
     id: 'istimbajat',
     name: 'استنباطات الشيخ السعدي من القرآن',
     author: 'الشيخ عبد الرحمن السعدي (ت 1376هـ)',
     category: 'التدبر',
     description: 'فوائد واستنباطات مستخلصة من تفسير السعدي',
     volumes: [{ id: 'istimbajat', title: 'استنباطات الشيخ السعدي', pdfUrl: 'https://archive.org/download/istn8/istn8.pdf' }],
+    isSingleVolume: true,
+  },
+  {
+    id: 'adab',
+    name: 'آداب التعامل في ضوء القصص القرآني',
+    author: 'محمد الدبيسي',
+    category: 'التدبر',
+    description: 'استخلاص آداب التعامل من قصص القرآن الكريم',
+    volumes: [{ id: 'adab', title: 'آداب التعامل في ضوء القصص القرآني', pdfUrl: 'https://archive.org/download/95560/95560.pdf' }],
     isSingleVolume: true,
   },
 ];
