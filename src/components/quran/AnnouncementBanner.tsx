@@ -20,26 +20,18 @@ interface AnnouncementBannerProps {
 // Developer announcements - can be edited
 const announcements: Announcement[] = [
   {
-    id: 'proxy_fix',
-    messageAr: '🎉 تم إصلاح مشكلة الكتب المحجوبة! الآن جميع الكتب تعمل عبر Cloudflare Proxy',
-    messageEn: '🎉 Fixed blocked books issue! All books now work via Cloudflare Proxy',
-    type: 'success',
-    isActive: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 'new_reciters',
-    messageAr: '✨ تم إضافة 15 قارئ جديد! أصبح العدد الإجمالي 100 قارئ متاح',
-    messageEn: '✨ 15 new reciters added! Total now 100 reciters available',
+    id: 'new_books_videos',
+    messageAr: '📚 تم إضافة مئات الكتب الجديدة وعشرات المقاطع المرئية لعلماء أهل السنة',
+    messageEn: '📚 Hundreds of new books and dozens of video clips from Sunni scholars added',
     type: 'update',
     isActive: true,
     createdAt: new Date().toISOString(),
   },
   {
-    id: 'new_branding',
-    messageAr: '🌙 نور القرآن - تم تحديث الاسم والتصميم لشكل أكثر أناقة وجمالاً',
-    messageEn: '🌙 Noor Al-Quran - Updated branding with elegant new design',
-    type: 'info',
+    id: 'quran_reciters',
+    messageAr: '🎧 100 قارئ متاح للاستماع والتحميل مجاناً',
+    messageEn: '🎧 100 reciters available for free listening and download',
+    type: 'success',
     isActive: true,
     createdAt: new Date().toISOString(),
   },

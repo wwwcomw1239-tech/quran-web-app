@@ -79,8 +79,8 @@ export const translations = {
     loadError: 'تعذر تحميل الملف الصوتي',
 
     // Announcement
-    newReciters: 'تم إضافة 15 قارئ جديد! أصبح العدد 100 قارئ',
-    developerNote: 'مرحباً بكم في نور القرآن - تم تحديث التطبيق بخلفية جديدة وأداء محسّن',
+    newReciters: '100 قارئ متاح للاستماع والتحميل',
+    developerNote: 'مرحباً بكم في نور القرآن',
 
     // Language
     language: 'اللغة',
@@ -165,8 +165,8 @@ export const translations = {
     loadError: 'Could not load audio file',
 
     // Announcement
-    newReciters: '15 new reciters added! Now 100 reciters total',
-    developerNote: 'Welcome to Noor Al-Quran - Updated with new design and improved performance',
+    newReciters: '100 reciters available for listening and download',
+    developerNote: 'Welcome to Noor Al-Quran',
 
     // Language
     language: 'Language',

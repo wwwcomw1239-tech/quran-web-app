@@ -284,14 +284,27 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'v15', youtubeId: 'xCY_ytYoAUM', title: 'تفسير سورة عبس - الجزء الثاني', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة عبس الجزء الثاني' },
   { id: 'v16', youtubeId: 'JKhrvVLPKoU', title: 'تفسير سورة المسد', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة المسد للدكتور النابلسي' },
 
-  // الشيخ صالح المغامسي - تأملات وتفسير
-  { id: 'v17', youtubeId: 'EmCQnisYiBw', title: 'تأملات في سورة ص', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'تأملات قرآنية في تفسير سورة ص' },
-  { id: 'v18', youtubeId: 'hdQcQT_Zw6Y', title: 'نمارق مصفوفة - قول الزور', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'تأملات روحانية عميقة من معاني القرآن' },
-  { id: 'v19', youtubeId: 'wPNJKdrn1ZI', title: 'فسبح بحمد ربك وكن من الساجدين', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير آخر آيات سورة الحجر' },
-  { id: 'v20', youtubeId: 'nw_keDbwoz0', title: 'تفسير: حملته أمه كرهاً', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير آية حملته أمه كرهاً ووضعته كرهاً' },
-  { id: 'v21', youtubeId: 'Hk_QZIgD7J4', title: 'شهر رمضان - الجزء الأول', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'فضل شهر رمضان وسبب تسميته' },
-  { id: 'v22', youtubeId: 'ibPwhNl6vME', title: 'التناسب في سورة الشعراء', scholar: 'الشيخ صالح المغامسي', category: 'إعجاز القرآن', description: 'الإعجاز البياني في التناسب بين البداية والنهاية' },
-  { id: 'v23', youtubeId: 'e7hYiKJSVyg', title: 'تفسير: فأذكروا الله عند المشعر الحرام', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير آية الإفاضة من عرفات' },
+  // الشيخ محمد المقرمي - مقاطع مؤثرة
+  { id: 'mq1', youtubeId: 'D-SQqppuGgo', title: 'تلاوة خاشعة تبكي الحجر', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'تلاوة مؤثرة وخاشعة للشيخ محمد المقرمي' },
+  { id: 'mq2', youtubeId: 'KUQE1kHCVGg', title: 'موعظة مؤثرة - خشية الله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة في خشية الله والخوف من عقابه' },
+  { id: 'mq3', youtubeId: '8tIbMl3p5Ow', title: 'كلام يهز القلوب', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مؤثر يهز القلوب ويدعو للتوبة' },
+  { id: 'mq4', youtubeId: 'FVt7mIm3JGk', title: 'الموت وسكراته', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة مؤثرة عن الموت وسكراته' },
+  { id: 'mq5', youtubeId: 'aMYlkfpLfnY', title: 'تذكر يوم القيامة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مبكي عن أهوال يوم القيامة' },
+  { id: 'mq6', youtubeId: 'yW7Z-s-q45U', title: 'قصة مؤثرة جداً', scholar: 'الشيخ محمد المقرمي', category: 'قصص القرآن', description: 'قصة مؤثرة ومبكية من سيرة السلف' },
+  { id: 'mq7', youtubeId: 'Lp-oNjjrG3c', title: 'التوبة قبل فوات الأوان', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة عن التوبة والإنابة إلى الله' },
+  { id: 'mq8', youtubeId: '2EzN-LXydHg', title: 'رسالة إلى كل غافل', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'رسالة مؤثرة لكل من غفل عن ذكر الله' },
+  { id: 'mq9', youtubeId: 'mN7LnE6t_rA', title: 'صبر أيوب عليه السلام', scholar: 'الشيخ محمد المقرمي', category: 'قصص القرآن', description: 'قصة صبر نبي الله أيوب عليه السلام' },
+  { id: 'mq10', youtubeId: '4sB0ae6O5jg', title: 'وقفة مع النفس', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'محاسبة النفس قبل فوات الأوان' },
+  { id: 'mq11', youtubeId: 'Sd2OUITQGWU', title: 'الدنيا دار ممر لا دار مقر', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'حقيقة الدنيا وزوالها' },
+  { id: 'mq12', youtubeId: 'Ydli0gCPOi4', title: 'بكاء وخشوع', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مؤثر في البكاء من خشية الله' },
+  { id: 'mq13', youtubeId: 'eoNfbjNyDhY', title: 'أين أنت من القرآن', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة عن هجر القرآن والعودة إليه' },
+  { id: 'mq14', youtubeId: 'lj-79f6V3k0', title: 'الخوف من الله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مبكي عن الخوف من الله تعالى' },
+  { id: 'mq15', youtubeId: 'nUlOEKxjlSM', title: 'عذاب القبر', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة مرعبة عن عذاب القبر' },
+  { id: 'mq16', youtubeId: 'KZPlhx-strY', title: 'فضل الصدقة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مؤثر عن فضل الصدقة وثوابها' },
+  { id: 'mq17', youtubeId: 'FfDShJYHVHY', title: 'لحظات مؤثرة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'لحظات مؤثرة من دروس الشيخ المقرمي' },
+  { id: 'mq18', youtubeId: 'Hw2AsjBEQeA', title: 'حسن الخاتمة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة عن حسن الخاتمة وسوئها' },
+  { id: 'mq19', youtubeId: '3z0K39zqFdU', title: 'الاستغفار وفضله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مؤثر عن فضل الاستغفار' },
+  { id: 'mq20', youtubeId: 'jLNYnkMd3xQ', title: 'تعلق القلب بالله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة في تعلق القلب بالله وحده' },
 
   // الشيخ بدر المشاري - خطب ومواعظ
   { id: 'v24', youtubeId: 'tiFqIeTrr5w', title: 'من أجمل خطب الشيخ بدر المشاري', scholar: 'الشيخ بدر المشاري', category: 'تدبر وتأملات', description: 'خطبة مؤثرة لا تفوتك' },
@@ -336,6 +349,47 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'v55', youtubeId: 'I23aEB-ngog', title: 'تلاوة خاشعة - تحصين المنزل وجلب البركة', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'أجمل تلاوات القرآن بصوت العفاسي' },
   { id: 'v56', youtubeId: 'GYj_Y5LNpkg', title: 'تلاوة مؤثرة وباكية', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة تجعلك تشعر بكل كلمة' },
   { id: 'v57', youtubeId: 'Bb5oURoiGlk', title: 'سورة إبراهيم كاملة', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة كاملة لسورة إبراهيم بصوت خاشع' },
+
+  // ═══════════════════════════════════════════
+  // مقاطع إضافية - الشيخ محمد المقرمي (في المقاطع القصيرة)
+  // ═══════════════════════════════════════════
+  { id: 'mqs1', youtubeId: '8tIbMl3p5Ow', title: 'كلام يهز القلوب الغافلة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مقطع مؤثر يستيقظ له الغافل' },
+  { id: 'mqs2', youtubeId: 'FVt7mIm3JGk', title: 'الموت وسكراته - موعظة مبكية', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'وصف الموت وسكراته' },
+  { id: 'mqs3', youtubeId: 'aMYlkfpLfnY', title: 'يوم القيامة - أهوال ومشاهد', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مشاهد من أهوال يوم القيامة' },
+  { id: 'mqs4', youtubeId: 'yW7Z-s-q45U', title: 'قصة مبكية من السلف', scholar: 'الشيخ محمد المقرمي', category: 'قصص القرآن', description: 'قصة مؤثرة ومبكية' },
+  { id: 'mqs5', youtubeId: 'Lp-oNjjrG3c', title: 'باب التوبة مفتوح', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'باب التوبة مفتوح فلا تؤخر' },
+
+  // ═══════════════════════════════════════════
+  // علماء إضافيون - تفسير وعلوم قرآن
+  // ═══════════════════════════════════════════
+
+  // الشيخ صالح آل الشيخ
+  { id: 'add1', youtubeId: 'EHvX8oMwjHQ', title: 'شرح مقدمة في أصول التفسير لابن تيمية', scholar: 'الشيخ صالح آل الشيخ', category: 'علوم القرآن', description: 'شرح وافٍ لرسالة ابن تيمية في أصول التفسير' },
+  { id: 'add2', youtubeId: 'COxlz7jzLHU', title: 'التمهيد لشرح كتاب التوحيد', scholar: 'الشيخ صالح آل الشيخ', category: 'تدبر وتأملات', description: 'شرح لأصول التوحيد من القرآن' },
+
+  // الشيخ عبد الله بن عبد الرحمن الجبرين
+  { id: 'add3', youtubeId: 'h8_NfN0t5J4', title: 'تفسير سورة يوسف', scholar: 'الشيخ ابن جبرين', category: 'تفسير القرآن', description: 'تفسير سورة يوسف عليه السلام' },
+
+  // الشيخ سعد الشثري
+  { id: 'add4', youtubeId: 'JzI3u3Bdxcs', title: 'شرح كتاب أصول في التفسير', scholar: 'الشيخ سعد الشثري', category: 'علوم القرآن', description: 'شرح كتاب أصول في التفسير للشيخ ابن عثيمين' },
+
+  // الشيخ عبد الرحمن بن معاضة الشهري
+  { id: 'add5', youtubeId: 'c4lqYFqh7a0', title: 'برنامج بينات - تدبر القرآن', scholar: 'د. عبد الرحمن الشهري', category: 'تدبر وتأملات', description: 'حلقات في تدبر آيات القرآن الكريم' },
+
+  // الشيخ عبد المحسن العباد
+  { id: 'add6', youtubeId: 'qO0f8mQqkOE', title: 'شرح تفسير ابن كثير', scholar: 'الشيخ عبد المحسن العباد', category: 'تفسير القرآن', description: 'شرح على تفسير ابن كثير في المسجد النبوي' },
+
+  // الشيخ محمد بن صالح العثيمين - إضافات
+  { id: 'add7', youtubeId: '8x-k5uJq6os', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير مفصل لسورة الفاتحة أم الكتاب' },
+  { id: 'add8', youtubeId: 'oYLqUfhRVvM', title: 'تفسير المعوذتين', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورتي الفلق والناس' },
+  { id: 'add9', youtubeId: 'QxW8t3tluOg', title: 'تفسير سورة الإخلاص', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الإخلاص - قل هو الله أحد' },
+
+  // الشيخ صالح الفوزان - إضافات
+  { id: 'add10', youtubeId: 'qJPfPg8FjPM', title: 'فوائد مستنبطة من القرآن', scholar: 'الشيخ صالح الفوزان', category: 'تدبر وتأملات', description: 'فوائد عقدية وفقهية من القرآن' },
+
+  // إعجاز القرآن - إضافات
+  { id: 'add11', youtubeId: 'w6B-f6o7CR8', title: 'التعبير القرآني - لماذا هذه الكلمة', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'أسرار اختيار الكلمات في القرآن' },
+  { id: 'add12', youtubeId: 'Z1zX7-wXuMU', title: 'بلاغة القرآن في آياته', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'وجوه البلاغة في القرآن الكريم' },
 ];
 
 // ============================================

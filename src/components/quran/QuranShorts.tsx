@@ -378,8 +378,8 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh166', youtubeId: '065-NpxSKsk', title: 'ذنوب الخلوات', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'التوبة والرجوع إلى الله وعلاج تكرار الذنوب' },
 
   // مقاطع من الفيديوهات الطويلة - مقتطفات قصيرة
-  { id: 'sh167', youtubeId: 'EmCQnisYiBw', title: 'تأملات في سورة ص', scholar: 'الشيخ صالح المغامسي', category: 'تلاوات قرآنية', description: 'تأملات قرآنية عميقة' },
-  { id: 'sh168', youtubeId: 'hdQcQT_Zw6Y', title: 'نمارق مصفوفة', scholar: 'الشيخ صالح المغامسي', category: 'خواطر إيمانية', description: 'تأملات روحانية من القرآن' },
+  { id: 'sh167', youtubeId: 'D-SQqppuGgo', title: 'تلاوة خاشعة مؤثرة', scholar: 'الشيخ محمد المقرمي', category: 'تلاوات قرآنية', description: 'تلاوة خاشعة تبكي الحجر' },
+  { id: 'sh168', youtubeId: 'KUQE1kHCVGg', title: 'خشية الله', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'موعظة مؤثرة في خشية الله' },
   { id: 'sh169', youtubeId: 'gpCVONJFUTE', title: 'أفكار المؤمن القوي', scholar: 'الشيخ عمر عبد الكافي', category: 'خواطر إيمانية', description: 'أفكار لا تأتي إلا للمؤمن القوي' },
   { id: 'sh170', youtubeId: 'bpsh5tNavls', title: 'هل قبل الله توبتي؟', scholar: 'الشيخ عمر عبد الكافي', category: 'مواعظ قرآنية', description: 'كيف أعرف أن الله قبل توبتي' },
   { id: 'sh171', youtubeId: 'LKPhblyXKu4', title: 'ذكر الله كثيراً', scholar: 'الشيخ سعيد بن مسفر', category: 'خواطر إيمانية', description: 'من صفات أهل الإيمان' },
@@ -392,6 +392,23 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh178', youtubeId: 'ayS8Yte2Lec', title: 'فاتقوا الله ما استطعتم', scholar: 'الشيخ محمد صالح المنجد', category: 'مواعظ قرآنية', description: 'محاضرة في تقوى الله' },
   { id: 'sh179', youtubeId: 'ssytlK5Yezs', title: 'القرآن يحررنا من الفتنة', scholar: 'الشيخ محمد صالح المنجد', category: 'خواطر إيمانية', description: 'كيف يحررنا القرآن من فتنة الدنيا' },
   { id: 'sh180', youtubeId: 'QvF7m0BN2Y0', title: 'دقة الألفاظ القرآنية', scholar: 'الشيخ الشعراوي', category: 'تلاوات قرآنية', description: 'كل كلمة في القرآن في موضعها' },
+
+  // مقاطع إضافية للشيخ محمد المقرمي
+  { id: 'sh181', youtubeId: '8tIbMl3p5Ow', title: 'كلام يهز القلوب', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'مقطع مؤثر جداً من الشيخ المقرمي' },
+  { id: 'sh182', youtubeId: 'FVt7mIm3JGk', title: 'سكرات الموت', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'موعظة مبكية عن الموت' },
+  { id: 'sh183', youtubeId: 'aMYlkfpLfnY', title: 'أهوال يوم القيامة', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'تذكير بأهوال يوم القيامة' },
+  { id: 'sh184', youtubeId: 'Lp-oNjjrG3c', title: 'تب قبل فوات الأوان', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'التوبة قبل فوات الأوان' },
+  { id: 'sh185', youtubeId: '2EzN-LXydHg', title: 'رسالة للغافلين', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'رسالة مؤثرة لكل غافل عن ذكر الله' },
+  { id: 'sh186', youtubeId: '4sB0ae6O5jg', title: 'محاسبة النفس', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'وقفة مع النفس ومحاسبتها' },
+  { id: 'sh187', youtubeId: 'Sd2OUITQGWU', title: 'حقيقة الدنيا', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'الدنيا ممر لا مقر' },
+  { id: 'sh188', youtubeId: 'Ydli0gCPOi4', title: 'البكاء من خشية الله', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'فضل البكاء من خشية الله' },
+  { id: 'sh189', youtubeId: 'eoNfbjNyDhY', title: 'هجر القرآن', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'تحذير من هجر القرآن الكريم' },
+  { id: 'sh190', youtubeId: 'lj-79f6V3k0', title: 'الخوف من الله تعالى', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'مقطع مبكي عن الخوف من الله' },
+  { id: 'sh191', youtubeId: 'nUlOEKxjlSM', title: 'عذاب القبر وأهواله', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'موعظة عن عذاب القبر' },
+  { id: 'sh192', youtubeId: 'KZPlhx-strY', title: 'فضل الصدقة', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'ثواب الصدقة العظيم' },
+  { id: 'sh193', youtubeId: 'Hw2AsjBEQeA', title: 'حسن الخاتمة', scholar: 'الشيخ محمد المقرمي', category: 'مواعظ قرآنية', description: 'علامات حسن الخاتمة' },
+  { id: 'sh194', youtubeId: '3z0K39zqFdU', title: 'استغفر ربك', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'فضل الاستغفار وثمراته' },
+  { id: 'sh195', youtubeId: 'jLNYnkMd3xQ', title: 'تعلق بالله وحده', scholar: 'الشيخ محمد المقرمي', category: 'خواطر إيمانية', description: 'تعلق القلب بالله سبحانه' },
 ];
 
 // ============================================
