@@ -358,6 +358,40 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh154', youtubeId: 'Mvusk5QkFPU', title: 'خاطرة: البشارات القرآنية', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية', description: 'بشارات الله لعباده المؤمنين' },
   { id: 'sh155', youtubeId: 'pB7uZzu2dLI', title: 'خاطرة: بداية الخلق', scholar: 'الشيخ نبيل العوضي', category: 'خواطر إيمانية', description: 'تأمل في بدء الخلق' },
   { id: 'sh156', youtubeId: 'zDzsg7KsdOM', title: 'خاطرة: معجزات ربانية', scholar: 'الشيخ نبيل العوضي', category: 'خواطر إيمانية', description: 'قدرة الله في الأنبياء' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - الدفعة الثانية - شورتس قرآنية
+  // ═══════════════════════════════════════════
+
+  // الشيخ الشعراوي - تفسير مختصر
+  { id: 'sh157', youtubeId: 'nmlliRWGEBg', title: 'تفسير: لا تفقهون', scholar: 'الشيخ الشعراوي', category: 'تلاوات قرآنية', description: 'تفسير الشعراوي لقوله تعالى لا تفقهون' },
+  { id: 'sh158', youtubeId: 'jBP3k6GvZB8', title: 'رحم الله الشيخ الشعراوي', scholar: 'الشيخ الشعراوي', category: 'خواطر إيمانية', description: 'من أجمل كلمات الشيخ الشعراوي' },
+  { id: 'sh159', youtubeId: 'EQcLT-NQ0w4', title: 'فأتقوا النار التي وقودها الناس', scholar: 'الشيخ الشعراوي', category: 'مواعظ قرآنية', description: 'تفسير الشعراوي على قناة اقرأ' },
+  { id: 'sh160', youtubeId: 'Rsh6GQdLBnE', title: 'مقطع عن الموت سيغير حياتك', scholar: 'الشيخ الشعراوي', category: 'مواعظ قرآنية', description: 'موعظة مؤثرة عن الموت للشعراوي' },
+  { id: 'sh161', youtubeId: 'Piou0DCIxvs', title: 'كل شيء يقدره الله خير', scholar: 'الشيخ الشعراوي', category: 'خواطر إيمانية', description: 'خواطر حول القدر من الشعراوي' },
+  { id: 'sh162', youtubeId: 'EV7gNd8xAH4', title: 'الشعراوي ولقاء الأموات', scholar: 'الشيخ الشعراوي', category: 'مواعظ قرآنية', description: 'من درر الشيخ الشعراوي' },
+
+  // الشيخ خالد الراشد - مواعظ قصيرة
+  { id: 'sh163', youtubeId: 'CRZdHTS1hrI', title: 'أحوال الغافلين', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'موعظة مؤثرة ومبكية عن الغفلة' },
+  { id: 'sh164', youtubeId: 'mzxX-rJszIc', title: 'الندم على الذنوب', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'موعظة مؤثرة عن التوبة والندم' },
+  { id: 'sh165', youtubeId: 'F-Bs7SOpjP8', title: 'موعظة مؤثرة ومبكية', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'محاضرات دينية مؤثرة ومبكية' },
+  { id: 'sh166', youtubeId: '065-NpxSKsk', title: 'ذنوب الخلوات', scholar: 'الشيخ خالد الراشد', category: 'مواعظ قرآنية', description: 'التوبة والرجوع إلى الله وعلاج تكرار الذنوب' },
+
+  // مقاطع من الفيديوهات الطويلة - مقتطفات قصيرة
+  { id: 'sh167', youtubeId: 'EmCQnisYiBw', title: 'تأملات في سورة ص', scholar: 'الشيخ صالح المغامسي', category: 'تلاوات قرآنية', description: 'تأملات قرآنية عميقة' },
+  { id: 'sh168', youtubeId: 'hdQcQT_Zw6Y', title: 'نمارق مصفوفة', scholar: 'الشيخ صالح المغامسي', category: 'خواطر إيمانية', description: 'تأملات روحانية من القرآن' },
+  { id: 'sh169', youtubeId: 'gpCVONJFUTE', title: 'أفكار المؤمن القوي', scholar: 'الشيخ عمر عبد الكافي', category: 'خواطر إيمانية', description: 'أفكار لا تأتي إلا للمؤمن القوي' },
+  { id: 'sh170', youtubeId: 'bpsh5tNavls', title: 'هل قبل الله توبتي؟', scholar: 'الشيخ عمر عبد الكافي', category: 'مواعظ قرآنية', description: 'كيف أعرف أن الله قبل توبتي' },
+  { id: 'sh171', youtubeId: 'LKPhblyXKu4', title: 'ذكر الله كثيراً', scholar: 'الشيخ سعيد بن مسفر', category: 'خواطر إيمانية', description: 'من صفات أهل الإيمان' },
+  { id: 'sh172', youtubeId: 'ctfZBdEN9GM', title: 'أفحسبتم أنما خلقناكم عبثاً', scholar: 'الشيخ سعيد بن مسفر', category: 'تلاوات قرآنية', description: 'تدبر في الغاية من الخلق' },
+  { id: 'sh173', youtubeId: 'ommzww8agvI', title: 'تأملات سورة العصر', scholar: 'د. محمد راتب النابلسي', category: 'تلاوات قرآنية', description: 'تأملات عميقة في سورة العصر' },
+  { id: 'sh174', youtubeId: 'WFMbPjGKpsc', title: 'أسرار سورة العصر', scholar: 'د. محمد راتب النابلسي', category: 'خواطر إيمانية', description: 'فضائل وأسرار سورة العصر' },
+  { id: 'sh175', youtubeId: 'NgHKH179-HQ', title: 'أسرار سورة يوسف', scholar: 'د. محمد راتب النابلسي', category: 'خواطر إيمانية', description: 'أسرار في تفريج الهم والغم' },
+  { id: 'sh176', youtubeId: 'tiFqIeTrr5w', title: 'أروع خطب بدر المشاري', scholar: 'الشيخ بدر المشاري', category: 'مواعظ قرآنية', description: 'خطبة مؤثرة من أجمل الخطب' },
+  { id: 'sh177', youtubeId: 'Jv_htUpSV9c', title: 'الصبر عند البلاء', scholar: 'الشيخ بدر المشاري', category: 'مواعظ قرآنية', description: 'فضل الصبر وقت المحن' },
+  { id: 'sh178', youtubeId: 'ayS8Yte2Lec', title: 'فاتقوا الله ما استطعتم', scholar: 'الشيخ محمد صالح المنجد', category: 'مواعظ قرآنية', description: 'محاضرة في تقوى الله' },
+  { id: 'sh179', youtubeId: 'ssytlK5Yezs', title: 'القرآن يحررنا من الفتنة', scholar: 'الشيخ محمد صالح المنجد', category: 'خواطر إيمانية', description: 'كيف يحررنا القرآن من فتنة الدنيا' },
+  { id: 'sh180', youtubeId: 'QvF7m0BN2Y0', title: 'دقة الألفاظ القرآنية', scholar: 'الشيخ الشعراوي', category: 'تلاوات قرآنية', description: 'كل كلمة في القرآن في موضعها' },
 ];
 
 // ============================================

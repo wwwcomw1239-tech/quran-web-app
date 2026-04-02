@@ -259,6 +259,83 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'n36', youtubeId: '0AeGhlHwWkg', title: 'ساعة مع أجمل قصص الصحابة', scholar: 'الشيخ محمد العريفي', category: 'قصص القرآن', description: 'مجموعة من أجمل قصص الصحابة' },
   { id: 'n37', youtubeId: 'PQPpt8B3doQ', title: 'حقارة الدنيا', scholar: 'الشيخ عبدالله القرني', category: 'تدبر وتأملات', description: 'حقيقة الدنيا الفانية' },
   { id: 'n38', youtubeId: '0T44uSaSNuU', title: 'مات الطيبين', scholar: 'الشيخ عائض القرني', category: 'تدبر وتأملات', description: 'موعظة عن فقد الأحبة والصالحين' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - الدفعة الثانية - علماء إضافيون
+  // ═══════════════════════════════════════════
+
+  // الشيخ الشعراوي رحمه الله - تفسير وخواطر قرآنية
+  { id: 'v1', youtubeId: 'QvF7m0BN2Y0', title: 'كل كلمة في القرآن في موضعها الصحيح', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'خواطر الشعراوي حول دقة الألفاظ القرآنية' },
+  { id: 'v2', youtubeId: 'UK1vp4BmTGM', title: 'خواطر الشعراوي - سورة البقرة (1)', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة البقرة من خواطر الشعراوي' },
+  { id: 'v3', youtubeId: 'cEkuY26e_aQ', title: 'خواطر حول سورة العنكبوت - الحلقة 8', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير وخواطر حول سورة العنكبوت' },
+  { id: 'v4', youtubeId: 'l4jyXfHD9v8', title: 'خواطر الشعراوي - الجزء الثلاثون (1)', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير الجزء الثلاثون من القرآن الكريم' },
+  { id: 'v5', youtubeId: 'cPl5eOIpFio', title: 'خواطر الشعراوي حول آية الكرسي', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير آية الكرسي وما بعدها لا إكراه في الدين' },
+  { id: 'v6', youtubeId: 'eo2qcjP2cJE', title: 'خواطر الشعراوي حول سورة طه', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة طه - خواطر قرآنية' },
+  { id: 'v7', youtubeId: 'U1hBTCgiR2M', title: 'تفسير سورة الحشر كاملة', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة الحشر كاملة للإمام الشعراوي' },
+  { id: 'v8', youtubeId: 'jM-TOh5IZ2c', title: 'خواطر الشعراوي - سورة يس (1)', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة يس - الحلقة الأولى' },
+
+  // د. محمد راتب النابلسي - تفسير وتأملات
+  { id: 'v9', youtubeId: 'ommzww8agvI', title: 'تأملات في سورة العصر', scholar: 'د. محمد راتب النابلسي', category: 'تدبر وتأملات', description: 'لقاء الفجر - تأملات في سورة العصر' },
+  { id: 'v10', youtubeId: 'mzJ96MwtyOo', title: 'تأملات دعوية', scholar: 'د. محمد راتب النابلسي', category: 'تدبر وتأملات', description: 'تأملات دعوية من القرآن الكريم' },
+  { id: 'v11', youtubeId: 'A_7Axm_nV9I', title: 'تفسير سورة الروم (1/14)', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة الروم الحلقة الأولى' },
+  { id: 'v12', youtubeId: '5xur_QWbgtU', title: 'تفسير جزء عمّ (1) - سورة النبأ', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'شرح مبسط ومن واقع تجارب الحياة' },
+  { id: 'v13', youtubeId: 'WFMbPjGKpsc', title: 'فضائل وأسرار سورة العصر', scholar: 'د. محمد راتب النابلسي', category: 'إعجاز القرآن', description: 'شرح وتفسير سورة العصر وأسرارها' },
+  { id: 'v14', youtubeId: 'NgHKH179-HQ', title: 'أسرار في سورة يوسف', scholar: 'د. محمد راتب النابلسي', category: 'تدبر وتأملات', description: 'أسرار قد تسمعها لأول مرة في تفريج الهم' },
+  { id: 'v15', youtubeId: 'xCY_ytYoAUM', title: 'تفسير سورة عبس - الجزء الثاني', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة عبس الجزء الثاني' },
+  { id: 'v16', youtubeId: 'JKhrvVLPKoU', title: 'تفسير سورة المسد', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة المسد للدكتور النابلسي' },
+
+  // الشيخ صالح المغامسي - تأملات وتفسير
+  { id: 'v17', youtubeId: 'EmCQnisYiBw', title: 'تأملات في سورة ص', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'تأملات قرآنية في تفسير سورة ص' },
+  { id: 'v18', youtubeId: 'hdQcQT_Zw6Y', title: 'نمارق مصفوفة - قول الزور', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'تأملات روحانية عميقة من معاني القرآن' },
+  { id: 'v19', youtubeId: 'wPNJKdrn1ZI', title: 'فسبح بحمد ربك وكن من الساجدين', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير آخر آيات سورة الحجر' },
+  { id: 'v20', youtubeId: 'nw_keDbwoz0', title: 'تفسير: حملته أمه كرهاً', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير آية حملته أمه كرهاً ووضعته كرهاً' },
+  { id: 'v21', youtubeId: 'Hk_QZIgD7J4', title: 'شهر رمضان - الجزء الأول', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'فضل شهر رمضان وسبب تسميته' },
+  { id: 'v22', youtubeId: 'ibPwhNl6vME', title: 'التناسب في سورة الشعراء', scholar: 'الشيخ صالح المغامسي', category: 'إعجاز القرآن', description: 'الإعجاز البياني في التناسب بين البداية والنهاية' },
+  { id: 'v23', youtubeId: 'e7hYiKJSVyg', title: 'تفسير: فأذكروا الله عند المشعر الحرام', scholar: 'الشيخ صالح المغامسي', category: 'تفسير القرآن', description: 'تفسير آية الإفاضة من عرفات' },
+
+  // الشيخ بدر المشاري - خطب ومواعظ
+  { id: 'v24', youtubeId: 'tiFqIeTrr5w', title: 'من أجمل خطب الشيخ بدر المشاري', scholar: 'الشيخ بدر المشاري', category: 'تدبر وتأملات', description: 'خطبة مؤثرة لا تفوتك' },
+  { id: 'v25', youtubeId: 'hAUU0_Scuco', title: 'خطبة تلمس قلبك وتريح نفسك', scholar: 'الشيخ بدر المشاري', category: 'تدبر وتأملات', description: 'من أحنّ وأجمل كلمات الشيخ بدر المشاري' },
+  { id: 'v26', youtubeId: 'CPD8uhHjsiE', title: 'زوال إسرائيل - خطبة مزلزلة', scholar: 'الشيخ بدر المشاري', category: 'تدبر وتأملات', description: 'خطبة عن نصرة فلسطين من القرآن' },
+  { id: 'v27', youtubeId: '7IhOiLvUI2I', title: 'أجمل 10 قصص من الشيخ بدر المشاري', scholar: 'الشيخ بدر المشاري', category: 'قصص القرآن', description: 'ساعتان مع أجمل القصص المؤثرة' },
+  { id: 'v28', youtubeId: 'Jv_htUpSV9c', title: 'فضل الصبر وقت البلاء والمحن', scholar: 'الشيخ بدر المشاري', category: 'تدبر وتأملات', description: 'خطبة عن الصبر عند المحن من القرآن' },
+  { id: 'v29', youtubeId: 'cO9KJyf6P3o', title: 'ستة أشياء ستغير حياتك في رمضان', scholar: 'الشيخ بدر المشاري', category: 'تدبر وتأملات', description: 'نصائح رمضانية من القرآن والسنة' },
+
+  // الشيخ محمد صالح المنجد - محاضرات قرآنية
+  { id: 'v30', youtubeId: 'ayS8Yte2Lec', title: 'فاتقوا الله ما استطعتم', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'محاضرة في تقوى الله من القرآن' },
+  { id: 'v31', youtubeId: 'ssytlK5Yezs', title: 'كيف يحررنا القرآن من فتنة الدنيا', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'سلسلة المحاضرات الذهبية' },
+  { id: 'v32', youtubeId: 'joRh5ihqz4Y', title: 'المؤمن ومتاع الحياة الدنيا', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'تأملات في حقيقة الدنيا من القرآن' },
+  { id: 'v33', youtubeId: 'Y36rMiGZ4Ak', title: 'كيف يحررنا القرآن من فتنة الدنيا - كاملة', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'محاضرة كاملة عن تحرير القلب بالقرآن' },
+  { id: 'v34', youtubeId: 'jJ2qfpA4nqE', title: 'التوكل على الله', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'سلسلة المحاضرات الذهبية في التوكل' },
+  { id: 'v35', youtubeId: 'Kxb6immsAlI', title: 'هل أنت مع الله؟', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'محاضرة مؤثرة عن العلاقة مع الله' },
+  { id: 'v36', youtubeId: 'O7BB4v2tOQ0', title: 'قصص التوحيد', scholar: 'الشيخ محمد صالح المنجد', category: 'قصص القرآن', description: 'قصص عن التوحيد من القرآن والسنة' },
+
+  // الشيخ عمر عبد الكافي - مواعظ قرآنية
+  { id: 'v37', youtubeId: 'gpCVONJFUTE', title: 'هذه الأفكار لا تأتي إلا للمؤمن القوي', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'راحة نفسية من القرآن الكريم' },
+  { id: 'v38', youtubeId: 'bpsh5tNavls', title: 'كيف أعرف أن الله قبل توبتي؟', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'برنامج مع القرآن الحلقة 9' },
+  { id: 'v39', youtubeId: 'VuYqAm47H7U', title: 'كيف تعود إلى الله بعد الغفلة', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'درس مؤثر عن العودة إلى الله' },
+  { id: 'v40', youtubeId: '2jHQ6FLWbCQ', title: 'بلغوا عني ولو آية (1)', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'سلسلة بلغوا عني ولو آية الحلقة الأولى' },
+  { id: 'v41', youtubeId: 'nbyjth-QhM4', title: 'مواعظ تهزّ القلب وتُنير الدرب', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'دروس يومية من أجمل ما قاله الدكتور' },
+  { id: 'v42', youtubeId: 'NVWqU9GqULg', title: 'إذا تأخرت استجابة دعائك', scholar: 'الشيخ عمر عبد الكافي', category: 'تدبر وتأملات', description: 'برنامج مع الله الحلقة 29' },
+
+  // الشيخ سعيد بن مسفر - وقفات قرآنية
+  { id: 'v43', youtubeId: 'LKPhblyXKu4', title: 'ذكر الله من صفات أهل الإيمان', scholar: 'الشيخ سعيد بن مسفر', category: 'تدبر وتأملات', description: 'تأملات في صفات المؤمنين من القرآن' },
+  { id: 'v44', youtubeId: 'GOQcxtKuDqY', title: 'قصة خلق الإنسان', scholar: 'الشيخ سعيد بن مسفر', category: 'قصص القرآن', description: 'قصة خلق الإنسان كما وردت في القرآن' },
+  { id: 'v45', youtubeId: 'ctfZBdEN9GM', title: 'أفحسبتم أنما خلقناكم عبثاً', scholar: 'الشيخ سعيد بن مسفر', category: 'تدبر وتأملات', description: 'تدبر في آية عظيمة عن الغاية من الخلق' },
+  { id: 'v46', youtubeId: 'LIYshMQOZOo', title: 'بر الوالدين - وقفات قرآنية', scholar: 'الشيخ سعيد بن مسفر', category: 'تدبر وتأملات', description: 'وقفات قرآنية حول بر الوالدين' },
+  { id: 'v47', youtubeId: 'wqV52VrNXns', title: 'غمرات الموت - مراحل الدار الآخرة', scholar: 'الشيخ سعيد بن مسفر', category: 'تدبر وتأملات', description: 'سلسلة مراحل الدار الآخرة بدءاً من الوفاة' },
+
+  // تلاوات قرآنية مؤثرة - مشاري العفاسي
+  { id: 'v48', youtubeId: 'yql--ZJa_bY', title: 'أجمل التلاوات القرآنية - مشاري العفاسي', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوات قرآنية خاشعة ومؤثرة' },
+  { id: 'v49', youtubeId: 'ffoPqr-UuQg', title: 'روائع التلاوات - الشيخ مشاري العفاسي', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'استمع بنية الرزق والبركة' },
+  { id: 'v50', youtubeId: 'Y1M6hJHHrjM', title: 'سورة البقرة كاملة - المصحف المرتل', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'المصحف المرتل الأول 1424هـ' },
+  { id: 'v51', youtubeId: 'Z-7zd1oUjNQ', title: 'تلاوات تهتز لها القلوب', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'مجموعة تلاوات مؤثرة بجودة عالية' },
+  { id: 'v52', youtubeId: 'JVtWmwevQpk', title: 'سورة الأنبياء كاملة بصوت خاشع', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة خاشعة لسورة الأنبياء' },
+  { id: 'v53', youtubeId: 'xdlSiNlZj_4', title: 'سورة الرحمن بصوت يشبه الجنة', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة خاشعة لسورة الرحمن' },
+  { id: 'v54', youtubeId: 'RleCfBAC0sU', title: 'سورة الملك 2005م', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة مميزة لسورة الملك' },
+  { id: 'v55', youtubeId: 'I23aEB-ngog', title: 'تلاوة خاشعة - تحصين المنزل وجلب البركة', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'أجمل تلاوات القرآن بصوت العفاسي' },
+  { id: 'v56', youtubeId: 'GYj_Y5LNpkg', title: 'تلاوة مؤثرة وباكية', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة تجعلك تشعر بكل كلمة' },
+  { id: 'v57', youtubeId: 'Bb5oURoiGlk', title: 'سورة إبراهيم كاملة', scholar: 'الشيخ مشاري العفاسي', category: 'أحكام التلاوة والتجويد', description: 'تلاوة كاملة لسورة إبراهيم بصوت خاشع' },
 ];
 
 // ============================================
