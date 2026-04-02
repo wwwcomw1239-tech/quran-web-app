@@ -360,6 +360,32 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'mqs5', youtubeId: 'Lp-oNjjrG3c', title: 'باب التوبة مفتوح', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'باب التوبة مفتوح فلا تؤخر' },
 
   // ═══════════════════════════════════════════
+  // مقاطع جديدة إضافية - الشيخ محمد المقرمي رحمه الله
+  // ═══════════════════════════════════════════
+  { id: 'mq21', youtubeId: '1V_oU_dNSQw', title: 'كارثة فكرية نعيشها جميعاً', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'أول معلومة تضر بالعقل - موعظة فكرية عميقة' },
+  { id: 'mq22', youtubeId: 'B_oHw-ouKAU', title: 'ليميز الله الخبيث من الطيب', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'مواعظ تهز القلب عن تمييز الله بين الخبيث والطيب' },
+  { id: 'mq23', youtubeId: 'CNFSbR11EzM', title: 'أكبر فخ يقع فيه الإنسان - الغضب', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'كيف يكون الغضب هو الاختبار الحقيقي لقوة الإنسان' },
+  { id: 'mq24', youtubeId: 'HIrfAtQE0fo', title: 'رسالة لمن ضاقت به الدنيا', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'رحلة إيمانية عميقة للمهموم والمكروب' },
+  { id: 'mq25', youtubeId: 'fixp75mJWJk', title: 'نساء عرفن الله - كلام يغيّر القلوب', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'أثر معرفة الله على حياة العبد' },
+  { id: 'mq26', youtubeId: '-b4R54UmXF0', title: 'لا تقنطوا من رحمة الله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'أخطر خدعة يوقع فيها المؤمن - رسالة إيمانية' },
+  { id: 'mq27', youtubeId: 'E5MUT495DS0', title: 'درس يجذبك إلى صحبة القرآن', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'بداية صحبته مع القرآن الكريم - رسالة صادقة' },
+  { id: 'mq28', youtubeId: 'iLtrjsR3J5w', title: 'كيف تجعل من دوامك عبادة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'إعادة تعريف الدوام والعمل من منظور القرآن' },
+  { id: 'mq29', youtubeId: 'QIDYsDFBNUw', title: 'عشر قواعد تغيّر القلب من الداخل', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'قواعد لاستعادة الطمأنينة وراحة القلب' },
+  { id: 'mq30', youtubeId: 'nTBQvPyx3eE', title: 'حسن الظن بالله - كلام مؤثر', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة في حسن الظن بالله عز وجل' },
+  { id: 'mq31', youtubeId: 'Wa6fCaPs7Kg', title: 'محاضرة تهز القلوب وتغير حياتك', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'تحدي الإعاقة مع مروان - محاضرة إيمانية مؤثرة' },
+  { id: 'mq32', youtubeId: 'CoFwZ60x540', title: 'من الهندسة إلى تدبر القرآن - بودكاست', scholar: 'الشيخ محمد المقرمي', category: 'علوم القرآن', description: 'رحلة من أدوات الهندسة إلى منهج التدبر القرآني' },
+  { id: 'mq33', youtubeId: 'qmx24-bxHcU', title: 'نفحات وتدبر - القيمة الشعورية', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'برنامج نفحات وتدبر - الحلقة 24' },
+  { id: 'mq34', youtubeId: '0HnzGxW0UHQ', title: 'مدارج التدبر - مقطع مختار', scholar: 'الشيخ محمد المقرمي', category: 'علوم القرآن', description: 'من سلسلة مدارج التدبر المباركة' },
+  { id: 'mq35', youtubeId: 'LuJ1IOnUzRQ', title: 'تدبر اسم الله التواب', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'تدبر في اسم الله التواب وآثاره على القلب' },
+  { id: 'mq36', youtubeId: '6iuStjfnq_8', title: 'تدبر سورة الحشر', scholar: 'الشيخ محمد المقرمي', category: 'تفسير القرآن', description: 'تدبر آيات سورة الحشر مع الشيخ المقرمي' },
+  { id: 'mq37', youtubeId: 'UVvu7xD7UYw', title: 'كتاب صامت يعرّفك على الله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'استمع بقلبك قبل أذنك - القرآن يعرّفك على ربك' },
+  { id: 'mq38', youtubeId: 'FARBElcDLsI', title: 'الحشو - تربية النفس', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'كيف تربي نفسك وتقودها إلى طاعة الله' },
+  { id: 'mq39', youtubeId: 'VXNHbvElmS4', title: 'اسمعوها إلى آخر المقطع - حفظنا الله', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'موعظة مؤثرة في الرجوع إلى الله' },
+  { id: 'mq40', youtubeId: 'mHQ_mG5Az04', title: 'حق الورثة - رسالة لكل من يحبس حقاً', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'لقاء مؤثر عن العدل وحق الورثة' },
+  { id: 'mq41', youtubeId: '3FjNjnfIjbo', title: 'صدى الكلمة وعظمة الموعظة', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'قوة تأثير الكلمة الصادقة والموعظة الحسنة' },
+  { id: 'mq42', youtubeId: 'b2FrEMuOSzc', title: 'سر الاتصال بالقوة الإلهية', scholar: 'الشيخ محمد المقرمي', category: 'تدبر وتأملات', description: 'تجربة روحية في القرب من الله عز وجل' },
+
+  // ═══════════════════════════════════════════
   // علماء إضافيون - تفسير وعلوم قرآن
   // ═══════════════════════════════════════════
 
