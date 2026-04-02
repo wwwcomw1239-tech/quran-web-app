@@ -43,6 +43,7 @@ import {
   ScrollText,
   Library,
   GraduationCap,
+  Info,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -177,6 +178,15 @@ export default function LibraryPage() {
     );
   }, [surahSearchQuery]);
 
+  // Tafsir statistics
+  const tafsirStats = useMemo(() => {
+    if (!tafsirVerses.length) return null;
+    const withTafsir = tafsirVerses.filter(v => v.tafsir_available && v.tafsir_text && !v.tafsir_text.startsWith('[')).length;
+    const merged = tafsirVerses.filter(v => v.tafsir_text?.startsWith('[')).length;
+    const missing = tafsirVerses.filter(v => !v.tafsir_available).length;
+    return { total: tafsirVerses.length, withTafsir, merged, missing };
+  }, [tafsirVerses]);
+
   // Load tafsirs list on mount
   useEffect(() => {
     const loadTafsirs = async () => {
@@ -221,6 +231,7 @@ export default function LibraryPage() {
 
       setTafsirLoading(true);
       setTafsirError(null);
+      setTafsirVerses([]);
       setLocalTafsirSearch('');
       setTafsirProgress('جاري تحميل الآيات والتفسير...');
 
@@ -232,12 +243,15 @@ export default function LibraryPage() {
           setTafsirViewState('detail');
           setTafsirProgress('');
           
-          const hasTafsir = result.data.some(v => v.tafsir_available);
-          if (!hasTafsir) {
+          const realTafsirCount = result.data.filter(v => v.tafsir_available && v.tafsir_text && !v.tafsir_text.startsWith('[')).length;
+          const totalVerses = result.data.length;
+          
+          if (realTafsirCount === 0) {
             toast.warning('التفسير غير متوفر لهذه السورة مع هذا المفسر، جرب تفسيراً آخر');
+          } else if (realTafsirCount < totalVerses) {
+            toast.success(`تم تحميل التفسير بنجاح (${realTafsirCount} من ${totalVerses} آية)`);
           } else {
-            const count = result.data.filter(v => v.tafsir_available).length;
-            toast.success(`تم تحميل ${count} آية مع التفسير`);
+            toast.success(`تم تحميل التفسير بنجاح - ${totalVerses} آية`);
           }
         } else {
           setTafsirError(result.error);
@@ -319,6 +333,18 @@ export default function LibraryPage() {
     setSearchQuery(value);
     debouncedSearch(value);
   };
+
+  // Retry tafsir load
+  const retryTafsirLoad = useCallback(() => {
+    if (selectedSurahId && selectedTafsir) {
+      setTafsirError(null);
+      setTafsirVerses([]);
+      // Trigger reload by toggling surah id
+      const id = selectedSurahId;
+      setSelectedSurahId(null);
+      setTimeout(() => setSelectedSurahId(id), 100);
+    }
+  }, [selectedSurahId, selectedTafsir]);
 
   // ============================================
   // UI RENDER HELPERS
@@ -483,6 +509,7 @@ export default function LibraryPage() {
               setTafsirVerses([]);
               setLocalTafsirSearch('');
               setTafsirError(null);
+              setSelectedAyah(null);
             }}
             className="gap-2 hover:bg-emerald-100 dark:hover:bg-emerald-800/30"
           >
@@ -550,6 +577,28 @@ export default function LibraryPage() {
           </select>
         </div>
 
+        {/* Stats bar */}
+        {tafsirStats && !tafsirLoading && (
+          <div className="flex items-center gap-3 mt-3 text-xs">
+            <span className="text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+              <Check className="w-3 h-3" />
+              {tafsirStats.withTafsir} آية مُفسَّرة
+            </span>
+            {tafsirStats.merged > 0 && (
+              <span className="text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                <Info className="w-3 h-3" />
+                {tafsirStats.merged} آية مدمجة
+              </span>
+            )}
+            {tafsirStats.missing > 0 && (
+              <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                {tafsirStats.missing} غير متوفرة
+              </span>
+            )}
+          </div>
+        )}
+
         {localTafsirSearch && (
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
             {filteredVerses.length} آية مطابقة من {tafsirVerses.length}
@@ -561,15 +610,7 @@ export default function LibraryPage() {
       {tafsirLoading && renderLoading('جاري تحميل التفسير...')}
 
       {/* Error */}
-      {tafsirError && !tafsirLoading && renderError(tafsirError, () => {
-        if (selectedSurahId && selectedTafsir) {
-          setTafsirError(null);
-          // Trigger reload
-          const id = selectedSurahId;
-          setSelectedSurahId(null);
-          setTimeout(() => setSelectedSurahId(id), 100);
-        }
-      })}
+      {tafsirError && !tafsirLoading && renderError(tafsirError, retryTafsirLoad)}
 
       {/* Verses */}
       {!tafsirLoading && !tafsirError && filteredVerses.length > 0 && (
@@ -615,28 +656,41 @@ export default function LibraryPage() {
 
                   {/* Tafsir */}
                   {verse.tafsir_available && verse.tafsir_text ? (
-                    <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-5 border border-emerald-200 dark:border-emerald-800">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
-                          <BookMarked className="w-4 h-4 text-white" />
+                    verse.tafsir_text.startsWith('[') ? (
+                      // Merged verse indicator
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                        <div className="flex items-center gap-2">
+                          <Info className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                          <span className="text-blue-700 dark:text-blue-300 text-sm">
+                            {verse.tafsir_text.slice(1, -1)}
+                          </span>
                         </div>
-                        <span className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">
-                          {selectedTafsir?.name || 'التفسير'}
-                        </span>
                       </div>
-                      <p 
-                        className="text-base text-slate-700 dark:text-slate-300 leading-relaxed text-right whitespace-pre-line"
-                        style={{ fontFamily: "'Cairo', 'Tajawal', sans-serif", lineHeight: '2' }}
-                      >
-                        {verse.tafsir_text}
-                      </p>
-                    </div>
+                    ) : (
+                      // Normal tafsir
+                      <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-5 border border-emerald-200 dark:border-emerald-800">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+                            <BookMarked className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                            {selectedTafsir?.name || 'التفسير'}
+                          </span>
+                        </div>
+                        <p 
+                          className="text-base text-slate-700 dark:text-slate-300 leading-relaxed text-right whitespace-pre-line"
+                          style={{ fontFamily: "'Cairo', 'Tajawal', sans-serif", lineHeight: '2' }}
+                        >
+                          {verse.tafsir_text}
+                        </p>
+                      </div>
+                    )
                   ) : (
                     <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800">
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                         <span className="text-amber-700 dark:text-amber-300 text-sm">
-                          التفسير غير متوفر لهذه الآية، جرب تفسيراً آخر
+                          التفسير غير متوفر لهذه الآية في هذا التفسير
                         </span>
                       </div>
                     </div>
@@ -648,7 +702,7 @@ export default function LibraryPage() {
         </ScrollArea>
       )}
 
-      {/* No results */}
+      {/* No results from search */}
       {!tafsirLoading && !tafsirError && tafsirVerses.length > 0 && localTafsirSearch && filteredVerses.length === 0 && (
         <div className="text-center py-8">
           <p className="text-slate-500 dark:text-slate-400">لم يتم العثور على نتائج مطابقة</p>

@@ -1,16 +1,18 @@
 /**
- * Islamic Library API - FULLY REWRITTEN
+ * Islamic Library API - PRODUCTION READY
  * 
  * Real APIs used:
  * - Quran.com v4 API for verses and tafsir
  * - fawazahmed0 Hadith API for hadiths
  * 
- * Improvements:
- * - Fetch tafsir for entire surah in ONE request (not per-verse)
- * - Robust retry logic with exponential backoff
- * - In-memory caching for tafsir and hadith data
- * - Clean HTML stripping from tafsir text
- * - All tafsirs from Ahl al-Sunnah wal-Jama'ah only
+ * CRITICAL FIX: Added per_page=300 to tafsir chapter endpoint
+ * to fetch ALL verses in one request (API defaults to 10 without it)
+ * 
+ * Also handles:
+ * - Missing verses in some tafsirs (e.g. Saadi merges some verses)
+ * - Multi-page fetching for surahs with 300+ total_records
+ * - Robust retry with exponential backoff
+ * - In-memory caching
  */
 
 // API Configuration
@@ -119,7 +121,7 @@ const HADITH_BOOKS_MAP: Record<string, { name: string; file: string; author: str
 };
 
 /**
- * Fetch with timeout and retry
+ * Fetch with timeout
  */
 async function fetchWithTimeout(
   url: string,
@@ -160,15 +162,15 @@ async function fetchWithRetry(
       const response = await fetchWithTimeout(url, options, timeout);
       if (response.ok || response.status === 404) return response;
       if (response.status === 429) {
-        // Rate limited - wait and retry
-        await new Promise(r => setTimeout(r, (i + 1) * 2000));
+        // Rate limited - wait longer and retry
+        await new Promise(r => setTimeout(r, (i + 1) * 3000));
         continue;
       }
       return response;
     } catch (error) {
       lastError = error;
       if (i < maxRetries) {
-        await new Promise(r => setTimeout(r, (i + 1) * 1000));
+        await new Promise(r => setTimeout(r, (i + 1) * 1500));
       }
     }
   }
@@ -179,6 +181,7 @@ async function fetchWithRetry(
  * Clean HTML tags from text
  */
 function cleanHtml(text: string): string {
+  if (!text) return '';
   return text
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<p[^>]*>/gi, '\n')
@@ -191,7 +194,6 @@ function cleanHtml(text: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/\n{3,}/g, '\n\n')
-    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -230,7 +232,7 @@ export async function getSurahVerses(surahId: number): Promise<ApiResponse<Quran
       {
         next: { revalidate: CACHE_REVALIDATE },
         headers: { 'Accept': 'application/json' },
-      }
+      } as any
     );
 
     if (!response.ok) {
@@ -254,42 +256,73 @@ export async function getSurahVerses(surahId: number): Promise<ApiResponse<Quran
 }
 
 /**
- * Get tafsir for entire surah in ONE request using chapter endpoint
- * This is much faster than fetching per-verse
+ * CRITICAL FIX: Get tafsir for entire surah with PROPER PAGINATION
+ * 
+ * The Quran.com API defaults to per_page=10 if not specified.
+ * We MUST pass per_page=300 to get all verses in one request.
+ * For very long surahs, we also handle multi-page responses.
  */
 async function getSurahTafsirText(surahId: number, tafsirId: number): Promise<Record<string, string>> {
   const tafsirMap: Record<string, string> = {};
 
   try {
-    // Use the tafsirs endpoint to get all tafsir for a chapter
-    const response = await fetchWithRetry(
-      `${QURAN_API}/tafsirs/${tafsirId}/by_chapter/${surahId}`,
-      {
-        next: { revalidate: CACHE_REVALIDATE },
-        headers: { 'Accept': 'application/json' },
-      },
-      2,
-      20000
-    );
+    // ============================================================
+    // MAIN REQUEST: Fetch tafsir with per_page=300
+    // Without per_page, API returns only 10 items (the old bug!)
+    // ============================================================
+    let currentPage = 1;
+    let hasMorePages = true;
 
-    if (response.ok) {
+    while (hasMorePages) {
+      const url = `${QURAN_API}/tafsirs/${tafsirId}/by_chapter/${surahId}?per_page=300&page=${currentPage}`;
+      
+      const response = await fetchWithRetry(
+        url,
+        {
+          next: { revalidate: CACHE_REVALIDATE },
+          headers: { 'Accept': 'application/json' },
+        } as any,
+        2,
+        25000
+      );
+
+      if (!response.ok) {
+        console.error(`[API] Tafsir request failed: status ${response.status}`);
+        break;
+      }
+
       const data = await response.json();
-      if (data?.tafsirs) {
+      
+      if (data?.tafsirs && Array.isArray(data.tafsirs)) {
         for (const t of data.tafsirs) {
           if (t.verse_key && t.text) {
-            tafsirMap[t.verse_key] = cleanHtml(t.text);
+            const cleaned = cleanHtml(t.text);
+            if (cleaned.length > 0) {
+              tafsirMap[t.verse_key] = cleaned;
+            }
           }
         }
       }
+
+      // Check pagination for more pages
+      const pagination = data?.pagination;
+      if (pagination && pagination.next_page && pagination.next_page > currentPage) {
+        currentPage = pagination.next_page;
+      } else {
+        hasMorePages = false;
+      }
     }
   } catch (error) {
-    console.error(`[API] Error fetching chapter tafsir for surah ${surahId}:`, error);
+    console.error(`[API] Error fetching chapter tafsir for surah ${surahId}, tafsir ${tafsirId}:`, error);
   }
 
-  // If chapter endpoint returned no results, fall back to per-verse fetching
+  // ============================================================
+  // FALLBACK: If chapter endpoint returned NO results at all,
+  // try the per-verse endpoint as a last resort
+  // ============================================================
   if (Object.keys(tafsirMap).length === 0) {
+    console.warn(`[API] Chapter endpoint returned 0 results. Falling back to per-verse for surah ${surahId}, tafsir ${tafsirId}`);
     try {
-      // Fetch verse count first
       const versesResp = await fetchWithRetry(
         `${QURAN_API}/verses/by_chapter/${surahId}?language=ar&words=false&fields=verse_key&per_page=300`,
         { headers: { 'Accept': 'application/json' } }
@@ -297,10 +330,10 @@ async function getSurahTafsirText(surahId: number, tafsirId: number): Promise<Re
       
       if (versesResp.ok) {
         const versesData = await versesResp.json();
-        const verseKeys = versesData?.verses?.map((v: any) => v.verse_key) || [];
+        const verseKeys: string[] = versesData?.verses?.map((v: any) => v.verse_key) || [];
         
-        // Fetch tafsir in batches of 10
-        const BATCH_SIZE = 10;
+        // Fetch tafsir in batches of 5 (smaller batches to avoid rate limiting)
+        const BATCH_SIZE = 5;
         for (let i = 0; i < verseKeys.length; i += BATCH_SIZE) {
           const batch = verseKeys.slice(i, i + BATCH_SIZE);
           const results = await Promise.allSettled(
@@ -316,13 +349,16 @@ async function getSurahTafsirText(surahId: number, tafsirId: number): Promise<Re
 
           results.forEach((result, idx) => {
             if (result.status === 'fulfilled' && result.value?.tafsir?.text) {
-              tafsirMap[batch[idx]] = cleanHtml(result.value.tafsir.text);
+              const cleaned = cleanHtml(result.value.tafsir.text);
+              if (cleaned.length > 0) {
+                tafsirMap[batch[idx]] = cleaned;
+              }
             }
           });
 
-          // Small delay between batches to avoid rate limiting
+          // Delay between batches to avoid rate limiting
           if (i + BATCH_SIZE < verseKeys.length) {
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 300));
           }
         }
       }
@@ -335,37 +371,54 @@ async function getSurahTafsirText(surahId: number, tafsirId: number): Promise<Re
 }
 
 /**
- * Get Surah with Tafsir - OPTIMIZED: single request for whole chapter
+ * Get Surah with Tafsir - OPTIMIZED
+ * 
+ * Handles the case where some tafsirs don't cover every verse
+ * (e.g. Saadi sometimes merges verses like 2:285-286)
  */
 export async function getSurahTafsir(
   surahId: number,
   tafsirId: number = 16
 ): Promise<ApiResponse<VerseWithTafsir[]>> {
   try {
-    // Check cache
+    // Check cache first
     const cacheKey = `${surahId}-${tafsirId}`;
     if (tafsirCache[cacheKey]) {
       return { data: tafsirCache[cacheKey], error: null, status: 200, isRateLimited: false };
     }
 
-    // Get verses
+    // 1. Get all verses for the surah
     const versesResult = await getSurahVerses(surahId);
     if (!versesResult.data) {
       return { data: null, error: versesResult.error, status: versesResult.status, isRateLimited: versesResult.isRateLimited };
     }
 
-    // Get tafsir for entire surah
+    // 2. Get tafsir text for the entire surah
     const tafsirMap = await getSurahTafsirText(surahId, tafsirId);
 
-    // Combine verses with tafsir
+    // 3. Combine verses with tafsir
+    // For verses missing tafsir, try to find the nearest previous verse that has tafsir
+    // (some tafsirs merge consecutive verses together)
     const verses: VerseWithTafsir[] = versesResult.data.map(verse => {
-      const tafsirText = tafsirMap[verse.verse_key] || null;
+      let tafsirText = tafsirMap[verse.verse_key] || null;
+      
+      // If this verse has no tafsir, check if it was merged with the previous verse
+      // This handles cases like Saadi's tafsir where 2:286 is merged into 2:285
+      if (!tafsirText && verse.verse_number > 1) {
+        const prevKey = `${surahId}:${verse.verse_number - 1}`;
+        const prevTafsir = tafsirMap[prevKey];
+        if (prevTafsir) {
+          // Mark as merged - the tafsir was included in the previous verse
+          tafsirText = `[تفسير هذه الآية مدمج مع الآية السابقة (${verse.verse_number - 1})]`;
+        }
+      }
+
       return {
         id: verse.id,
         verse_number: verse.verse_number,
         verse_key: verse.verse_key,
         text_uthmani: verse.text_uthmani,
-        text_imlaei_simple: verse.text_imlaei,
+        text_imlaei_simple: verse.text_imlaei || '',
         tafsir_text: tafsirText,
         tafsir_available: !!tafsirText,
       };
@@ -428,7 +481,7 @@ export async function getHadithsFromBook(
         {
           next: { revalidate: CACHE_REVALIDATE },
           headers: { 'Accept': 'application/json' },
-        },
+        } as any,
         2,
         30000
       );
@@ -498,7 +551,7 @@ export async function searchHadiths(
             {
               next: { revalidate: CACHE_REVALIDATE },
               headers: { 'Accept': 'application/json' },
-            },
+            } as any,
             1,
             30000
           );

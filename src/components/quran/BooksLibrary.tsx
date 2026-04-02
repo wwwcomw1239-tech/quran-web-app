@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +10,7 @@ import {
   ChevronDown, ChevronUp, BookMarked, Library, Scroll, 
   PenLine, MessageCircleQuestion, Languages, Heart,
   Sparkles, Eye, ArrowRight, BookText, Scale, Feather,
-  GraduationCap, BookOpenCheck, ScrollText
+  GraduationCap, BookOpenCheck, ScrollText, RefreshCw, AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -399,7 +399,7 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 
-  // ========== الفقه وأصوله (NEW) ==========
+  // ========== الفقه وأصوله ==========
   {
     id: 'riyadh-salihin', name: 'رياض الصالحين',
     author: 'الإمام النووي (ت 676هـ)', category: 'الفقه وأصوله',
@@ -436,7 +436,7 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 
-  // ========== العقيدة (NEW) ==========
+  // ========== العقيدة ==========
   {
     id: 'tahawiyya', name: 'العقيدة الطحاوية',
     author: 'الإمام أبو جعفر الطحاوي (ت 321هـ)', category: 'العقيدة',
@@ -473,7 +473,7 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 
-  // ========== السيرة النبوية (NEW) ==========
+  // ========== السيرة النبوية ==========
   {
     id: 'raheeq', name: 'الرحيق المختوم',
     author: 'الشيخ صفي الرحمن المباركفوري', category: 'السيرة النبوية',
@@ -496,7 +496,7 @@ const booksCollections: BookCollection[] = [
     isSingleVolume: false,
   },
 
-  // ========== اللغة العربية (NEW) ==========
+  // ========== اللغة العربية ==========
   {
     id: 'ajurrumiyya', name: 'متن الآجرومية',
     author: 'ابن آجُرُّوم الصنهاجي (ت 723هـ)', category: 'اللغة العربية',
@@ -525,7 +525,6 @@ const booksCollections: BookCollection[] = [
 // ============================================
 
 interface DownloadState { [key: string]: boolean; }
-interface DownloadProgress { [key: string]: number; }
 
 // ============================================
 // MAIN COMPONENT
@@ -533,7 +532,6 @@ interface DownloadProgress { [key: string]: number; }
 
 export function BooksLibrary() {
   const [downloadingBooks, setDownloadingBooks] = useState<DownloadState>({});
-  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<BookCategory | 'all'>('all');
   const [expandedBooks, setExpandedBooks] = useState<Record<string, boolean>>({});
@@ -541,6 +539,10 @@ export function BooksLibrary() {
   // PDF Reader state
   const [pdfReaderUrl, setPdfReaderUrl] = useState<string | null>(null);
   const [pdfReaderTitle, setPdfReaderTitle] = useState<string>('');
+  const [pdfLoading, setPdfLoading] = useState(true);
+  const [pdfError, setPdfError] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const pdfLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleBookExpansion = useCallback((bookId: string) => {
     setExpandedBooks(prev => ({ ...prev, [bookId]: !prev[bookId] }));
@@ -577,26 +579,76 @@ export function BooksLibrary() {
   const categories = Object.keys(CATEGORY_INFO) as BookCategory[];
   const getCategoryCount = (cat: BookCategory) => booksCollections.filter(b => b.category === cat).length;
 
-  // Get PDF viewer URL using Google Docs viewer
-  const getPdfViewerUrl = (pdfUrl: string): string => {
+  // ============================================
+  // PDF VIEWER - Multiple strategies
+  // ============================================
+  
+  // Strategy 1: Google Docs viewer (works well for smaller PDFs)
+  const getGoogleViewerUrl = (pdfUrl: string): string => {
     return `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
   };
 
+  // Strategy 2: Archive.org's own viewer (if the URL is from archive.org)
+  const getArchiveViewerUrl = (pdfUrl: string): string | null => {
+    // Extract the archive.org item path
+    const match = pdfUrl.match(/archive\.org\/download\/([^/]+)\//);
+    if (match) {
+      const itemId = match[1];
+      const fileName = pdfUrl.split('/').pop();
+      return `https://archive.org/details/${itemId}?view=theater`;
+    }
+    return null;
+  };
+
   // Handle read with embedded PDF viewer
-  const handleRead = (volume: BookVolume, bookName?: string) => {
+  const handleRead = useCallback((volume: BookVolume, bookName?: string) => {
     const title = bookName ? `${bookName} - ${volume.title}` : volume.title;
     setPdfReaderTitle(title);
     setPdfReaderUrl(volume.pdfUrl);
-  };
+    setPdfLoading(true);
+    setPdfError(false);
+    
+    // Set a timeout - if PDF doesn't load in 15s, show error
+    if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
+    pdfLoadTimerRef.current = setTimeout(() => {
+      setPdfLoading(false);
+    }, 15000);
+  }, []);
+
+  const handlePdfLoad = useCallback(() => {
+    setPdfLoading(false);
+    setPdfError(false);
+    if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
+  }, []);
+
+  const handlePdfError = useCallback(() => {
+    setPdfLoading(false);
+    setPdfError(true);
+    if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
+  }, []);
+
+  const closePdfReader = useCallback(() => {
+    setPdfReaderUrl(null);
+    setPdfReaderTitle('');
+    setPdfLoading(true);
+    setPdfError(false);
+    if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
+  }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
+    };
+  }, []);
 
   // Handle download
-  const handleDownload = async (volume: BookVolume, bookName: string) => {
+  const handleDownload = useCallback(async (volume: BookVolume, bookName: string) => {
     if (downloadingBooks[volume.id]) return;
     setDownloadingBooks(prev => ({ ...prev, [volume.id]: true }));
-    setDownloadProgress(prev => ({ ...prev, [volume.id]: 0 }));
 
     try {
-      // Open archive.org URL directly - most reliable
+      // Open archive.org URL directly - most reliable for download
       const link = document.createElement('a');
       link.href = volume.pdfUrl;
       link.target = '_blank';
@@ -608,14 +660,14 @@ export function BooksLibrary() {
       toast.success('جاري تنزيل الكتاب...');
     } catch (error) {
       console.error('Download error:', error);
+      // Fallback: open in new tab
       window.open(volume.pdfUrl, '_blank', 'noopener,noreferrer');
     } finally {
       setTimeout(() => {
         setDownloadingBooks(prev => ({ ...prev, [volume.id]: false }));
-        setDownloadProgress(prev => ({ ...prev, [volume.id]: 0 }));
       }, 2000);
     }
-  };
+  }, [downloadingBooks]);
 
   // ============================================
   // PDF READER OVERLAY
@@ -623,6 +675,9 @@ export function BooksLibrary() {
 
   const renderPdfReader = () => {
     if (!pdfReaderUrl) return null;
+
+    const viewerUrl = getGoogleViewerUrl(pdfReaderUrl);
+    const archiveUrl = getArchiveViewerUrl(pdfReaderUrl);
 
     return (
       <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex flex-col">
@@ -632,7 +687,7 @@ export function BooksLibrary() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => { setPdfReaderUrl(null); setPdfReaderTitle(''); }}
+              onClick={closePdfReader}
               className="gap-1.5 flex-shrink-0 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
             >
               <ArrowRight className="w-4 h-4" />
@@ -648,6 +703,17 @@ export function BooksLibrary() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            {archiveUrl && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(archiveUrl, '_blank', 'noopener,noreferrer')}
+                className="gap-1.5 text-xs hidden sm:flex"
+              >
+                <Library className="w-3.5 h-3.5" />
+                <span>Archive.org</span>
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -671,20 +737,74 @@ export function BooksLibrary() {
 
         {/* PDF Iframe */}
         <div className="flex-1 relative bg-slate-100 dark:bg-slate-900">
-          <iframe
-            src={getPdfViewerUrl(pdfReaderUrl)}
-            className="w-full h-full border-0"
-            title={pdfReaderTitle}
-            allow="autoplay"
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          />
+          {!pdfError && (
+            <iframe
+              ref={iframeRef}
+              src={viewerUrl}
+              className="w-full h-full border-0"
+              title={pdfReaderTitle}
+              allow="autoplay"
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+              onLoad={handlePdfLoad}
+              onError={handlePdfError}
+            />
+          )}
+          
           {/* Loading overlay */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" id="pdf-loading">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-3 animate-pulse">
-              <div className="w-12 h-12 rounded-full border-4 border-purple-200 border-t-purple-500 animate-spin" />
-              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">جاري تحميل الكتاب...</p>
+          {pdfLoading && !pdfError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-900/80">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-full border-4 border-purple-200 border-t-purple-500 animate-spin" />
+                <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">جاري تحميل الكتاب...</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">قد يستغرق بعض الوقت حسب حجم الملف</p>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Error state */}
+          {pdfError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl flex flex-col items-center gap-4 max-w-md mx-4">
+                <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                  <AlertCircle className="w-8 h-8 text-amber-500" />
+                </div>
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white text-center">
+                  تعذر تحميل القارئ المدمج
+                </h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+                  يمكنك فتح الكتاب مباشرة في تبويب جديد
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 w-full">
+                  <Button
+                    onClick={() => window.open(pdfReaderUrl!, '_blank', 'noopener,noreferrer')}
+                    className="flex-1 gap-2 bg-blue-500 hover:bg-blue-600"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    فتح في تبويب جديد
+                  </Button>
+                  {archiveUrl && (
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open(archiveUrl, '_blank', 'noopener,noreferrer')}
+                      className="flex-1 gap-2"
+                    >
+                      <Library className="w-4 h-4" />
+                      فتح في Archive.org
+                    </Button>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setPdfError(false); setPdfLoading(true); }}
+                  className="gap-2 text-sm"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  إعادة المحاولة
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -806,6 +926,7 @@ export function BooksLibrary() {
                   onClick={(e) => { e.stopPropagation(); window.open(collection.volumes[0].pdfUrl, '_blank', 'noopener,noreferrer'); }} 
                   variant="outline" 
                   className="h-9 rounded-xl text-xs px-3"
+                  title="فتح في تبويب جديد"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                 </Button>
