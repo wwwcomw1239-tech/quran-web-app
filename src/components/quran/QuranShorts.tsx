@@ -345,6 +345,19 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh230', youtubeId: 'EE6-PmEhYF0', title: 'آيات الدعاء في القرآن', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'خواطر إيمانية', description: 'وقفات مع آيات الدعاء' },
   { id: 'sh231', youtubeId: 'RtB9uXqgMGA', title: 'تأملات في سورة الفرقان', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تدبرات', description: 'صفات عباد الرحمن في سورة الفرقان', seriesId: 'series-shanqiti-tadabbur' },
   { id: 'sh232', youtubeId: '4eHmPlXYv0Y', title: 'هدايات سورة الحجرات', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'فوائد قرآنية', description: 'آداب وأحكام من سورة الحجرات', seriesId: 'series-shanqiti-tafsir' },
+
+  // ═══════════════════════════════════════════
+  // مقاطع قصيرة جديدة إضافية
+  // ═══════════════════════════════════════════
+  { id: 'sh_new1', youtubeId: 'hfH6t3Lyzlk', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ ابن باز', category: 'فوائد قرآنية', description: 'فوائد من تفسير سورة الفاتحة' },
+  { id: 'sh_new2', youtubeId: 'b0kFHq3BGEE', title: 'فضل آية الكرسي', scholar: 'الشيخ ابن باز', category: 'فوائد قرآنية', description: 'فضائل آية الكرسي العظيمة' },
+  { id: 'sh_new3', youtubeId: 'XD3YL-MnGgQ', title: 'فضل التوحيد من القرآن', scholar: 'الشيخ صالح آل الشيخ', category: 'خواطر إيمانية', description: 'التوحيد في القرآن الكريم' },
+  { id: 'sh_new4', youtubeId: 'IlTxZbY7fVU', title: 'تأملات في سورة النساء', scholar: 'الشيخ الشعراوي', category: 'تدبرات', description: 'تأملات من سورة النساء' },
+  { id: 'sh_new5', youtubeId: 'FxdUe0R0T5Y', title: 'تأملات في سورة المائدة', scholar: 'الشيخ الشعراوي', category: 'تدبرات', description: 'تأملات من سورة المائدة' },
+  { id: 'sh_new6', youtubeId: 'KR9P5AlYjlE', title: 'دروس من سورة الأحزاب', scholar: 'د. محمد راتب النابلسي', category: 'فوائد قرآنية', description: 'فوائد من سورة الأحزاب' },
+  { id: 'sh_new7', youtubeId: 'R5Hk5L2pXJo', title: 'أحكام ختم القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'فوائد قرآنية', description: 'آداب وأحكام ختم القرآن' },
+  { id: 'sh_new8', youtubeId: 'WZ3zXLCHlgA', title: 'فضل مجالس الذكر', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية', description: 'فضل مجالس القرآن والذكر' },
+
 ];
 
 // ============================================

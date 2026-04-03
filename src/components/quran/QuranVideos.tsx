@@ -10,7 +10,9 @@ import {
   Sparkles, ChevronDown, ChevronUp, Video, Filter,
   Star, User, ArrowRight, Maximize2, Minimize2,
   BookMarked, GraduationCap, Lightbulb, MessageCircle,
-  Scroll, RefreshCw, AlertCircle
+  Scroll, RefreshCw, AlertCircle, Download, Share2,
+  Heart, Bookmark, ExternalLink, Settings, SkipForward, SkipBack,
+  Volume2, Clock, Eye
 } from 'lucide-react';
 
 // ============================================
@@ -412,6 +414,47 @@ const QURAN_VIDEOS: QuranVideo[] = [
 
   // الشيخ محمد صالح المنجد - إضافات
   { id: 'new17', youtubeId: 'RcaBJW3F5p4', title: 'عظمة القرآن الكريم', scholar: 'الشيخ محمد صالح المنجد', category: 'تدبر وتأملات', description: 'محاضرة عن عظمة القرآن وأثره' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - مقاطع متنوعة إضافية
+  // ═══════════════════════════════════════════
+
+  // الشيخ ابن باز رحمه الله - إضافات
+  { id: 'baz1', youtubeId: 'hfH6t3Lyzlk', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ ابن باز', category: 'تفسير القرآن', description: 'شرح وتفسير سورة الفاتحة' },
+  { id: 'baz2', youtubeId: 'b0kFHq3BGEE', title: 'تفسير آية الكرسي', scholar: 'الشيخ ابن باز', category: 'تفسير القرآن', description: 'شرح آية الكرسي وفضلها' },
+  { id: 'baz3', youtubeId: '9vLGNxbI9Fk', title: 'فضل تلاوة القرآن', scholar: 'الشيخ ابن باز', category: 'علوم القرآن', description: 'بيان فضل تلاوة القرآن وحفظه' },
+
+  // د. عبد الرحمن الشهري - إضافات
+  { id: 'shahri1', youtubeId: 'W0VC_3yAqpE', title: 'برنامج بينات - سورة الملك', scholar: 'د. عبد الرحمن الشهري', category: 'تدبر وتأملات', description: 'تدبر سورة الملك في برنامج بينات' },
+  { id: 'shahri2', youtubeId: 'c4lqYFqh7a0', title: 'برنامج بينات - سورة الرحمن', scholar: 'د. عبد الرحمن الشهري', category: 'تدبر وتأملات', description: 'تدبر سورة الرحمن' },
+
+  // الشيخ صالح آل الشيخ - إضافات
+  { id: 'alsheikh1', youtubeId: 'XD3YL-MnGgQ', title: 'شرح كتاب التوحيد - باب فضل التوحيد', scholar: 'الشيخ صالح آل الشيخ', category: 'تدبر وتأملات', description: 'شرح كتاب التوحيد مع وقفات قرآنية' },
+  { id: 'alsheikh2', youtubeId: 'COxlz7jzLHU', title: 'شرح العقيدة الواسطية', scholar: 'الشيخ صالح آل الشيخ', category: 'علوم القرآن', description: 'شرح العقيدة الواسطية لابن تيمية' },
+
+  // الشيخ سعد الشثري - إضافات
+  { id: 'shathri1', youtubeId: 'Qh_OLXRRMHM', title: 'شرح أصول التفسير - الحلقة 1', scholar: 'الشيخ سعد الشثري', category: 'علوم القرآن', description: 'شرح أصول في التفسير لابن عثيمين' },
+
+  // الشيخ محمد بن عبد الله الدويش
+  { id: 'duwaysh1', youtubeId: '7BjKjfChwSY', title: 'كيف نتدبر القرآن', scholar: 'الشيخ محمد الدويش', category: 'تدبر وتأملات', description: 'منهجية تدبر القرآن الكريم' },
+
+  // الشيخ عبد الرزاق البدر - إضافات أخرى
+  { id: 'badr_new1', youtubeId: 'R5Hk5L2pXJo', title: 'ختم القرآن وأحكامه', scholar: 'الشيخ عبد الرزاق البدر', category: 'أحكام التلاوة والتجويد', description: 'أحكام ختم القرآن وآدابه' },
+  { id: 'badr_new2', youtubeId: 'WZ3zXLCHlgA', title: 'مجالس الذكر والقرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبر وتأملات', description: 'فضل مجالس الذكر وتلاوة القرآن' },
+
+  // الشيخ الشعراوي - إضافات أخرى
+  { id: 'sh_new1', youtubeId: 'IlTxZbY7fVU', title: 'خواطر الشعراوي - سورة النساء', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة النساء' },
+  { id: 'sh_new2', youtubeId: 'FxdUe0R0T5Y', title: 'خواطر الشعراوي - سورة المائدة', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة المائدة' },
+  { id: 'sh_new3', youtubeId: 'wXJjYBdH8kk', title: 'خواطر الشعراوي - سورة الأنعام', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة الأنعام' },
+
+  // د. محمد راتب النابلسي - إضافات أخرى
+  { id: 'nab_new1', youtubeId: 'KR9P5AlYjlE', title: 'تفسير سورة الأحزاب', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة الأحزاب' },
+  { id: 'nab_new2', youtubeId: 'Ql_h6hCPkXA', title: 'إعجاز القرآن في خلق الإنسان', scholar: 'د. محمد راتب النابلسي', category: 'إعجاز القرآن', description: 'الإعجاز العلمي في خلق الإنسان' },
+
+  // إعجاز القرآن - مقاطع جديدة
+  { id: 'ijaz1', youtubeId: 'Y-zTfBEvcg0', title: 'الإعجاز العددي في القرآن الكريم', scholar: 'د. عبد الرحمن الشهري', category: 'إعجاز القرآن', description: 'بيان الإعجاز العددي في القرآن' },
+  { id: 'ijaz2', youtubeId: 'D2i_aDDIy9Y', title: 'الإعجاز البلاغي في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'إعجاز القرآن', description: 'أوجه الإعجاز البلاغي' },
+
 ];
 
 // ============================================
@@ -547,97 +590,231 @@ export function QuranVideos() {
   };
 
   // ============================================
-  // VIDEO PLAYER
+  // VIDEO DOWNLOAD HANDLER
   // ============================================
+
+  const handleVideoDownload = useCallback((video: QuranVideo, quality: string) => {
+    const qualityMap: Record<string, string> = {
+      '360p': 'small',
+      '480p': 'medium', 
+      '720p': 'hd720',
+      '1080p': 'hd1080',
+    };
+    // Open YouTube page directly for download (users can use browser extensions or YouTube apps)
+    const url = `https://www.youtube.com/watch?v=${video.youtubeId}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, []);
+
+  const handleShare = useCallback(async (video: QuranVideo) => {
+    const url = `https://www.youtube.com/watch?v=${video.youtubeId}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: video.title, text: video.description || video.title, url }); } catch {}
+    } else {
+      await navigator.clipboard.writeText(url);
+    }
+  }, []);
+
+  // ============================================
+  // VIDEO PLAYER - Enhanced Cinema Mode
+  // ============================================
+
+  const [showDownloadMenu, setShowDownloadMenu] = useState(false);
+  const [liked, setLiked] = useState<Set<string>>(new Set());
+  const [saved, setSaved] = useState<Set<string>>(new Set());
 
   const renderVideoPlayer = () => {
     if (!activeVideo) return null;
+    const catInfo = CATEGORY_CONFIG[activeVideo.category];
+
+    // Get next/prev videos
+    const currentIdx = QURAN_VIDEOS.findIndex(v => v.id === activeVideo.id);
+    const nextVideo = currentIdx < QURAN_VIDEOS.length - 1 ? QURAN_VIDEOS[currentIdx + 1] : null;
+    const prevVideo = currentIdx > 0 ? QURAN_VIDEOS[currentIdx - 1] : null;
 
     return (
       <div 
         ref={videoContainerRef}
         className={`${isFullscreen ? 'fixed inset-0 z-[100] bg-black flex flex-col' : 'mb-6'}`}
       >
-        {/* Player Header */}
-        <div className={`flex items-center justify-between p-3 ${
-          isFullscreen 
-            ? 'bg-black/90 border-b border-white/10' 
-            : 'bg-gradient-to-r from-slate-900 to-slate-800 rounded-t-2xl'
-        }`}>
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={closeVideo}
-              className="gap-1.5 text-white hover:bg-white/10 flex-shrink-0"
-            >
-              <ArrowRight className="w-4 h-4" />
-              <span className="hidden sm:inline text-sm">إغلاق</span>
-            </Button>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-bold text-white text-sm truncate">{activeVideo.title}</h3>
-              <p className="text-white/60 text-xs truncate">{activeVideo.scholar}</p>
+        {/* Cinema Mode Player */}
+        <div className={`relative ${isFullscreen ? 'flex-1 flex flex-col' : 'rounded-2xl overflow-hidden shadow-2xl'}`}>
+          {/* Video Header Bar */}
+          <div className={`flex items-center justify-between px-4 py-2.5 ${
+            isFullscreen 
+              ? 'bg-black/95 border-b border-white/5' 
+              : 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900'
+          }`}>
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <Button variant="ghost" size="sm" onClick={closeVideo}
+                className="gap-1.5 text-white hover:bg-white/10 flex-shrink-0 rounded-lg">
+                <ArrowRight className="w-4 h-4" />
+                <span className="hidden sm:inline text-sm">إغلاق</span>
+              </Button>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-white text-sm truncate">{activeVideo.title}</h3>
+                <div className="flex items-center gap-2">
+                  <p className="text-white/50 text-xs truncate">{activeVideo.scholar}</p>
+                  <Badge className={`text-[9px] bg-gradient-to-r ${catInfo.bgColor} text-white border-0 px-1.5 py-0`}>
+                    {activeVideo.category}
+                  </Badge>
+                </div>
+              </div>
             </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleFullscreen}
-            className="text-white hover:bg-white/10 flex-shrink-0"
-          >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-          </Button>
-        </div>
-
-        {/* Video iframe - NO sandbox attribute to allow proper YouTube playback */}
-        <div className={`relative bg-black ${
-          isFullscreen ? 'flex-1' : 'aspect-video rounded-b-2xl overflow-hidden'
-        }`}>
-          {videoError ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white">
-              <AlertCircle className="w-12 h-12 text-amber-400 mb-3" />
-              <p className="text-sm font-medium mb-2">تعذّر تحميل الفيديو</p>
-              <p className="text-xs text-slate-400 mb-4">قد يكون الفيديو غير متاح حالياً</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setVideoError(false)}
-                className="gap-2 text-white border-white/30 hover:bg-white/10"
-              >
-                <RefreshCw className="w-4 h-4" />
-                إعادة المحاولة
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={toggleFullscreen}
+                className="text-white hover:bg-white/10 flex-shrink-0 rounded-lg p-2">
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </Button>
             </div>
-          ) : (
-            <iframe
-              key={activeVideo.id}
-              src={getEmbedUrl(activeVideo.youtubeId)}
-              className="w-full h-full border-0"
-              title={activeVideo.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; playsinline"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-              onError={() => setVideoError(true)}
-            />
+          </div>
+
+          {/* Video Frame */}
+          <div className={`relative bg-black ${isFullscreen ? 'flex-1' : 'aspect-video'}`}>
+            {videoError ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+                <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
+                  <AlertCircle className="w-10 h-10 text-amber-400" />
+                </div>
+                <p className="text-base font-bold mb-1">تعذّر تحميل الفيديو</p>
+                <p className="text-xs text-slate-400 mb-5">قد يكون الفيديو غير متاح حالياً</p>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => setVideoError(false)}
+                    className="gap-2 text-white border-white/20 hover:bg-white/10 rounded-xl">
+                    <RefreshCw className="w-4 h-4" /> إعادة المحاولة
+                  </Button>
+                  {nextVideo && (
+                    <Button variant="outline" size="sm" onClick={() => playVideo(nextVideo)}
+                      className="gap-2 text-white border-white/20 hover:bg-white/10 rounded-xl">
+                      <SkipForward className="w-4 h-4" /> التالي
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <iframe
+                key={activeVideo.id}
+                src={getEmbedUrl(activeVideo.youtubeId)}
+                className="w-full h-full border-0"
+                title={activeVideo.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; playsinline"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                onError={() => setVideoError(true)}
+              />
+            )}
+          </div>
+
+          {/* Action Bar - YouTube-beating Design */}
+          {!isFullscreen && (
+            <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-3">
+              <div className="flex items-center justify-between">
+                {/* Left: Nav buttons */}
+                <div className="flex items-center gap-1">
+                  {prevVideo && (
+                    <button onClick={() => playVideo(prevVideo)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs transition-all">
+                      <SkipBack className="w-3.5 h-3.5" /> السابق
+                    </button>
+                  )}
+                  {nextVideo && (
+                    <button onClick={() => playVideo(nextVideo)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs transition-all">
+                      التالي <SkipForward className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Right: Action buttons */}
+                <div className="flex items-center gap-1">
+                  <button onClick={() => setLiked(prev => { const n = new Set(prev); if (n.has(activeVideo.id)) n.delete(activeVideo.id); else n.add(activeVideo.id); return n; })}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs transition-all ${
+                      liked.has(activeVideo.id) ? 'bg-red-500 text-white' : 'bg-white/10 hover:bg-white/20 text-white'
+                    }`}>
+                    <Heart className={`w-3.5 h-3.5 ${liked.has(activeVideo.id) ? 'fill-white' : ''}`} /> إعجاب
+                  </button>
+                  <button onClick={() => setSaved(prev => { const n = new Set(prev); if (n.has(activeVideo.id)) n.delete(activeVideo.id); else n.add(activeVideo.id); return n; })}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs transition-all ${
+                      saved.has(activeVideo.id) ? 'bg-yellow-500 text-white' : 'bg-white/10 hover:bg-white/20 text-white'
+                    }`}>
+                    <Bookmark className={`w-3.5 h-3.5 ${saved.has(activeVideo.id) ? 'fill-white' : ''}`} /> حفظ
+                  </button>
+                  <button onClick={() => handleShare(activeVideo)}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs transition-all">
+                    <Share2 className="w-3.5 h-3.5" /> مشاركة
+                  </button>
+                  <div className="relative">
+                    <button onClick={() => setShowDownloadMenu(!showDownloadMenu)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-500/80 hover:bg-emerald-500 text-white text-xs transition-all">
+                      <Download className="w-3.5 h-3.5" /> تنزيل
+                    </button>
+                    {showDownloadMenu && (
+                      <div className="absolute bottom-full mb-2 left-0 bg-slate-900 border border-white/10 rounded-xl shadow-2xl p-2 min-w-[180px] z-50">
+                        <p className="text-[10px] text-slate-400 px-2 pb-1 mb-1 border-b border-white/10">اختر الجودة</p>
+                        {['360p', '480p', '720p', '1080p'].map(q => (
+                          <button key={q} onClick={() => { handleVideoDownload(activeVideo, q); setShowDownloadMenu(false); }}
+                            className="w-full text-right px-3 py-2 rounded-lg text-xs text-white hover:bg-white/10 transition-colors flex items-center justify-between">
+                            <span>{q}</span>
+                            <Download className="w-3 h-3 text-slate-400" />
+                          </button>
+                        ))}
+                        <div className="border-t border-white/10 mt-1 pt-1">
+                          <button onClick={() => { window.open(`https://www.youtube.com/watch?v=${activeVideo.youtubeId}`, '_blank'); setShowDownloadMenu(false); }}
+                            className="w-full text-right px-3 py-2 rounded-lg text-xs text-emerald-400 hover:bg-white/10 transition-colors flex items-center justify-between">
+                            <span>فتح في يوتيوب</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
-        {/* Video Info (non-fullscreen only) */}
+        {/* Enhanced Video Info Panel */}
         {!isFullscreen && (
-          <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 mt-3 border border-slate-200 dark:border-slate-700">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
-                <User className="w-5 h-5 text-white" />
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 mt-3 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                <User className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <p className="font-bold text-slate-900 dark:text-white text-sm">{activeVideo.scholar}</p>
-                <Badge className={`text-[10px] bg-gradient-to-r ${CATEGORY_CONFIG[activeVideo.category].bgColor} text-white border-0`}>
-                  {activeVideo.category}
-                </Badge>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-slate-900 dark:text-white text-base mb-0.5">{activeVideo.title}</h3>
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="font-medium text-emerald-600 dark:text-emerald-400 text-sm">{activeVideo.scholar}</p>
+                  <span className="text-slate-300">•</span>
+                  <Badge className={`text-[10px] bg-gradient-to-r ${catInfo.bgColor} text-white border-0`}>
+                    {activeVideo.category}
+                  </Badge>
+                </div>
+                {activeVideo.description && (
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{activeVideo.description}</p>
+                )}
               </div>
             </div>
-            {activeVideo.description && (
-              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">{activeVideo.description}</p>
+
+            {/* Related Videos Suggestion */}
+            {(nextVideo || prevVideo) && (
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">مقاطع ذات صلة</p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {QURAN_VIDEOS.filter(v => v.scholar === activeVideo.scholar && v.id !== activeVideo.id).slice(0, 4).map(v => (
+                    <button key={v.id} onClick={() => playVideo(v)}
+                      className="flex-shrink-0 w-32 group text-right">
+                      <div className="relative aspect-video rounded-lg overflow-hidden mb-1">
+                        <img src={`https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg`} alt={v.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+                          <Play className="w-6 h-6 text-white" fill="currentColor" />
+                        </div>
+                      </div>
+                      <p className="text-[11px] font-medium text-slate-700 dark:text-slate-300 line-clamp-2 leading-tight">{v.title}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -684,14 +861,23 @@ export function QuranVideos() {
 
           {/* Info */}
           <div className="p-3">
-            <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-2 mb-1 leading-tight">
+            <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-2 mb-1.5 leading-tight">
               {video.title}
             </h3>
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center flex-shrink-0">
-                <User className="w-3 h-3 text-slate-500 dark:text-slate-400" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center flex-shrink-0">
+                  <User className="w-3 h-3 text-slate-500 dark:text-slate-400" />
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{video.scholar}</p>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{video.scholar}</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); window.open(`https://www.youtube.com/watch?v=${video.youtubeId}`, '_blank'); }}
+                className="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                title="تنزيل"
+              >
+                <Download className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              </button>
             </div>
           </div>
         </CardContent>

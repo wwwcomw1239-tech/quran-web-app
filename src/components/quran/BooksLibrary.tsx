@@ -2214,6 +2214,101 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('balagha-wadiha', 'البلاغة الواضحة', 'https://archive.org/download/FP33000/balaghawadiha.pdf'),
     isSingleVolume: true,
   },
+
+  // ══════════════════════════════════════════════════════════════
+  // ██ إضافات جديدة - كتب الحديث والفقه والعقيدة واللغة ██
+  // ══════════════════════════════════════════════════════════════
+  {
+    id: 'nawawi-sharh-muslim', name: 'المنهاج شرح صحيح مسلم',
+    author: 'الإمام النووي (ت 676هـ)', category: 'الفقه وأصوله',
+    description: 'أفضل شرح لصحيح مسلم وأشهره',
+    volumes: createVolumes('nawawi-sharh-muslim', 9, (i) => `https://archive.org/download/FP40000nm/nm${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'fath-bari', name: 'فتح الباري شرح صحيح البخاري',
+    author: 'الحافظ ابن حجر العسقلاني (ت 852هـ)', category: 'الفقه وأصوله',
+    description: 'أعظم شرح لصحيح البخاري وأوسعه',
+    volumes: createVolumes('fath-bari', 13, (i) => `https://archive.org/download/FP30810/fb${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'umdat-ahkam', name: 'عمدة الأحكام من كلام خير الأنام',
+    author: 'الحافظ عبد الغني المقدسي (ت 600هـ)', category: 'الفقه وأصوله',
+    description: 'أحاديث أحكام مختارة من الصحيحين',
+    volumes: singleVol('umdat-ahkam', 'عمدة الأحكام', 'https://archive.org/download/WAQ3mdh/3mdh.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'madarij-salikeen', name: 'مدارج السالكين',
+    author: 'الإمام ابن القيم (ت 751هـ)', category: 'التدبر',
+    description: 'شرح منازل السائرين مع فوائد قرآنية عظيمة',
+    volumes: createVolumes('madarij-salikeen', 3, (i) => `https://archive.org/download/FP82305/madarij${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'jawab-kafi', name: 'الجواب الكافي لمن سأل عن الدواء الشافي',
+    author: 'الإمام ابن القيم (ت 751هـ)', category: 'التدبر',
+    description: 'كتاب الداء والدواء مع وقفات قرآنية',
+    volumes: singleVol('jawab-kafi', 'الجواب الكافي', 'https://archive.org/download/FP82310/jawabkafi.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sharh-ibn-aqeel', name: 'شرح ابن عقيل على ألفية ابن مالك',
+    author: 'ابن عقيل الهمداني (ت 769هـ)', category: 'اللغة العربية',
+    description: 'أشهر شرح لألفية ابن مالك في النحو والصرف',
+    volumes: createVolumes('sharh-ibn-aqeel', 4, (i) => `https://archive.org/download/FP22210/ibnaqil${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'awdah-masalik', name: 'أوضح المسالك إلى ألفية ابن مالك',
+    author: 'الإمام ابن هشام الأنصاري (ت 761هـ)', category: 'اللغة العربية',
+    description: 'من أفضل شروح الألفية وأسهلها',
+    volumes: createVolumes('awdah-masalik', 4, (i) => `https://archive.org/download/FP22220/awdah${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'mugni-labib', name: 'مغني اللبيب عن كتب الأعاريب',
+    author: 'الإمام ابن هشام الأنصاري (ت 761هـ)', category: 'اللغة العربية',
+    description: 'كتاب أساسي في النحو والإعراب',
+    volumes: singleVol('mugni-labib', 'مغني اللبيب', 'https://archive.org/download/FP22230/mugni.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'jawahir-balagha', name: 'جواهر البلاغة في المعاني والبيان والبديع',
+    author: 'أحمد الهاشمي', category: 'اللغة العربية',
+    description: 'كتاب جامع في البلاغة العربية بأقسامها الثلاثة',
+    volumes: singleVol('jawahir-balagha', 'جواهر البلاغة', 'https://archive.org/download/FP33010/jawahir.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'bidaya-nihaya', name: 'البداية والنهاية',
+    author: 'الإمام الحافظ ابن كثير (ت 774هـ)', category: 'السيرة النبوية',
+    description: 'كتاب تاريخي شامل يتضمن السيرة النبوية بتفصيل',
+    volumes: createVolumes('bidaya-nihaya', 15, (i) => `https://archive.org/download/FP44010/bidaya${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+  {
+    id: 'shifaa-qadi-iyad', name: 'الشفا بتعريف حقوق المصطفى',
+    author: 'القاضي عياض (ت 544هـ)', category: 'السيرة النبوية',
+    description: 'من أعظم كتب الشمائل والسيرة النبوية',
+    volumes: singleVol('shifaa-qadi-iyad', 'الشفا', 'https://archive.org/download/FP43300/shifaa.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sharh-usul-iman', name: 'شرح أصول الإيمان',
+    author: 'الشيخ صالح آل الشيخ', category: 'العقيدة',
+    description: 'شرح أصول الإيمان الستة من القرآن والسنة',
+    volumes: singleVol('sharh-usul-iman', 'شرح أصول الإيمان', 'https://archive.org/download/FP10200/usuliman.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sira-halabiyya', name: 'السيرة الحلبية (إنسان العيون)',
+    author: 'برهان الدين الحلبي (ت 1044هـ)', category: 'السيرة النبوية',
+    description: 'من أوسع كتب السيرة النبوية',
+    volumes: createVolumes('sira-halabiyya', 3, (i) => `https://archive.org/download/FP43200/halabi${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
 ];
 
 // ============================================
