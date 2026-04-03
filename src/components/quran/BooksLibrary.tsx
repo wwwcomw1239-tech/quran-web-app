@@ -2097,6 +2097,123 @@ const booksCollections: BookCollection[] = [
     volumes: singleVol('qatr-nada', 'قطر الندى وبل الصدى', 'https://archive.org/download/FP0000qn/qn.pdf'),
     isSingleVolume: true,
   },
+
+  // ══════════════════════════════════════════════════════════════
+  // ██ إضافات جديدة - كتب إضافية ██
+  // ══════════════════════════════════════════════════════════════
+
+  // كتب الحديث
+  {
+    id: 'sahih-bukhari', name: 'صحيح البخاري',
+    author: 'الإمام البخاري (ت 256هـ)', category: 'الفقه وأصوله',
+    description: 'أصح كتاب بعد كتاب الله، جمع فيه الإمام البخاري الأحاديث الصحيحة',
+    volumes: singleVol('sahih-bukhari', 'صحيح البخاري', 'https://archive.org/download/FP0000sb/sb.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sahih-muslim', name: 'صحيح مسلم',
+    author: 'الإمام مسلم (ت 261هـ)', category: 'الفقه وأصوله',
+    description: 'ثاني أصح كتاب بعد صحيح البخاري في الحديث النبوي',
+    volumes: singleVol('sahih-muslim', 'صحيح مسلم', 'https://archive.org/download/FP0000sm/sm.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sunan-abi-dawud', name: 'سنن أبي داود',
+    author: 'الإمام أبو داود (ت 275هـ)', category: 'الفقه وأصوله',
+    description: 'من أهم كتب السنن في الحديث النبوي',
+    volumes: singleVol('sunan-abi-dawud', 'سنن أبي داود', 'https://archive.org/download/FP0000ad/ad.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sunan-tirmidhi', name: 'سنن الترمذي (الجامع الكبير)',
+    author: 'الإمام الترمذي (ت 279هـ)', category: 'الفقه وأصوله',
+    description: 'جامع الترمذي من أهم كتب الحديث، يبين درجة الأحاديث',
+    volumes: singleVol('sunan-tirmidhi', 'سنن الترمذي', 'https://archive.org/download/FP0000tr/tr.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sunan-nasai', name: 'سنن النسائي',
+    author: 'الإمام النسائي (ت 303هـ)', category: 'الفقه وأصوله',
+    description: 'من الكتب الستة في الحديث النبوي',
+    volumes: singleVol('sunan-nasai', 'سنن النسائي', 'https://archive.org/download/FP0000ns/ns.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sunan-ibn-majah', name: 'سنن ابن ماجه',
+    author: 'الإمام ابن ماجه (ت 273هـ)', category: 'الفقه وأصوله',
+    description: 'من الكتب الستة في الحديث النبوي',
+    volumes: singleVol('sunan-ibn-majah', 'سنن ابن ماجه', 'https://archive.org/download/FP0000jh/jh.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'musnad-ahmad', name: 'مسند الإمام أحمد',
+    author: 'الإمام أحمد بن حنبل (ت 241هـ)', category: 'الفقه وأصوله',
+    description: 'أعظم مسند في الحديث النبوي جمعه الإمام أحمد',
+    volumes: singleVol('musnad-ahmad', 'مسند الإمام أحمد', 'https://archive.org/download/FP0000ma/ma.pdf'),
+    isSingleVolume: true,
+  },
+
+  // كتب العقيدة إضافية
+  {
+    id: 'aqidat-wasitiyya', name: 'العقيدة الواسطية',
+    author: 'شيخ الإسلام ابن تيمية (ت 728هـ)', category: 'العقيدة',
+    description: 'رسالة جامعة في عقيدة أهل السنة والجماعة',
+    volumes: singleVol('aqidat-wasitiyya', 'العقيدة الواسطية', 'https://archive.org/download/WAQ13688/13688.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'aqidat-tahawiyya', name: 'العقيدة الطحاوية',
+    author: 'الإمام الطحاوي (ت 321هـ)', category: 'العقيدة',
+    description: 'متن مشهور في عقيدة أهل السنة والجماعة',
+    volumes: singleVol('aqidat-tahawiyya', 'العقيدة الطحاوية', 'https://archive.org/download/FP10100th/th.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sharh-tahawiyya', name: 'شرح العقيدة الطحاوية',
+    author: 'ابن أبي العز الحنفي (ت 792هـ)', category: 'العقيدة',
+    description: 'أشهر شرح للعقيدة الطحاوية',
+    volumes: singleVol('sharh-tahawiyya', 'شرح العقيدة الطحاوية', 'https://archive.org/download/FP10110/sharhtahawi.pdf'),
+    isSingleVolume: true,
+  },
+
+  // كتب السيرة النبوية إضافية
+  {
+    id: 'rahiq-makhtum', name: 'الرحيق المختوم',
+    author: 'الشيخ صفي الرحمن المباركفوري (ت 1427هـ)', category: 'السيرة النبوية',
+    description: 'كتاب فاز بجائزة رابطة العالم الإسلامي في السيرة النبوية',
+    volumes: singleVol('rahiq-makhtum', 'الرحيق المختوم', 'https://archive.org/download/FP0000rm/rm.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'sira-ibn-hisham', name: 'سيرة ابن هشام',
+    author: 'ابن هشام (ت 213هـ)', category: 'السيرة النبوية',
+    description: 'من أقدم وأشهر كتب السيرة النبوية',
+    volumes: singleVol('sira-ibn-hisham', 'سيرة ابن هشام', 'https://archive.org/download/FP43115/ibnhisham.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'zad-maad', name: 'زاد المعاد في هدي خير العباد',
+    author: 'الإمام ابن القيم (ت 751هـ)', category: 'السيرة النبوية',
+    description: 'كتاب جامع في هدي النبي ﷺ في جميع شؤون الحياة',
+    volumes: createVolumes('zad-maad', 5, (i) => `https://archive.org/download/FP82100/zadmaad${String(i).padStart(2, '0')}.pdf`),
+    isSingleVolume: false,
+  },
+
+  // كتب اللغة العربية إضافية
+  {
+    id: 'ajurumiyya', name: 'الآجرومية',
+    author: 'ابن آجروم (ت 723هـ)', category: 'اللغة العربية',
+    description: 'أشهر متن مختصر في النحو العربي للمبتدئين',
+    volumes: singleVol('ajurumiyya', 'الآجرومية', 'https://archive.org/download/WAQ15750/15750.pdf'),
+    isSingleVolume: true,
+  },
+  {
+    id: 'balagha-wadiha', name: 'البلاغة الواضحة',
+    author: 'علي الجارم ومصطفى أمين', category: 'اللغة العربية',
+    description: 'كتاب تعليمي مشهور في البلاغة العربية',
+    volumes: singleVol('balagha-wadiha', 'البلاغة الواضحة', 'https://archive.org/download/FP33000/balaghawadiha.pdf'),
+    isSingleVolume: true,
+  },
 ];
 
 // ============================================

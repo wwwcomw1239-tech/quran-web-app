@@ -97,39 +97,13 @@ const ARABIC_VIDEOS: KidsVideo[] = [
   // ═══════════════════════════════════════════
 
   // قصص الإنسان في القرآن - Cedars Art
-  { id: 'a12', youtubeId: 'fyHqHof8-xU', titleAr: 'قصة أصحاب الأخدود - الجزء الأول', titleEn: 'People of the Ditch - Part 1', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a13', youtubeId: 'qE48KorARKA', titleAr: 'قصة أصحاب الأخدود - الجزء الثاني', titleEn: 'People of the Ditch - Part 2', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a14', youtubeId: 'hvm2ThLwYko', titleAr: 'قصة ذو القرنين - الجزء الأول', titleEn: 'Story of Dhul-Qarnayn - Part 1', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a15', youtubeId: 'Gt15cpRQ9iI', titleAr: 'قصة أصحاب الجنة - الجزء الثالث', titleEn: 'Owners of the Garden - Part 3', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a16', youtubeId: 'aebLGAcdsKE', titleAr: 'قصة النمرود - الجزء الثاني', titleEn: 'Story of Nimrod - Part 2', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a17', youtubeId: 'InmLzPOjz5E', titleAr: 'قصة السامري - الجزء الثاني', titleEn: 'Story of the Samaritan - Part 2', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a18', youtubeId: 'qGXSkwdVReg', titleAr: 'قصة السامري - الجزء الثالث', titleEn: 'Story of the Samaritan - Part 3', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a19', youtubeId: 'lttUGHte4mY', titleAr: 'قصة حاطب بن أبي بلتعة - الجزء الأول', titleEn: 'Story of Hatib ibn Abi Baltaah - Part 1', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Stories of Quran Verses', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a20', youtubeId: 'FUc3eVoHrWg', titleAr: 'قصة حاطب بن أبي بلتعة - الجزء الثاني', titleEn: 'Story of Hatib ibn Abi Baltaah - Part 2', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Stories of Quran Verses', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
   { id: 'a21', youtubeId: 'YcwgwTUkxsM', titleAr: 'قصة أصحاب الفيل للأطفال', titleEn: 'Story of the Elephant for Kids', sourceAr: 'بالعربي نتعلم', sourceEn: 'BeLarabyApps', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a45', youtubeId: 'hdjvyWViGkg', titleAr: 'قصة صاحب الجنتين - الجزء الثاني', titleEn: 'Owner of the Two Gardens - Part 2', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a46', youtubeId: '05hBH2kde_Q', titleAr: 'قصة عياش بن أبي ربيعة - الجزء الأول', titleEn: 'Story of Ayyash ibn Abi Rabiah - Part 1', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a47', youtubeId: 'jPI_scJiyZc', titleAr: 'قصة وحشي - الجزء الأول', titleEn: 'Story of Wahshi - Part 1', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a48', youtubeId: 'b7U17Oc2lpk', titleAr: 'قصص الآيات في القرآن - الحلقة 15', titleEn: 'Verses Stories from Quran - Episode 15', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a49', youtubeId: 'AMXtNsj9E4w', titleAr: 'قصة معاذ بن جبل - الجزء الأول', titleEn: 'Story of Muadh ibn Jabal - Part 1', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a50', youtubeId: 'mA8QBKv3YQw', titleAr: 'قصة أم شريك', titleEn: 'Story of Umm Sharik', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a51', youtubeId: 'AJjDTfVbOTY', titleAr: 'قصة عثمان بن عفان', titleEn: 'Story of Uthman ibn Affan', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a52', youtubeId: '5OYDY63rFVY', titleAr: 'قصة معاذ بن جبل - الجزء الثالث', titleEn: 'Story of Muadh ibn Jabal - Part 3', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a53', youtubeId: 'FZkQS4H_ykY', titleAr: 'قصة مرثد بن أبي مرثد - الجزء الثاني', titleEn: 'Story of Marthad ibn Abi Marthad - Part 2', sourceAr: 'قصص الآيات في القرآن', sourceEn: 'Verses Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
-  { id: 'a54', youtubeId: '0wPOErYgLLA', titleAr: 'قصص الإنسان في القرآن - الحلقة 12', titleEn: 'Human Stories from Quran - Episode 12', sourceAr: 'قصص الإنسان في القرآن', sourceEn: 'Human Stories from Quran', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
 
   // ═══════════════════════════════════════════
   // قصص الحيوان في القرآن
   // ═══════════════════════════════════════════
 
-  { id: 'a22', youtubeId: 'eHobRabok1s', titleAr: 'غراب ابني آدم - الجزء الأول', titleEn: "Raven of Adam's Sons - Part 1", sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
-  { id: 'a23', youtubeId: 'zIQF6uu1TVs', titleAr: 'ناقة صالح - الجزء الثاني', titleEn: "Salih's She-Camel - Part 2", sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
-  { id: 'a24', youtubeId: 'ikuY5Gqd4IU', titleAr: 'نملة سليمان - الجزء الأول', titleEn: "Solomon's Ant - Part 1", sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
-  { id: 'a25', youtubeId: 'XFpAR75iew0', titleAr: '8 قصص حيوانات في القرآن - تجميع للأطفال', titleEn: '8 Animal Stories from Quran - Compilation', sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
   { id: 'a26', youtubeId: '_6qbeLtAgng', titleAr: 'قصة النملة - كارتون بدون موسيقى', titleEn: 'Story of the Ant - Cartoon No Music', sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
-  { id: 'a55', youtubeId: 'WEghztqDd2M', titleAr: 'هدهد سليمان - الجزء الأول', titleEn: "Solomon's Hoopoe - Part 1", sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
-  { id: 'a56', youtubeId: 'YAK_-ohIANw', titleAr: 'ذئب يوسف - الجزء الثاني', titleEn: "Yusuf's Wolf - Part 2", sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
-  { id: 'a57', youtubeId: '_HZ_DgFMzS0', titleAr: 'الغراب المعلم - قصص الحيوان في القرآن', titleEn: 'The Teaching Raven - Animal Stories from Quran', sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
   { id: 'a58', youtubeId: 'bWxrlC6GwqE', titleAr: 'قصص الحيوان في القرآن - تتر البداية بدون موسيقى', titleEn: 'Animal Stories from Quran - Opening No Music', sourceAr: 'قصص الحيوان في القرآن', sourceEn: 'Animal Stories from Quran', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
 
   // ═══════════════════════════════════════════
@@ -172,6 +146,27 @@ const ARABIC_VIDEOS: KidsVideo[] = [
 
   { id: 'a39', youtubeId: 'P_vmdgyO35o', titleAr: 'أحكام القرآن - كرتون إسلامي بدون موسيقى', titleEn: 'Quran Rulings - Islamic Cartoon No Music', sourceAr: 'كرتون إسلامي', sourceEn: 'Islamic Cartoon', categoryAr: 'آداب وأخلاق إسلامية', categoryEn: 'Islamic Manners & Ethics' },
   { id: 'a66', youtubeId: '88j5OmKnWZw', titleAr: 'قصص إسلامية للأطفال - 30 دقيقة بدون موسيقى', titleEn: 'Islamic Stories for Kids - 30 min No Music', sourceAr: 'قصص إسلامية', sourceEn: 'Islamic Stories', categoryAr: 'آداب وأخلاق إسلامية', categoryEn: 'Islamic Manners & Ethics' },
+
+  // ═══════════════════════════════════════════
+  // إضافات بديلة - مقاطع بدون موسيقى
+  // ═══════════════════════════════════════════
+
+  // قصص قرآنية بدون موسيقى
+  { id: 'a67', youtubeId: '_X0BHl4u-sw', titleAr: 'قصص التابعين - تجميع حلقات بدون موسيقى', titleEn: "Stories of the Tabi'in - No Music", sourceAr: 'كرتون إسلامي', sourceEn: 'Islamic Cartoon', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
+  { id: 'a68', youtubeId: 'P_vmdgyO35o', titleAr: 'أحكام القرآن - كرتون بدون موسيقى', titleEn: 'Quran Rulings Cartoon - No Music', sourceAr: 'كرتون إسلامي', sourceEn: 'Islamic Cartoon', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
+  { id: 'a69', youtubeId: 'YcwgwTUkxsM', titleAr: 'قصة أصحاب الفيل للأطفال', titleEn: 'Story of the Elephant for Kids', sourceAr: 'بالعربي نتعلم', sourceEn: 'BeLarabyApps', categoryAr: 'قصص القرآن', categoryEn: 'Quran Stories' },
+
+  // قصص الحيوان - بدون موسيقى
+  { id: 'a70', youtubeId: '_6qbeLtAgng', titleAr: 'قصة النملة - كارتون بدون موسيقى', titleEn: 'Story of the Ant - No Music', sourceAr: 'كرتون بدون موسيقى', sourceEn: 'No Music Cartoon', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
+  { id: 'a71', youtubeId: 'aUW8E6_nM1Y', titleAr: 'قصص الحيوان في القرآن - بدون موسيقى', titleEn: 'Animal Stories in Quran - No Music', sourceAr: 'كرتون إسلامي', sourceEn: 'Islamic Cartoon', categoryAr: 'قصص الحيوان في القرآن', categoryEn: 'Animal Stories from Quran' },
+
+  // تعليم قرآن إضافي
+  { id: 'a72', youtubeId: 'gl5oar_uGCM', titleAr: 'شرح التجويد المصور - الحلقة الأولى', titleEn: 'Tajweed Illustrated - Episode 1', sourceAr: 'د. أيمن سويد', sourceEn: 'Dr. Ayman Suwaid', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
+  { id: 'a73', youtubeId: 'HFKGcKaZQkA', titleAr: 'أحكام حرف الراء - تجويد', titleEn: 'Rules of Letter Ra - Tajweed', sourceAr: 'د. أيمن سويد', sourceEn: 'Dr. Ayman Suwaid', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
+
+  // أناشيد بدون إيقاع إضافية
+  { id: 'a74', youtubeId: 'G2VJcaySWPk', titleAr: 'أناشيد قرآنية تربوية - بدون إيقاع', titleEn: 'Educational Quran Nasheeds - No Music', sourceAr: 'قناة ريحانة للأطفال', sourceEn: 'Rayhana Kids TV', categoryAr: 'أناشيد إسلامية بدون إيقاع', categoryEn: 'Islamic Nasheeds (No Music)' },
+  { id: 'a75', youtubeId: 'pA8oZw9L2Cc', titleAr: 'علمني الله - بدون موسيقى', titleEn: 'Allah Taught Me - No Music', sourceAr: 'قناة ريحانة للأطفال', sourceEn: 'Rayhana Kids TV', categoryAr: 'أناشيد إسلامية بدون إيقاع', categoryEn: 'Islamic Nasheeds (No Music)' },
 ];
 
 // ============================================
@@ -258,7 +253,6 @@ const ENGLISH_VIDEOS: KidsVideo[] = [
 
   { id: 'e44', youtubeId: 'Wu86iLXHmrc', titleAr: 'تعلم التجويد - الطريقة السهلة', titleEn: 'Learn Tajweed - the Easy Way', sourceAr: 'فري قرآن إيديوكيشن', sourceEn: 'FreeQuranEducation', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
   { id: 'e45', youtubeId: 'eym3nxelg0c', titleAr: 'دعاء الأطفال للاستغفار', titleEn: 'Kids Dua for Forgiveness - Quranic Dua Series', sourceAr: 'إقرأ كرتون', sourceEn: 'IQRA Cartoon', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
-  { id: 'e46', youtubeId: '5A1tzaBDQBU', titleAr: 'أركان الإسلام الخمسة - نشيد', titleEn: '5 Pillars of Islam - Islamic Nasheed', sourceAr: 'إقرأ كرتون', sourceEn: 'IQRA Cartoon', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
 ];
 
 // ============================================

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { surahs, Surah } from '@/data/surahs';
 import { reciters, getAudioUrl } from '@/data/reciters';
 import {
@@ -11,18 +12,40 @@ import {
   SurahList,
   Footer,
   DownloadDialog,
-  BooksLibrary,
-  QuranVideos,
-  QuranShorts,
-  KidsVideos,
   AnnouncementBanner,
   FloatingScrollButtons,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library, Video, Flame, Baby } from 'lucide-react';
+import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library, Video, Flame, Baby, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { useAudioQuality } from '@/lib/audioQuality';
 import { useAudioPlayer } from '@/lib/AudioPlayerContext';
+
+// Lazy load heavy components for better performance
+function TabLoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+    </div>
+  );
+}
+
+const BooksLibrary = dynamic(() => import('@/components/quran/BooksLibrary').then(m => ({ default: m.BooksLibrary })), {
+  loading: () => <TabLoadingSpinner />,
+  ssr: false,
+});
+const QuranVideos = dynamic(() => import('@/components/quran/QuranVideos').then(m => ({ default: m.QuranVideos })), {
+  loading: () => <TabLoadingSpinner />,
+  ssr: false,
+});
+const QuranShorts = dynamic(() => import('@/components/quran/QuranShorts').then(m => ({ default: m.QuranShorts })), {
+  loading: () => <TabLoadingSpinner />,
+  ssr: false,
+});
+const KidsVideos = dynamic(() => import('@/components/quran/KidsVideos').then(m => ({ default: m.KidsVideos })), {
+  loading: () => <TabLoadingSpinner />,
+  ssr: false,
+});
 
 type FilterType = 'all' | 'مكية' | 'مدنية';
 
