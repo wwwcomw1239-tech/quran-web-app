@@ -30,6 +30,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://quran-web-app.pages.dev"),
   title: "نور القرآن - Noor Al-Quran",
   description: "تطبيق نور القرآن - استمع إلى تلاوات عطرة من كتاب الله واقرأ الكتب الإسلامية. Noor Al-Quran - Listen to beautiful Quran recitations and read Islamic books.",
   keywords: ["نور القرآن", "القرآن الكريم", "استماع القرآن", "تلاوات", "Noor Al-Quran", "Quran", "Islamic", "PWA", "Recitation"],

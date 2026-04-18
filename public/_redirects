@@ -1,0 +1,2 @@
+# Redirect old GitHub Pages path to root
+/quran-web-app/* /:splat 301
