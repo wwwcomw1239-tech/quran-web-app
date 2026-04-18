@@ -358,6 +358,78 @@ const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh_new7', youtubeId: 'R5Hk5L2pXJo', title: 'أحكام ختم القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'فوائد قرآنية', description: 'آداب وأحكام ختم القرآن' },
   { id: 'sh_new8', youtubeId: 'WZ3zXLCHlgA', title: 'فضل مجالس الذكر', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية', description: 'فضل مجالس القرآن والذكر' },
 
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - فوائد قرآنية
+  // ═══════════════════════════════════════════
+  { id: 'sh_ext1', youtubeId: 'z4qYlzhPObQ', title: 'فضل قراءة القرآن', scholar: 'الشيخ ابن باز', category: 'فوائد قرآنية', description: 'فضائل قراءة القرآن الكريم' },
+  { id: 'sh_ext2', youtubeId: 'gKiHsu3YLNQ', title: 'الحكمة من تنزيل القرآن', scholar: 'الشيخ ابن عثيمين', category: 'فوائد قرآنية', description: 'الحكمة من تنزيل القرآن منجمًا' },
+  { id: 'sh_ext3', youtubeId: 'Pw8jljE7Zpc', title: 'فضل سورة الفاتحة', scholar: 'الشيخ صالح الفوزان', category: 'فوائد قرآنية', description: 'فضائل سورة الفاتحة' },
+  { id: 'sh_ext4', youtubeId: 'LxTfK4Vq9lU', title: 'حفظ القرآن الكريم', scholar: 'الشيخ عبد الرزاق البدر', category: 'فوائد قرآنية', description: 'أهمية حفظ القرآن' },
+  { id: 'sh_ext5', youtubeId: 'b-LULl5WM6o', title: 'العمل بالقرآن', scholar: 'د. محمد راتب النابلسي', category: 'فوائد قرآنية', description: 'أهمية العمل بالقرآن الكريم' },
+  { id: 'sh_ext6', youtubeId: 'd3-wjGpRyR0', title: 'فضل سورة الإخلاص', scholar: 'الشيخ صالح الفوزان', category: 'فوائد قرآنية', description: 'فضائل سورة الإخلاص' },
+  { id: 'sh_ext7', youtubeId: '0IKEJdZTqQ4', title: 'فضل سورتي المعوذتين', scholar: 'الشيخ صالح الفوزان', category: 'فوائد قرآنية', description: 'فضائل الفلق والناس' },
+  { id: 'sh_ext8', youtubeId: 'mFGkGoI2rPo', title: 'آداب تلاوة القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'فوائد قرآنية', description: 'آداب قراءة القرآن' },
+  { id: 'sh_ext9', youtubeId: 'z2rAuVrZKIY', title: 'فضل ختم القرآن', scholar: 'الشيخ ابن عثيمين', category: 'فوائد قرآنية', description: 'فضائل ختم القرآن' },
+  { id: 'sh_ext10', youtubeId: 'UAvsVhcNfW4', title: 'فوائد من سورة الكهف', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'فوائد قرآنية', description: 'فوائد نفيسة من سورة الكهف' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - تدبرات
+  // ═══════════════════════════════════════════
+  { id: 'sh_ext11', youtubeId: 'uY5IZbvSFnQ', title: 'تدبر في سورة الفاتحة', scholar: 'د. محمد الخضيري', category: 'تدبرات', description: 'تدبر آيات سورة الفاتحة' },
+  { id: 'sh_ext12', youtubeId: 'rHDw8qU3H_A', title: 'تدبر قوله: رب اشرح لي صدري', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبرات', description: 'تدبر دعاء موسى عليه السلام' },
+  { id: 'sh_ext13', youtubeId: 'DCXvIGr2bko', title: 'تدبر آية "وما أرسلناك إلا رحمة"', scholar: 'د. خالد اللاحم', category: 'تدبرات', description: 'تدبر آية من سورة الأنبياء' },
+  { id: 'sh_ext14', youtubeId: 'ZOEqwQG7IgA', title: 'تدبر آيات العسر واليسر', scholar: 'د. محمد الخضيري', category: 'تدبرات', description: 'تدبر قوله: إن مع العسر يسراً' },
+  { id: 'sh_ext15', youtubeId: 'xLmKE2qNFAo', title: 'دروس من قصة أم موسى', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبرات', description: 'تأملات في قصة أم موسى عليه السلام' },
+  { id: 'sh_ext16', youtubeId: 'YDeFBsKiQGU', title: 'تدبر سورة العصر', scholar: 'د. فاضل السامرائي', category: 'تدبرات', description: 'تأملات في سورة العصر' },
+  { id: 'sh_ext17', youtubeId: 'F89PG7s4mLM', title: 'دروس من قصة قارون', scholar: 'د. محمد راتب النابلسي', category: 'تدبرات', description: 'العبر من قصة قارون' },
+  { id: 'sh_ext18', youtubeId: 'QpDaMJ5fHfU', title: 'تأملات في سورة قريش', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبرات', description: 'تأملات في سورة قريش' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - قصص مؤثرة
+  // ═══════════════════════════════════════════
+  { id: 'sh_ext19', youtubeId: 'p1dCSGI9gLI', title: 'قصة أصحاب السبت', scholar: 'الشيخ صالح الفوزان', category: 'قصص مؤثرة', description: 'قصة أصحاب السبت في القرآن' },
+  { id: 'sh_ext20', youtubeId: '4xrC3Kfd0jQ', title: 'قصة أصحاب الرس', scholar: 'الشيخ ناصر القطامي', category: 'قصص مؤثرة', description: 'قصة أصحاب الرس' },
+  { id: 'sh_ext21', youtubeId: '1t4BY2AKsZc', title: 'قصة الرجل المؤمن من آل فرعون', scholar: 'الشيخ صالح المغامسي', category: 'قصص مؤثرة', description: 'قصة مؤمن آل فرعون' },
+  { id: 'sh_ext22', youtubeId: 'vVU5aVWwg_o', title: 'قصة صاحب الجنتين', scholar: 'د. محمد راتب النابلسي', category: 'قصص مؤثرة', description: 'قصة صاحب الجنتين في سورة الكهف' },
+  { id: 'sh_ext23', youtubeId: 'eGMq_GeO1fk', title: 'قصة قوم سبأ', scholar: 'الشيخ ناصر القطامي', category: 'قصص مؤثرة', description: 'قصة قوم سبأ في القرآن' },
+  { id: 'sh_ext24', youtubeId: 'HhvJjf4Z2Wg', title: 'قصة الرجل الذي أماته الله مئة عام', scholar: 'د. محمد راتب النابلسي', category: 'قصص مؤثرة', description: 'قصة عزير عليه السلام' },
+  { id: 'sh_ext25', youtubeId: 'UfmpDVFpPjc', title: 'قصة داود وطالوت', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'قصص مؤثرة', description: 'قصة داود وطالوت في القرآن' },
+  { id: 'sh_ext26', youtubeId: 'NvLp2LLkZL4', title: 'قصة أهل الكهف', scholar: 'الشيخ صالح المغامسي', category: 'قصص مؤثرة', description: 'قصة أصحاب الكهف بالتفصيل' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - خواطر إيمانية
+  // ═══════════════════════════════════════════
+  { id: 'sh_ext27', youtubeId: 'UnUg7VCyVK8', title: 'معية الله للمتقين', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية', description: 'معية الله سبحانه لعباده المتقين' },
+  { id: 'sh_ext28', youtubeId: 'o2g6Xnj16XA', title: 'الدعاء سلاح المؤمن', scholar: 'د. محمد راتب النابلسي', category: 'خواطر إيمانية', description: 'أهمية الدعاء وأدبه' },
+  { id: 'sh_ext29', youtubeId: 'wONqJb45C_4', title: 'الصبر مفتاح الفرج', scholar: 'الشيخ ابن باز', category: 'خواطر إيمانية', description: 'فضل الصبر وأنواعه' },
+  { id: 'sh_ext30', youtubeId: 'jfKs-h9WEIY', title: 'الحياء من الإيمان', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية', description: 'منزلة الحياء في الإسلام' },
+  { id: 'sh_ext31', youtubeId: 'zEv9fnLiN_o', title: 'أهمية طلب العلم', scholar: 'الشيخ ابن عثيمين', category: 'خواطر إيمانية', description: 'فضل طلب العلم' },
+  { id: 'sh_ext32', youtubeId: 'ipyDdPS0eAM', title: 'التوكل على الله', scholar: 'د. محمد راتب النابلسي', category: 'خواطر إيمانية', description: 'حقيقة التوكل على الله' },
+  { id: 'sh_ext33', youtubeId: 'L1GCnu6q_xU', title: 'بر الوالدين', scholar: 'الشيخ صالح الفوزان', category: 'خواطر إيمانية', description: 'فضل بر الوالدين' },
+  { id: 'sh_ext34', youtubeId: 'cMqFJbQN_Xw', title: 'صلة الرحم', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية', description: 'أهمية صلة الرحم' },
+  { id: 'sh_ext35', youtubeId: '2aK2OQqM_rI', title: 'الإخلاص في العمل', scholar: 'الشيخ ابن عثيمين', category: 'خواطر إيمانية', description: 'الإخلاص شرط قبول العمل' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - مواعظ قرآنية
+  // ═══════════════════════════════════════════
+  { id: 'sh_ext36', youtubeId: 'vfmOdMeTxq8', title: 'التوبة إلى الله', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'مواعظ قرآنية', description: 'فضل التوبة وآدابها' },
+  { id: 'sh_ext37', youtubeId: 'DzwgRoAPqlU', title: 'ذكر الموت وما بعده', scholar: 'الشيخ صالح المغامسي', category: 'مواعظ قرآنية', description: 'الاستعداد للآخرة' },
+  { id: 'sh_ext38', youtubeId: 'mxI_hcHl05o', title: 'عظمة يوم القيامة', scholar: 'الشيخ ناصر القطامي', category: 'مواعظ قرآنية', description: 'أهوال يوم القيامة' },
+  { id: 'sh_ext39', youtubeId: '0zEqbVM-4tI', title: 'نعيم الجنة', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'وصف الجنة ونعيمها' },
+  { id: 'sh_ext40', youtubeId: 'b11R0BwpWVs', title: 'فضل الاستغفار', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'فضائل الاستغفار' },
+  { id: 'sh_ext41', youtubeId: 'FyRqfQ1hQZA', title: 'فضل التهجد بالليل', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'مواعظ قرآنية', description: 'فضل قيام الليل' },
+  { id: 'sh_ext42', youtubeId: 'rKENzXM4d0c', title: 'أعمال تنفع بعد الموت', scholar: 'الشيخ صالح الفوزان', category: 'مواعظ قرآنية', description: 'الأعمال الجارية' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - أسرار القرآن
+  // ═══════════════════════════════════════════
+  { id: 'sh_ext43', youtubeId: 'XEhoeSBD8Dc', title: 'من أسرار القرآن البياني', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'أسرار البيان القرآني' },
+  { id: 'sh_ext44', youtubeId: 'YbbbSS8Bx1A', title: 'الفرق بين الآيات المتشابهة', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'تحليل الفروق بين الآيات' },
+  { id: 'sh_ext45', youtubeId: 'fwtxqtdRyzE', title: 'أسرار الحروف المقطعة', scholar: 'د. مساعد الطيار', category: 'أسرار القرآن', description: 'بحث في الحروف المقطعة في أوائل السور' },
+  { id: 'sh_ext46', youtubeId: 'PVQ6lMfzjg8', title: 'نظام السور القرآنية', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'الإعجاز في ترتيب السور' },
+  { id: 'sh_ext47', youtubeId: 'GbSfBpCkqPw', title: 'أسرار تكرار القصص في القرآن', scholar: 'د. عبد الرحمن الشهري', category: 'أسرار القرآن', description: 'حكمة تكرار القصص القرآنية' },
+  { id: 'sh_ext48', youtubeId: '2DgRfSJ5TUE', title: 'أسرار البدء بصفة الرحمة', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'الحكمة من البدء بالبسملة' },
+
 ];
 
 // ============================================

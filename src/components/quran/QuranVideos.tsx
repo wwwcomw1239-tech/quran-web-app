@@ -455,6 +455,135 @@ const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'ijaz1', youtubeId: 'Y-zTfBEvcg0', title: 'الإعجاز العددي في القرآن الكريم', scholar: 'د. عبد الرحمن الشهري', category: 'إعجاز القرآن', description: 'بيان الإعجاز العددي في القرآن' },
   { id: 'ijaz2', youtubeId: 'D2i_aDDIy9Y', title: 'الإعجاز البلاغي في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'إعجاز القرآن', description: 'أوجه الإعجاز البلاغي' },
 
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - تفسير القرآن
+  // ═══════════════════════════════════════════
+
+  // الشيخ ابن عثيمين - تفسير جزء عم
+  { id: 'ib_tafseer1', youtubeId: 'P0gF0OkjEjY', title: 'تفسير سورة النبأ', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة النبأ كاملة' },
+  { id: 'ib_tafseer2', youtubeId: '0VkiDzNJAqY', title: 'تفسير سورة النازعات', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة النازعات' },
+  { id: 'ib_tafseer3', youtubeId: 'bC2fScUXMOs', title: 'تفسير سورة عبس', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة عبس' },
+  { id: 'ib_tafseer4', youtubeId: 'ddKIDaeF_K4', title: 'تفسير سورة التكوير', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة التكوير' },
+  { id: 'ib_tafseer5', youtubeId: 'kVjG5ctA7nY', title: 'تفسير سورة الانفطار', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الانفطار' },
+  { id: 'ib_tafseer6', youtubeId: 'XFxxrl1k71E', title: 'تفسير سورة المطففين', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة المطففين' },
+  { id: 'ib_tafseer7', youtubeId: '9jv8L5QPFeo', title: 'تفسير سورة الفجر', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الفجر' },
+  { id: 'ib_tafseer8', youtubeId: 'JWWrfLKNbaE', title: 'تفسير سورة البلد', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة البلد' },
+  { id: 'ib_tafseer9', youtubeId: 'e3I8EjsE-jY', title: 'تفسير سورة الشمس', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الشمس' },
+  { id: 'ib_tafseer10', youtubeId: 'p5yqiZOWPEo', title: 'تفسير سورة الأعلى', scholar: 'الشيخ ابن عثيمين', category: 'تفسير القرآن', description: 'تفسير سورة الأعلى' },
+
+  // الشيخ ابن باز - دروس وتفسير
+  { id: 'baz_tafseer1', youtubeId: '8xSDZ8PsmdI', title: 'شرح تفسير السعدي - سورة البقرة', scholar: 'الشيخ عبد العزيز بن باز', category: 'تفسير القرآن', description: 'شرح تفسير السعدي لسورة البقرة' },
+  { id: 'baz_tafseer2', youtubeId: 'UcrhYxM9-4Y', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ عبد العزيز بن باز', category: 'تفسير القرآن', description: 'تفسير مفصل لسورة الفاتحة' },
+  { id: 'baz_tafseer3', youtubeId: 'Y_RSxsW5uhU', title: 'تفسير سورة الحجرات', scholar: 'الشيخ عبد العزيز بن باز', category: 'تفسير القرآن', description: 'تفسير سورة الحجرات' },
+  { id: 'baz_aqeeda', youtubeId: 'dF6WAxBOW98', title: 'شرح أصول الإيمان', scholar: 'الشيخ عبد العزيز بن باز', category: 'تفسير القرآن', description: 'شرح أصول الإيمان الستة' },
+
+  // الشيخ صالح الفوزان - تفسير إضافي
+  { id: 'fawzan_t1', youtubeId: 'VVoFcJm5rGA', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الفاتحة مفصلاً' },
+  { id: 'fawzan_t2', youtubeId: 'NN_GvTlOe74', title: 'تفسير سورة الناس', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الناس' },
+  { id: 'fawzan_t3', youtubeId: 'cjoHmEJAACI', title: 'تفسير سورة الفلق', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الفلق' },
+  { id: 'fawzan_t4', youtubeId: 'E3GKkjrlw70', title: 'تفسير سورة الإخلاص', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الإخلاص' },
+  { id: 'fawzan_t5', youtubeId: 'k94Q0NSNBu4', title: 'تفسير سورة الشرح', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الشرح' },
+  { id: 'fawzan_t6', youtubeId: 'uy31bsgAP-E', title: 'تفسير سورة الضحى', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الضحى' },
+  { id: 'fawzan_t7', youtubeId: 'AovDLnNbODc', title: 'تفسير سورة العصر', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة العصر' },
+  { id: 'fawzan_t8', youtubeId: 'jMpz3JJgWOk', title: 'تفسير سورة الكوثر', scholar: 'الشيخ صالح الفوزان', category: 'تفسير القرآن', description: 'تفسير سورة الكوثر' },
+
+  // الشيخ عبد الرزاق البدر - إضافات
+  { id: 'badr_ext1', youtubeId: 'jTQRyMyQMb4', title: 'تفسير سورة الفاتحة', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'تفسير مفصل لسورة الفاتحة' },
+  { id: 'badr_ext2', youtubeId: 'mFQJFXE9r7Q', title: 'شرح آية الكرسي', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'شرح موسع لآية الكرسي' },
+  { id: 'badr_ext3', youtubeId: 'L-2JS1dZzDc', title: 'فضائل سورة البقرة', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'بيان فضائل سورة البقرة' },
+  { id: 'badr_ext4', youtubeId: 'FvJMBD8cnvY', title: 'شرح دعاء الاستفتاح', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'شرح أدعية الاستفتاح في الصلاة' },
+  { id: 'badr_ext5', youtubeId: 'EN27JzhFvbM', title: 'تفسير آخر سورة البقرة', scholar: 'الشيخ عبد الرزاق البدر', category: 'تفسير القرآن', description: 'تفسير الآيتين الأخيرتين من سورة البقرة' },
+
+  // الشيخ عبد الكريم الخضير - إضافات
+  { id: 'khudayr_ext1', youtubeId: 'mGFs79YNBCs', title: 'أصول التفسير', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'شرح أصول التفسير' },
+  { id: 'khudayr_ext2', youtubeId: 'HJr5A7fD_xc', title: 'شرح منظومة الشاطبي', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'شرح منظومة الشاطبي في القراءات' },
+  { id: 'khudayr_ext3', youtubeId: 'OibRpAjhXXc', title: 'منهج الطبري في تفسيره', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن', description: 'دراسة منهج الطبري في التفسير' },
+
+  // الشيخ محمد المختار الشنقيطي - إضافات
+  { id: 'shng_ext1', youtubeId: '1F9Qq0XNKvk', title: 'تفسير سورة الحجرات', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تفسير القرآن', description: 'تفسير سورة الحجرات' },
+  { id: 'shng_ext2', youtubeId: 'oDn2oJfg5Yk', title: 'تفسير سورة النور', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تفسير القرآن', description: 'تفسير سورة النور' },
+  { id: 'shng_ext3', youtubeId: 'WIIZfiwMBzY', title: 'تفسير سورة لقمان', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تفسير القرآن', description: 'تفسير سورة لقمان' },
+  { id: 'shng_ext4', youtubeId: 'EbELzUEvofg', title: 'تفسير سورة فاطر', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تفسير القرآن', description: 'تفسير سورة فاطر' },
+  { id: 'shng_ext5', youtubeId: 'aHMJWwAmAIg', title: 'تفسير سورة يس', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تفسير القرآن', description: 'تفسير سورة يس' },
+
+  // د. محمد راتب النابلسي - تفسير القرآن
+  { id: 'nab_ext1', youtubeId: 'O0FLWGQm0yE', title: 'تفسير سورة الكهف', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة الكهف مفصلاً' },
+  { id: 'nab_ext2', youtubeId: 'XPFUnKM-9C0', title: 'تفسير سورة مريم', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة مريم' },
+  { id: 'nab_ext3', youtubeId: 'J7b3IhkQp9U', title: 'تفسير سورة الفرقان', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة الفرقان' },
+  { id: 'nab_ext4', youtubeId: 'myCZ0JpVWOY', title: 'تفسير سورة طه', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة طه' },
+  { id: 'nab_ext5', youtubeId: 'lxIaVEZQr3I', title: 'تفسير سورة الرحمن', scholar: 'د. محمد راتب النابلسي', category: 'تفسير القرآن', description: 'تفسير سورة الرحمن' },
+
+  // الإمام محمد متولي الشعراوي - خواطر
+  { id: 'shaar_ext1', youtubeId: '5GgU_xLZg0E', title: 'خواطر سورة الأعراف', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة الأعراف' },
+  { id: 'shaar_ext2', youtubeId: 'kP0YVdKfMWE', title: 'خواطر سورة الأنفال', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة الأنفال' },
+  { id: 'shaar_ext3', youtubeId: 'JfkvjYFwcZY', title: 'خواطر سورة التوبة', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة التوبة' },
+  { id: 'shaar_ext4', youtubeId: 'yUqSSLQ6lPA', title: 'خواطر سورة يونس', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة يونس' },
+  { id: 'shaar_ext5', youtubeId: 'QnfNSdKCa0I', title: 'خواطر سورة هود', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة هود' },
+  { id: 'shaar_ext6', youtubeId: 'xbxtFNTE4rg', title: 'خواطر سورة يوسف', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة يوسف بالكامل' },
+  { id: 'shaar_ext7', youtubeId: 'FqDJVkT0oGI', title: 'خواطر سورة الرعد', scholar: 'الشيخ الشعراوي', category: 'تفسير القرآن', description: 'تفسير سورة الرعد' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - تدبر وتأملات
+  // ═══════════════════════════════════════════
+  { id: 'tadb_ext1', youtubeId: 'wAcMc4PvzrM', title: 'تدبر سورة يوسف', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'وقفات مع سورة يوسف' },
+  { id: 'tadb_ext2', youtubeId: 'cwwMX2lgL78', title: 'تدبر آيات الرحمة', scholar: 'د. عبد الرحمن الشهري', category: 'تدبر وتأملات', description: 'تأمل في آيات الرحمة في القرآن' },
+  { id: 'tadb_ext3', youtubeId: 'J3uifJtN3LI', title: 'فوائد من سورة الكهف', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تدبر وتأملات', description: 'تأملات وفوائد من سورة الكهف' },
+  { id: 'tadb_ext4', youtubeId: 'KpUgmkRapuE', title: 'تدبر قصة أصحاب الجنة', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبر وتأملات', description: 'تدبر قصة أصحاب الجنة في سورة القلم' },
+  { id: 'tadb_ext5', youtubeId: 'h7FYhZ3_pSw', title: 'تأملات في سورة الفاتحة', scholar: 'د. خالد السبت', category: 'تدبر وتأملات', description: 'وقفات مع سورة الفاتحة' },
+  { id: 'tadb_ext6', youtubeId: 'MEj2P1aX7Bg', title: 'دروس من قصة موسى والخضر', scholar: 'د. محمد راتب النابلسي', category: 'تدبر وتأملات', description: 'دروس وعبر من قصة موسى والخضر' },
+  { id: 'tadb_ext7', youtubeId: 'Dst1TyzQgCs', title: 'تدبر آيات الصبر', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبر وتأملات', description: 'تأمل في آيات الصبر في القرآن' },
+  { id: 'tadb_ext8', youtubeId: 'a_3Exq55USc', title: 'الإنفاق في سبيل الله', scholar: 'د. خالد اللاحم', category: 'تدبر وتأملات', description: 'تدبر آيات الإنفاق والصدقة' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - أحكام التجويد
+  // ═══════════════════════════════════════════
+  { id: 'tjwd_ext1', youtubeId: 'Y6VkJUFH_ME', title: 'أحكام النون الساكنة والتنوين', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح أحكام النون الساكنة والتنوين' },
+  { id: 'tjwd_ext2', youtubeId: '7LAeGzuCh9E', title: 'أحكام المد وأقسامه', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح أحكام المد وأقسامه' },
+  { id: 'tjwd_ext3', youtubeId: 'eyvUFRLUYwQ', title: 'مخارج الحروف', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح مخارج الحروف الصحيحة' },
+  { id: 'tjwd_ext4', youtubeId: 'z0gGjLJn50Q', title: 'أحكام الميم الساكنة', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح أحكام الميم الساكنة' },
+  { id: 'tjwd_ext5', youtubeId: 'dwoXbCf9ULM', title: 'صفات الحروف', scholar: 'الشيخ أيمن سويد', category: 'أحكام التلاوة والتجويد', description: 'شرح صفات الحروف' },
+  { id: 'tjwd_ext6', youtubeId: 'H1rGJKRW88A', title: 'التجويد المبسط', scholar: 'الشيخ السيد مرسي', category: 'أحكام التلاوة والتجويد', description: 'شرح مبسط لأحكام التجويد' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - قصص القرآن
+  // ═══════════════════════════════════════════
+  { id: 'qs_ext1', youtubeId: 'ar7KQmpVMWY', title: 'قصة آدم عليه السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة أبي البشر آدم عليه السلام في القرآن' },
+  { id: 'qs_ext2', youtubeId: 'Z3fImMt7qdE', title: 'قصة نوح عليه السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة نوح عليه السلام في القرآن' },
+  { id: 'qs_ext3', youtubeId: 'p2fpwF5MvSo', title: 'قصة إبراهيم عليه السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة خليل الله إبراهيم عليه السلام' },
+  { id: 'qs_ext4', youtubeId: 'HY_cy4Kb5w0', title: 'قصة موسى مع فرعون', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة موسى عليه السلام مع فرعون' },
+  { id: 'qs_ext5', youtubeId: 'KJWxWOuHw1g', title: 'قصة سليمان عليه السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة سليمان عليه السلام' },
+  { id: 'qs_ext6', youtubeId: '9zxvHrW6YEI', title: 'قصة يوسف عليه السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة يوسف عليه السلام بالكامل' },
+  { id: 'qs_ext7', youtubeId: 'iGHh2yjNtn8', title: 'قصة أصحاب الكهف', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة أصحاب الكهف في القرآن' },
+  { id: 'qs_ext8', youtubeId: 'iGk2MeDnqlo', title: 'قصة ذي القرنين', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة ذي القرنين ويأجوج ومأجوج' },
+  { id: 'qs_ext9', youtubeId: 'X1hq4VXnzFs', title: 'قصة مريم عليها السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة مريم عليها السلام في القرآن' },
+  { id: 'qs_ext10', youtubeId: '_0gVxMGN6mg', title: 'قصة يونس عليه السلام', scholar: 'الشيخ ناصر القطامي', category: 'قصص القرآن', description: 'قصة يونس ذو النون' },
+  { id: 'qs_ext11', youtubeId: 'ZPV8Js-HyQ8', title: 'قصة أصحاب الأخدود', scholar: 'د. طارق السويدان', category: 'قصص القرآن', description: 'قصة أصحاب الأخدود في سورة البروج' },
+  { id: 'qs_ext12', youtubeId: '8ckzMfZZLbg', title: 'قصة أصحاب الفيل', scholar: 'د. طارق السويدان', category: 'قصص القرآن', description: 'قصة أصحاب الفيل وقصة أبرهة' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - علوم القرآن
+  // ═══════════════════════════════════════════
+  { id: 'ul_ext1', youtubeId: 'IMa4BHnEcJ4', title: 'أسباب النزول', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'مقدمة في علم أسباب النزول' },
+  { id: 'ul_ext2', youtubeId: 'rzgXQQZBzZA', title: 'الناسخ والمنسوخ', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'شرح الناسخ والمنسوخ في القرآن' },
+  { id: 'ul_ext3', youtubeId: 'M1qpiMyyyUw', title: 'المكي والمدني', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'تعريف المكي والمدني' },
+  { id: 'ul_ext4', youtubeId: 'jIFNVZ6KVnc', title: 'جمع القرآن وكتابته', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'تاريخ جمع القرآن الكريم' },
+  { id: 'ul_ext5', youtubeId: '9tnaNMdmJfQ', title: 'المحكم والمتشابه', scholar: 'د. مساعد الطيار', category: 'علوم القرآن', description: 'شرح المحكم والمتشابه' },
+  { id: 'ul_ext6', youtubeId: 'i8zZpWaCvfc', title: 'القراءات السبع', scholar: 'د. أيمن سويد', category: 'علوم القرآن', description: 'مقدمة في القراءات السبع' },
+  { id: 'ul_ext7', youtubeId: 'w0hCeyH02Hc', title: 'الوقف والابتداء', scholar: 'د. أيمن سويد', category: 'علوم القرآن', description: 'شرح الوقف والابتداء في القرآن' },
+  { id: 'ul_ext8', youtubeId: 'DAW-BR8VkuI', title: 'أقسام القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'علوم القرآن', description: 'الأقسام القرآنية ومعانيها' },
+
+  // ═══════════════════════════════════════════
+  // إضافات جديدة - إعجاز القرآن
+  // ═══════════════════════════════════════════
+  { id: 'ij_ext1', youtubeId: 'mBRfGYL-nZg', title: 'الإعجاز العلمي في خلق السماوات', scholar: 'د. زغلول النجار', category: 'إعجاز القرآن', description: 'الإعجاز العلمي في خلق السماوات' },
+  { id: 'ij_ext2', youtubeId: 'fxrwIIPKhBY', title: 'الإعجاز العلمي في خلق الأرض', scholar: 'د. زغلول النجار', category: 'إعجاز القرآن', description: 'الإعجاز العلمي في خلق الأرض' },
+  { id: 'ij_ext3', youtubeId: 'IEipnUd42KU', title: 'الإعجاز العلمي في البحار', scholar: 'د. زغلول النجار', category: 'إعجاز القرآن', description: 'الإعجاز العلمي في آيات البحر' },
+  { id: 'ij_ext4', youtubeId: 'TIRmJtuSMgE', title: 'الإعجاز في خلق الإنسان', scholar: 'د. زغلول النجار', category: 'إعجاز القرآن', description: 'الإعجاز العلمي في مراحل خلق الإنسان' },
+  { id: 'ij_ext5', youtubeId: 'oiVfBvR37vA', title: 'الإعجاز التشريعي في القرآن', scholar: 'الشيخ صالح الفوزان', category: 'إعجاز القرآن', description: 'الإعجاز التشريعي في القرآن الكريم' },
+  { id: 'ij_ext6', youtubeId: 'y8hG-4mY9OA', title: 'الإعجاز البياني في القرآن', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'الإعجاز البياني في القرآن' },
+  { id: 'ij_ext7', youtubeId: '5wfSfMmLK7g', title: 'لمسات بيانية', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'لمسات بيانية من القرآن الكريم' },
+  { id: 'ij_ext8', youtubeId: 'VKuE4KkqPzM', title: 'دقائق الفروق القرآنية', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'الفروق الدقيقة بين الآيات المتشابهة' },
+
 ];
 
 // ============================================
