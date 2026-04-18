@@ -11,7 +11,7 @@
 
 **نور القرآن - استمع إلى تلاوات عطرة من كتاب الله**
 
-[الموقع الحي](https://quran-web-appd.pages.dev/) | [GitHub Pages](https://wwwcomw1239-tech.github.io/quran-web-app/) | [التوثيق](#التوثيق)
+[الموقع الحي](https://quran-web-app-2dr.pages.dev/) | [GitHub Pages](https://wwwcomw1239-tech.github.io/quran-web-app/) | [التوثيق](#التوثيق)
 
 </div>
 
@@ -178,7 +178,7 @@ noor-al-quran/
 
 | المنصة | الرابط |
 |--------|--------|
-| **Cloudflare Pages** | https://quran-web-appd.pages.dev/ |
+| **Cloudflare Pages** | https://quran-web-app-2dr.pages.dev/ |
 | **GitHub Pages** | https://wwwcomw1239-tech.github.io/quran-web-app/ |
 | **Proxy Worker** | https://quran-proxy.wwwcomw1239.workers.dev/ |
 
