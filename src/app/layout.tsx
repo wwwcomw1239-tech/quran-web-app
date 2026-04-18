@@ -108,10 +108,27 @@ export default function RootLayout({
         {/* Preconnect to external resources */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* DNS prefetch and preconnect for media resources used by the app */}
+        <link rel="dns-prefetch" href="https://server.mp3quran.net" />
+        <link rel="dns-prefetch" href="https://archive.org" />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
+        <link rel="dns-prefetch" href="https://www.youtube.com" />
+        <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
+        <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="anonymous" />
+        {/* Load Arabic fonts non-blockingly (swap to system font while loading) */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
           rel="stylesheet"
+          media="print"
+          // @ts-ignore - switch to 'all' once loaded, so fonts load asynchronously
+          onLoad={"this.media='all'" as any}
         />
+        <noscript>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
+            rel="stylesheet"
+          />
+        </noscript>
 
         {/* PWA Meta Tags */}
         <meta name="application-name" content="نور القرآن - Noor Al-Quran" />

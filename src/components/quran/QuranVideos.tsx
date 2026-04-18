@@ -598,8 +598,31 @@ export function QuranVideos() {
   const [selectedScholar, setSelectedScholar] = useState<string | 'all'>('all');
   const [videoError, setVideoError] = useState(false);
   const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
+  // PAGINATION: limit initial render for performance (show more on demand)
+  const INITIAL_VISIBLE_PER_CATEGORY = 12;
+  const INITIAL_VISIBLE_ALL = 24;
+  const LOAD_MORE_STEP = 24;
+  const [visiblePerCategory, setVisiblePerCategory] = useState<Record<string, number>>({});
+  const [visibleAll, setVisibleAll] = useState(INITIAL_VISIBLE_ALL);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setVisibleAll(INITIAL_VISIBLE_ALL);
+    setVisiblePerCategory({});
+  }, [searchQuery, selectedCategory, selectedScholar]);
+
+  const getVisibleForCategory = (cat: string) => {
+    return visiblePerCategory[cat] ?? INITIAL_VISIBLE_PER_CATEGORY;
+  };
+
+  const showMoreForCategory = (cat: string, total: number) => {
+    setVisiblePerCategory(prev => ({
+      ...prev,
+      [cat]: Math.min(total, (prev[cat] ?? INITIAL_VISIBLE_PER_CATEGORY) + LOAD_MORE_STEP),
+    }));
+  };
 
   // Get unique scholars
   const scholars = useMemo(() => {
@@ -1134,6 +1157,9 @@ export function QuranVideos() {
           if (!categoryVideos || categoryVideos.length === 0) return null;
           const catInfo = CATEGORY_CONFIG[category];
           const CatIcon = catInfo.icon;
+          const visibleCount = getVisibleForCategory(category);
+          const visibleVideos = categoryVideos.slice(0, visibleCount);
+          const hasMore = categoryVideos.length > visibleCount;
 
           return (
             <div key={category} className="space-y-4">
@@ -1149,15 +1175,43 @@ export function QuranVideos() {
                 <Badge variant="outline" className="text-xs">{categoryVideos.length} مقطع</Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {categoryVideos.map(video => renderVideoCard(video))}
+                {visibleVideos.map(video => renderVideoCard(video))}
               </div>
+              {hasMore && (
+                <div className="flex justify-center pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => showMoreForCategory(category, categoryVideos.length)}
+                    className="gap-2"
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                    عرض المزيد ({categoryVideos.length - visibleCount} متبقية)
+                  </Button>
+                </div>
+              )}
             </div>
           );
         })
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredVideos.map(video => renderVideoCard(video))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredVideos.slice(0, visibleAll).map(video => renderVideoCard(video))}
+          </div>
+          {filteredVideos.length > visibleAll && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setVisibleAll(v => v + LOAD_MORE_STEP)}
+                className="gap-2"
+              >
+                <ChevronDown className="w-4 h-4" />
+                عرض المزيد ({filteredVideos.length - visibleAll} متبقية)
+              </Button>
+            </div>
+          )}
+        </>
       )}
 
       {/* No results */}

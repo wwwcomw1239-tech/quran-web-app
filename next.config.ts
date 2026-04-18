@@ -54,6 +54,36 @@ const withPWA = withPWAInit({
         },
       },
     },
+    // Cache YouTube thumbnails aggressively (used heavily in Videos/Shorts/Kids tabs)
+    {
+      urlPattern: /^https:\/\/i\.ytimg\.com\/.*/i,
+      handler: "CacheFirst" as const,
+      options: {
+        cacheName: "youtube-thumbs",
+        expiration: {
+          maxEntries: 500,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
+    // Cache the app-generated static assets (JS/CSS) for a year
+    {
+      urlPattern: /\/_next\/static\/.*/i,
+      handler: "CacheFirst" as const,
+      options: {
+        cacheName: "next-static",
+        expiration: {
+          maxEntries: 200,
+          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
+      },
+    },
   ],
 });
 

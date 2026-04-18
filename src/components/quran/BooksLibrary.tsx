@@ -3380,7 +3380,14 @@ export function BooksLibrary() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<BookCategory | 'all'>('all');
   const [expandedBooks, setExpandedBooks] = useState<Record<string, boolean>>({});
-  
+
+  // PAGINATION: limit initial render for performance
+  const INITIAL_VISIBLE_PER_CAT = 12;
+  const INITIAL_VISIBLE_ALL_BOOKS = 24;
+  const LOAD_MORE_STEP_BOOKS = 24;
+  const [visiblePerCategoryBooks, setVisiblePerCategoryBooks] = useState<Record<string, number>>({});
+  const [visibleAllBooks, setVisibleAllBooks] = useState(INITIAL_VISIBLE_ALL_BOOKS);
+
   // PDF Reader state
   const [pdfReaderUrl, setPdfReaderUrl] = useState<string | null>(null);
   const [pdfReaderTitle, setPdfReaderTitle] = useState<string>('');
@@ -3388,6 +3395,23 @@ export function BooksLibrary() {
   const [pdfError, setPdfError] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const pdfLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setVisibleAllBooks(INITIAL_VISIBLE_ALL_BOOKS);
+    setVisiblePerCategoryBooks({});
+  }, [searchQuery, selectedCategory]);
+
+  const getVisibleBooksCount = useCallback((cat: string) => {
+    return visiblePerCategoryBooks[cat] ?? INITIAL_VISIBLE_PER_CAT;
+  }, [visiblePerCategoryBooks]);
+
+  const showMoreBooksForCategory = useCallback((cat: string, total: number) => {
+    setVisiblePerCategoryBooks(prev => ({
+      ...prev,
+      [cat]: Math.min(total, (prev[cat] ?? INITIAL_VISIBLE_PER_CAT) + LOAD_MORE_STEP_BOOKS),
+    }));
+  }, []);
 
   const toggleBookExpansion = useCallback((bookId: string) => {
     setExpandedBooks(prev => ({ ...prev, [bookId]: !prev[bookId] }));
@@ -3923,6 +3947,9 @@ export function BooksLibrary() {
             if (!categoryBooks || categoryBooks.length === 0) return null;
             const catInfo = CATEGORY_INFO[category];
             const CatIcon = catInfo.icon;
+            const visibleCount = getVisibleBooksCount(category);
+            const visibleBooks = categoryBooks.slice(0, visibleCount);
+            const hasMore = categoryBooks.length > visibleCount;
 
             return (
               <div key={category} className="space-y-4">
@@ -3938,15 +3965,43 @@ export function BooksLibrary() {
                   <Badge variant="outline" className="text-xs">{categoryBooks.length} كتاب</Badge>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {categoryBooks.map(book => renderBookCard(book))}
+                  {visibleBooks.map(book => renderBookCard(book))}
                 </div>
+                {hasMore && (
+                  <div className="flex justify-center pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => showMoreBooksForCategory(category, categoryBooks.length)}
+                      className="gap-2"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                      عرض المزيد ({categoryBooks.length - visibleCount} متبقية)
+                    </Button>
+                  </div>
+                )}
               </div>
             );
           })
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {filteredCollections.map(book => renderBookCard(book))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {filteredCollections.slice(0, visibleAllBooks).map(book => renderBookCard(book))}
+            </div>
+            {filteredCollections.length > visibleAllBooks && (
+              <div className="flex justify-center pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setVisibleAllBooks(v => v + LOAD_MORE_STEP_BOOKS)}
+                  className="gap-2"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                  عرض المزيد ({filteredCollections.length - visibleAllBooks} متبقية)
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {/* No results */}
