@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { booksCollections, type BookCategory, type BookVolume, type BookCollection } from '@/data/books';
+import { getProxiedUrl, shouldProxy } from '@/lib/proxy';
 
 // ============================================
 // CATEGORY CONFIG
@@ -116,6 +117,7 @@ export function BooksLibrary() {
   const [pdfReaderTitle, setPdfReaderTitle] = useState<string>('');
   const [pdfLoading, setPdfLoading] = useState(true);
   const [pdfError, setPdfError] = useState(false);
+  const [viewerStrategy, setViewerStrategy] = useState<'pdfjs-proxy' | 'google' | 'archive'>('pdfjs-proxy');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const pdfLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -172,24 +174,48 @@ export function BooksLibrary() {
   const getCategoryCount = (cat: BookCategory) => booksCollections.filter(b => b.category === cat).length;
 
   // ============================================
-  // PDF VIEWER - Multiple strategies
+  // PDF VIEWER - Multiple strategies with fallback
   // ============================================
-  
-  // Strategy 1: Google Docs viewer (works well for smaller PDFs)
+
+  // Strategy types
+  type ViewerStrategy = 'pdfjs-proxy' | 'google' | 'archive';
+
+  // Strategy 1 (DEFAULT): Mozilla PDF.js viewer with Cloudflare proxy
+  // Works globally including regions where archive.org is blocked
+  const getPdfJsViewerUrl = (pdfUrl: string): string => {
+    // Use proxied URL if archive.org (to bypass geo-blocks)
+    const proxiedPdfUrl = shouldProxy(pdfUrl) ? getProxiedUrl(pdfUrl) : pdfUrl;
+    // Mozilla's hosted PDF.js viewer
+    return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(proxiedPdfUrl)}`;
+  };
+
+  // Strategy 2: Google Docs viewer (sometimes faster but less reliable)
   const getGoogleViewerUrl = (pdfUrl: string): string => {
     return `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
   };
 
-  // Strategy 2: Archive.org's own viewer (if the URL is from archive.org)
+  // Strategy 3: Archive.org's own viewer (if the URL is from archive.org)
   const getArchiveViewerUrl = (pdfUrl: string): string | null => {
-    // Extract the archive.org item path
     const match = pdfUrl.match(/archive\.org\/download\/([^/]+)\//);
     if (match) {
       const itemId = match[1];
-      const fileName = pdfUrl.split('/').pop();
       return `https://archive.org/details/${itemId}?view=theater`;
     }
     return null;
+  };
+
+  // Get viewer URL by strategy
+  const getViewerUrl = (pdfUrl: string, strategy: ViewerStrategy): string | null => {
+    switch (strategy) {
+      case 'pdfjs-proxy':
+        return getPdfJsViewerUrl(pdfUrl);
+      case 'google':
+        return getGoogleViewerUrl(pdfUrl);
+      case 'archive':
+        return getArchiveViewerUrl(pdfUrl);
+      default:
+        return null;
+    }
   };
 
   // Handle read with embedded PDF viewer
@@ -197,14 +223,15 @@ export function BooksLibrary() {
     const title = bookName ? `${bookName} - ${volume.title}` : volume.title;
     setPdfReaderTitle(title);
     setPdfReaderUrl(volume.pdfUrl);
+    setViewerStrategy('pdfjs-proxy'); // Start with PDF.js + proxy (most reliable)
     setPdfLoading(true);
     setPdfError(false);
-    
-    // Set a timeout - if PDF doesn't load in 15s, show error
+
+    // Set a timeout - if PDF doesn't load in 20s, show error
     if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
     pdfLoadTimerRef.current = setTimeout(() => {
       setPdfLoading(false);
-    }, 15000);
+    }, 20000);
   }, []);
 
   const handlePdfLoad = useCallback(() => {
@@ -234,15 +261,16 @@ export function BooksLibrary() {
     };
   }, []);
 
-  // Handle download
+  // Handle download - use proxy for archive.org URLs to bypass regional blocks
   const handleDownload = useCallback(async (volume: BookVolume, bookName: string) => {
     if (downloadingBooks[volume.id]) return;
     setDownloadingBooks(prev => ({ ...prev, [volume.id]: true }));
 
     try {
-      // Open archive.org URL directly - most reliable for download
+      // Use proxied URL for archive.org (bypasses regional blocks)
+      const downloadUrl = getProxiedUrl(volume.pdfUrl);
       const link = document.createElement('a');
-      link.href = volume.pdfUrl;
+      link.href = downloadUrl;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.download = `${bookName} - ${volume.title}.pdf`;
@@ -252,8 +280,8 @@ export function BooksLibrary() {
       toast.success('جاري تنزيل الكتاب...');
     } catch (error) {
       console.error('Download error:', error);
-      // Fallback: open in new tab
-      window.open(volume.pdfUrl, '_blank', 'noopener,noreferrer');
+      // Fallback: open in new tab (proxied)
+      window.open(getProxiedUrl(volume.pdfUrl), '_blank', 'noopener,noreferrer');
     } finally {
       setTimeout(() => {
         setDownloadingBooks(prev => ({ ...prev, [volume.id]: false }));
@@ -268,7 +296,7 @@ export function BooksLibrary() {
   const renderPdfReader = () => {
     if (!pdfReaderUrl) return null;
 
-    const viewerUrl = getGoogleViewerUrl(pdfReaderUrl);
+    const viewerUrl = getViewerUrl(pdfReaderUrl, viewerStrategy) || getPdfJsViewerUrl(pdfReaderUrl);
     const archiveUrl = getArchiveViewerUrl(pdfReaderUrl);
 
     return (
@@ -332,11 +360,13 @@ export function BooksLibrary() {
           {!pdfError && (
             <iframe
               ref={iframeRef}
+              key={`${pdfReaderUrl}-${viewerStrategy}`}
               src={viewerUrl}
               className="w-full h-full border-0"
               title={pdfReaderTitle}
               allow="autoplay"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+              loading="lazy"
+              referrerPolicy="no-referrer"
               onLoad={handlePdfLoad}
               onError={handlePdfError}
             />
@@ -355,45 +385,73 @@ export function BooksLibrary() {
 
           {/* Error state */}
           {pdfError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900">
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl flex flex-col items-center gap-4 max-w-md mx-4">
+            <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900 overflow-auto p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl flex flex-col items-center gap-4 max-w-md w-full my-auto">
                 <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                   <AlertCircle className="w-8 h-8 text-amber-500" />
                 </div>
                 <h3 className="font-bold text-lg text-slate-900 dark:text-white text-center">
-                  تعذر تحميل القارئ المدمج
+                  تعذر تحميل المعاينة
                 </h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-                  يمكنك فتح الكتاب مباشرة في تبويب جديد
+                  جرب قارئاً آخر أو افتح الكتاب في تبويب جديد
                 </p>
-                <div className="flex flex-col sm:flex-row gap-2 w-full">
+
+                {/* Try different viewer */}
+                <div className="w-full space-y-2">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 font-semibold">جرب قارئاً آخر:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <Button
+                      variant={viewerStrategy === 'pdfjs-proxy' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => { setViewerStrategy('pdfjs-proxy'); setPdfError(false); setPdfLoading(true); }}
+                      className="gap-1.5 text-xs"
+                    >
+                      <BookText className="w-3.5 h-3.5" />
+                      PDF.js (سريع)
+                    </Button>
+                    <Button
+                      variant={viewerStrategy === 'google' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => { setViewerStrategy('google'); setPdfError(false); setPdfLoading(true); }}
+                      className="gap-1.5 text-xs"
+                    >
+                      <Library className="w-3.5 h-3.5" />
+                      Google
+                    </Button>
+                    {archiveUrl && (
+                      <Button
+                        variant={viewerStrategy === 'archive' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => { setViewerStrategy('archive'); setPdfError(false); setPdfLoading(true); }}
+                        className="gap-1.5 text-xs"
+                      >
+                        <BookOpen className="w-3.5 h-3.5" />
+                        Archive
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 w-full pt-2 border-t border-slate-200 dark:border-slate-700">
                   <Button
-                    onClick={() => window.open(pdfReaderUrl!, '_blank', 'noopener,noreferrer')}
+                    onClick={() => window.open(getProxiedUrl(pdfReaderUrl!), '_blank', 'noopener,noreferrer')}
                     className="flex-1 gap-2 bg-blue-500 hover:bg-blue-600"
+                    size="sm"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    فتح في تبويب جديد
+                    فتح مباشرة
                   </Button>
-                  {archiveUrl && (
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open(archiveUrl, '_blank', 'noopener,noreferrer')}
-                      className="flex-1 gap-2"
-                    >
-                      <Library className="w-4 h-4" />
-                      فتح في Archive.org
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => handleDownload({ id: 'err', title: pdfReaderTitle, pdfUrl: pdfReaderUrl! }, pdfReaderTitle)}
+                    variant="outline"
+                    className="flex-1 gap-2"
+                    size="sm"
+                  >
+                    <Download className="w-4 h-4" />
+                    تنزيل
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setPdfError(false); setPdfLoading(true); }}
-                  className="gap-2 text-sm"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  إعادة المحاولة
-                </Button>
               </div>
             </div>
           )}
