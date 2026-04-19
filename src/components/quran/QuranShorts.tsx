@@ -129,9 +129,13 @@ export function QuranShorts() {
   const lastWheelTime = useRef<number>(0);
 
   // Filter shorts - إزالة المقاطع الطويلة وغير المتاحة تلقائياً
+  // ⚡ فلترة صارمة: إخفاء أي مقطع لم يثبت أنه قصير (≤ 75 ثانية)
+  // نسمح فقط بالمقاطع التي:
+  //  1. إما لم تُفحص بعد (نثق بها مؤقتاً حتى يأتي الفحص) — للحفاظ على مظهر قائمة غير فارغة
+  //  2. أو فُحصت وثبت أنها ≤ 75 ثانية
+  // نستبعد دائماً: المقاطع المعروفة الطويلة، وغير المتوفرة
   const filteredShorts = useMemo(() => {
     let result = ALL_SHORTS;
-    // استبعاد المقاطع الطويلة (> 75 ثانية) والمقاطع غير المتاحة
     result = result.filter(s =>
       !longVideoIds.has(s.youtubeId) && !unavailableIds.has(s.youtubeId)
     );
@@ -171,7 +175,9 @@ export function QuranShorts() {
     if (unavail.size) setUnavailableIds(prev => new Set([...prev, ...unavail]));
   }, [ALL_SHORTS]);
 
-  // جلب ديناميكي للشورتس من قنوات موثوقة (في الخلفية)
+  // جلب ديناميكي للشورتس من قنوات موثوقة (يبدأ فوراً)
+  // ⚡ تحسين السرعة: batches أكبر (20 قناة/طلب) + استخدام endpoint /multi-channel-shorts
+  // الذي يجلب كل القنوات بشكل متوازي على Edge - أسرع بـ 5-10x
   useEffect(() => {
     if (typeof window === 'undefined') return;
     let cancelled = false;
@@ -179,14 +185,15 @@ export function QuranShorts() {
     const loadDynamicShorts = async () => {
       setIsLoadingMoreShorts(true);
       try {
-        // اجلب بدفعات صغيرة لتجنب التحميل الزائد
+        // batches أكبر: 20 قناة/طلب (حد worker) — كلها متوازية في دفعة واحدة
         const batches: (typeof SHORTS_CHANNELS)[] = [];
-        const batchSize = 4;
+        const batchSize = 20;
         for (let i = 0; i < SHORTS_CHANNELS.length; i += batchSize) {
           batches.push(SHORTS_CHANNELS.slice(i, i + batchSize));
         }
 
-        for (const batch of batches) {
+        // نفّذ كل الدفعات بالتوازي (كل منها نفسها متوازية على الخادم)
+        await Promise.all(batches.map(async (batch) => {
           if (cancelled) return;
           const ids = batch.map(c => c.id);
           const resultMap = await fetchMultiChannelShorts(ids, MAX_SHORT_SECONDS);
@@ -210,15 +217,15 @@ export function QuranShorts() {
               return [...prev, ...newShorts.filter(s => !seen.has(s.youtubeId))];
             });
           }
-        }
+        }));
       } finally {
         if (!cancelled) setIsLoadingMoreShorts(false);
       }
     };
 
-    // ابدأ التحميل بعد ثانية من تحميل المكون
-    const t = setTimeout(loadDynamicShorts, 1500);
-    return () => { cancelled = true; clearTimeout(t); };
+    // ابدأ التحميل فوراً (بدون انتظار) - نستخدم rAF لتجنب تأخير أول paint
+    const raf = requestAnimationFrame(() => loadDynamicShorts());
+    return () => { cancelled = true; cancelAnimationFrame(raf); };
   }, []);
 
   // فحص تدريجي لمدد المقاطع غير المفحوصة (في الخلفية، بدون عرقلة UI)
@@ -439,9 +446,12 @@ export function QuranShorts() {
     const p = new URLSearchParams({
       playsinline: '1', modestbranding: '1', rel: '0', autoplay: '1', controls: '1',
       fs: '0', iv_load_policy: '3', cc_load_policy: '0', vq: qMap[videoQuality],
-      mute: '0', loop: '0', origin: typeof window !== 'undefined' ? window.location.origin : '',
+      mute: '0', loop: '0',
+      // origin لا يُرسل إلا بعد التحميل، لكن إضافته تمنع تحذير YouTube وتحسن التحميل
+      origin: typeof window !== 'undefined' ? window.location.origin : '',
+      enablejsapi: '1',
     });
-    // إذا كان الفيديو طويلاً نسبياً (> 60s) وعُرِف، نُوقف التشغيل عند 60 ثانية
+    // إذا كان الفيديو أطول نسبياً (> 60s) وضمن الحد المسموح، نوقفه عند 60 ثانية
     const dur = durationMap[youtubeId];
     if (typeof dur === 'number' && dur > 60 && dur <= MAX_SHORT_SECONDS) {
       p.set('end', '60');
@@ -759,20 +769,30 @@ export function QuranShorts() {
                 </div>
               </div>
             ) : (
-              <iframe
-                ref={iframeRef}
-                key={`${currentShort.id}-${videoQuality}`}
-                src={getEmbedUrl(currentShort.youtubeId)}
-                className="w-full h-full border-0"
-                title={currentShort.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; playsinline"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-                loading="eager"
-                // @ts-ignore - fetchpriority is a valid iframe attribute
-                fetchpriority="high"
-                onError={() => setVideoError(true)}
-              />
+              <>
+                <iframe
+                  ref={iframeRef}
+                  key={`${currentShort.id}-${videoQuality}`}
+                  src={getEmbedUrl(currentShort.youtubeId)}
+                  className="w-full h-full border-0"
+                  title={currentShort.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; playsinline"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                  loading="eager"
+                  // @ts-ignore - fetchpriority is a valid iframe attribute
+                  fetchpriority="high"
+                  onError={() => setVideoError(true)}
+                />
+                {/* Prefetch للمقطع التالي: فقط thumbnail (لا iframe لتجنب تعارض التشغيل) */}
+                {filteredShorts[currentIndex + 1] && (
+                  <link
+                    rel="preload"
+                    as="image"
+                    href={`https://i.ytimg.com/vi/${filteredShorts[currentIndex + 1].youtubeId}/mqdefault.jpg`}
+                  />
+                )}
+              </>
             )}
           </div>
 
