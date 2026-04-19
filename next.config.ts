@@ -104,6 +104,26 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   // Empty turbopack config to acknowledge webpack config from PWA plugin
   turbopack: {},
+  // Performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+  // Optimize bundle size
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-scroll-area',
+      '@radix-ui/react-accordion',
+      'framer-motion',
+      'date-fns',
+      'recharts',
+    ],
+  },
 };
 
 export default withPWA(nextConfig);
