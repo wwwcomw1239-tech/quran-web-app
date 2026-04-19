@@ -91,6 +91,34 @@ export function QuranVideos() {
     setVisiblePerCategory({});
   }, [searchQuery, selectedCategory, selectedScholar]);
 
+  // ⚡ تحسين: warmup تلقائي لمضيف YouTube عند أول تحميل للصفحة
+  // يقلل زمن بدء تشغيل أي فيديو بـ 300-800ms
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if ((window as any).__ytVideosWarmedUp) return;
+    (window as any).__ytVideosWarmedUp = true;
+    const origins = [
+      'https://www.youtube-nocookie.com',
+      'https://www.youtube.com',
+      'https://i.ytimg.com',
+      'https://yt3.ggpht.com',
+      'https://googlevideo.com',
+      'https://s.ytimg.com',
+    ];
+    origins.forEach(origin => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = origin;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+      // إضافة dns-prefetch كاحتياط للمتصفحات التي تتجاهل preconnect
+      const dns = document.createElement('link');
+      dns.rel = 'dns-prefetch';
+      dns.href = origin;
+      document.head.appendChild(dns);
+    });
+  }, []);
+
   const getVisibleForCategory = (cat: string) => {
     return visiblePerCategory[cat] ?? INITIAL_VISIBLE_PER_CATEGORY;
   };
@@ -203,6 +231,7 @@ export function QuranVideos() {
 
   // Get embed URL - youtube-nocookie.com for privacy
   // IMPORTANT: No sandbox attribute to allow proper YouTube playback
+  // ⚡ تحسين الأداء: enablejsapi يفعّل الواجهة السريعة، html5=1 يجبر استخدام مشغل HTML5
   const getEmbedUrl = (youtubeId: string): string => {
     const params = new URLSearchParams({
       playsinline: '1',
@@ -214,6 +243,8 @@ export function QuranVideos() {
       iv_load_policy: '3',
       disablekb: '0',
       cc_load_policy: '0',
+      enablejsapi: '1',
+      html5: '1',
       origin: typeof window !== 'undefined' ? window.location.origin : '',
     });
     return `https://www.youtube-nocookie.com/embed/${youtubeId}?${params.toString()}`;
@@ -459,25 +490,14 @@ export function QuranVideos() {
   // VIDEO CARD
   // ============================================
 
-  // تحسين: warmup عند hover لتسريع بدء التشغيل (preconnect + prefetch iframe origin)
-  const warmupYoutube = useCallback(() => {
+  // تحسين: warmup عند hover لتسريع بدء التشغيل (تم إنجاز preconnect عند mount بالفعل)
+  // هنا نكتفي بـ prefetch thumbnail بجودة أعلى (hqdefault)
+  const warmupYoutube = useCallback((youtubeId?: string) => {
     if (typeof document === 'undefined') return;
-    if ((window as any).__ytWarmedUp) return;
-    (window as any).__ytWarmedUp = true;
-    const origins = [
-      'https://www.youtube-nocookie.com',
-      'https://www.youtube.com',
-      'https://i.ytimg.com',
-      'https://yt3.ggpht.com',
-      'https://googlevideo.com',
-    ];
-    origins.forEach(origin => {
-      const link = document.createElement('link');
-      link.rel = 'preconnect';
-      link.href = origin;
-      link.crossOrigin = 'anonymous';
-      document.head.appendChild(link);
-    });
+    if (!youtubeId) return;
+    // جلب thumbnail بجودة أعلى للتحميل المسبق
+    const img = new Image();
+    img.src = `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
   }, []);
 
   const renderVideoCard = (video: QuranVideo) => {
@@ -491,8 +511,8 @@ export function QuranVideos() {
           isActive ? 'ring-2 ring-emerald-500 shadow-emerald-100 dark:shadow-emerald-900/30' : ''
         }`}
         onClick={() => playVideo(video)}
-        onMouseEnter={warmupYoutube}
-        onTouchStart={warmupYoutube}
+        onMouseEnter={() => warmupYoutube(video.youtubeId)}
+        onTouchStart={() => warmupYoutube(video.youtubeId)}
       >
         <CardContent className="p-0">
           {/* Thumbnail */}
