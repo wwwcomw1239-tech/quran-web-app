@@ -28,7 +28,6 @@ export const additionalShortsBatch2: QuranShort[] = [
   { id: 'td_b2_5', youtubeId: '5wv1Jh-CKvU', title: 'تأمل: واستعينوا بالصبر والصلاة', scholar: 'الشيخ سليمان الرحيلي', category: 'تدبرات' },
   { id: 'td_b2_6', youtubeId: 'Qxc1WJ8Ry-Q', title: 'تدبر: وما أرسلناك إلا رحمة للعالمين', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبرات' },
   { id: 'td_b2_7', youtubeId: 'TCjvyjqV3js', title: 'تدبر: الله ولي الذين آمنوا', scholar: 'الشيخ ابن عثيمين', category: 'تدبرات' },
-  { id: 'td_b2_8', youtubeId: 'Bhm3FwFxWyA', title: 'تدبر آية التوبة', scholar: 'الشيخ صالح المغامسي', category: 'تدبرات' },
 
   // ═══════════════════════════════════════════
   // قصص مؤثرة
@@ -36,8 +35,6 @@ export const additionalShortsBatch2: QuranShort[] = [
   { id: 'qs_b2_1', youtubeId: 'PcfBJZQjzLE', title: 'قصة الصحابي الذي تعلم القرآن', scholar: 'الشيخ عثمان الخميس', category: 'قصص مؤثرة' },
   { id: 'qs_b2_2', youtubeId: 'M8q_pI2w3bE', title: 'قصة ابن أم مكتوم', scholar: 'الشيخ عثمان الخميس', category: 'قصص مؤثرة' },
   { id: 'qs_b2_3', youtubeId: 'R85-Pc0HQ7M', title: 'قصة إسلام الفاروق', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة' },
-  { id: 'qs_b2_4', youtubeId: 'rkuZp2BlJMI', title: 'قصة الثلاثة في الغار', scholar: 'الشيخ صالح المغامسي', category: 'قصص مؤثرة' },
-  { id: 'qs_b2_5', youtubeId: 'Hq7Dh8n42xs', title: 'قصة جريج العابد', scholar: 'الشيخ صالح المغامسي', category: 'قصص مؤثرة' },
   { id: 'qs_b2_6', youtubeId: 'XfW0UxMP8nk', title: 'قصة أصحاب الفيل', scholar: 'الشيخ نبيل العوضي', category: 'قصص مؤثرة' },
   { id: 'qs_b2_7', youtubeId: 'J2AjVt0qmAk', title: 'قصة أصحاب الأخدود', scholar: 'الشيخ محمد المنجد', category: 'قصص مؤثرة' },
   { id: 'qs_b2_8', youtubeId: 'gqnCUeBxLX8', title: 'قصة صاحب الجنتين', scholar: 'د. عمر المقبل', category: 'قصص مؤثرة' },
@@ -75,10 +72,8 @@ export const additionalShortsBatch2: QuranShort[] = [
   // ═══════════════════════════════════════════
   { id: 'kh_b2_1', youtubeId: '5G6tRgN8XWs', title: 'عندما تستوحش فاقرأ القرآن', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'خواطر إيمانية' },
   { id: 'kh_b2_2', youtubeId: 'Uh8yBXH5-rQ', title: 'القرآن نور القلوب', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية' },
-  { id: 'kh_b2_3', youtubeId: 'v8A27g75oTA', title: 'اجعل القرآن صديقك', scholar: 'الشيخ صالح المغامسي', category: 'خواطر إيمانية' },
   { id: 'kh_b2_4', youtubeId: 'Mc9yIlAtsVY', title: 'كيف تستمتع بتلاوة القرآن', scholar: 'الشيخ ابن عثيمين', category: 'خواطر إيمانية' },
   { id: 'kh_b2_5', youtubeId: 'jC4RLu0bhqE', title: 'آثار القرآن على الحياة', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية' },
-  { id: 'kh_b2_6', youtubeId: 'zGANYzYCKag', title: 'حلاوة المناجاة بالقرآن', scholar: 'الشيخ صالح المغامسي', category: 'خواطر إيمانية' },
   { id: 'kh_b2_7', youtubeId: 'SbfUx6vdpjU', title: 'كيف تحيا بالقرآن', scholar: 'الشيخ محمد المنجد', category: 'خواطر إيمانية' },
   { id: 'kh_b2_8', youtubeId: 'x14v-0a09l8', title: 'القرآن شفاء القلوب', scholar: 'الشيخ سليمان الرحيلي', category: 'خواطر إيمانية' },
 ];

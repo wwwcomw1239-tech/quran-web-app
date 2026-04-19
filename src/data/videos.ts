@@ -464,7 +464,6 @@ const coreVideos: QuranVideo[] = [
   // ═══════════════════════════════════════════
   // إضافات جديدة - تدبر وتأملات
   // ═══════════════════════════════════════════
-  { id: 'tadb_ext1', youtubeId: 'wAcMc4PvzrM', title: 'تدبر سورة يوسف', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات', description: 'وقفات مع سورة يوسف' },
   { id: 'tadb_ext2', youtubeId: 'cwwMX2lgL78', title: 'تدبر آيات الرحمة', scholar: 'د. عبد الرحمن الشهري', category: 'تدبر وتأملات', description: 'تأمل في آيات الرحمة في القرآن' },
   { id: 'tadb_ext3', youtubeId: 'J3uifJtN3LI', title: 'فوائد من سورة الكهف', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'تدبر وتأملات', description: 'تأملات وفوائد من سورة الكهف' },
   { id: 'tadb_ext4', youtubeId: 'KpUgmkRapuE', title: 'تدبر قصة أصحاب الجنة', scholar: 'الشيخ عبد الرزاق البدر', category: 'تدبر وتأملات', description: 'تدبر قصة أصحاب الجنة في سورة القلم' },

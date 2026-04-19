@@ -356,12 +356,10 @@ const coreShorts: QuranShort[] = [
   // ═══════════════════════════════════════════
   { id: 'sh_ext19', youtubeId: 'p1dCSGI9gLI', title: 'قصة أصحاب السبت', scholar: 'الشيخ صالح الفوزان', category: 'قصص مؤثرة', description: 'قصة أصحاب السبت في القرآن' },
   { id: 'sh_ext20', youtubeId: '4xrC3Kfd0jQ', title: 'قصة أصحاب الرس', scholar: 'الشيخ ناصر القطامي', category: 'قصص مؤثرة', description: 'قصة أصحاب الرس' },
-  { id: 'sh_ext21', youtubeId: '1t4BY2AKsZc', title: 'قصة الرجل المؤمن من آل فرعون', scholar: 'الشيخ صالح المغامسي', category: 'قصص مؤثرة', description: 'قصة مؤمن آل فرعون' },
   { id: 'sh_ext22', youtubeId: 'vVU5aVWwg_o', title: 'قصة صاحب الجنتين', scholar: 'د. محمد راتب النابلسي', category: 'قصص مؤثرة', description: 'قصة صاحب الجنتين في سورة الكهف' },
   { id: 'sh_ext23', youtubeId: 'eGMq_GeO1fk', title: 'قصة قوم سبأ', scholar: 'الشيخ ناصر القطامي', category: 'قصص مؤثرة', description: 'قصة قوم سبأ في القرآن' },
   { id: 'sh_ext24', youtubeId: 'HhvJjf4Z2Wg', title: 'قصة الرجل الذي أماته الله مئة عام', scholar: 'د. محمد راتب النابلسي', category: 'قصص مؤثرة', description: 'قصة عزير عليه السلام' },
   { id: 'sh_ext25', youtubeId: 'UfmpDVFpPjc', title: 'قصة داود وطالوت', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'قصص مؤثرة', description: 'قصة داود وطالوت في القرآن' },
-  { id: 'sh_ext26', youtubeId: 'NvLp2LLkZL4', title: 'قصة أهل الكهف', scholar: 'الشيخ صالح المغامسي', category: 'قصص مؤثرة', description: 'قصة أصحاب الكهف بالتفصيل' },
 
   // ═══════════════════════════════════════════
   // إضافات جديدة - خواطر إيمانية
@@ -380,7 +378,6 @@ const coreShorts: QuranShort[] = [
   // إضافات جديدة - مواعظ قرآنية
   // ═══════════════════════════════════════════
   { id: 'sh_ext36', youtubeId: 'vfmOdMeTxq8', title: 'التوبة إلى الله', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'مواعظ قرآنية', description: 'فضل التوبة وآدابها' },
-  { id: 'sh_ext37', youtubeId: 'DzwgRoAPqlU', title: 'ذكر الموت وما بعده', scholar: 'الشيخ صالح المغامسي', category: 'مواعظ قرآنية', description: 'الاستعداد للآخرة' },
   { id: 'sh_ext38', youtubeId: 'mxI_hcHl05o', title: 'عظمة يوم القيامة', scholar: 'الشيخ ناصر القطامي', category: 'مواعظ قرآنية', description: 'أهوال يوم القيامة' },
   { id: 'sh_ext39', youtubeId: '0zEqbVM-4tI', title: 'نعيم الجنة', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'وصف الجنة ونعيمها' },
   { id: 'sh_ext40', youtubeId: 'b11R0BwpWVs', title: 'فضل الاستغفار', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية', description: 'فضائل الاستغفار' },

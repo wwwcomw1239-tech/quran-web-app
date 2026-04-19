@@ -105,16 +105,7 @@ export const additionalVideosBatch3: QuranVideo[] = [
   { id: 'kdr_b3_9', youtubeId: 'mvGwlfFqF0I', title: 'شرح مقدمة التفسير', scholar: 'الشيخ عبد الكريم الخضير', category: 'تفسير القرآن' },
 
   // ═══════════════════════════════════════════
-  // الشيخ صالح المغامسي
   // ═══════════════════════════════════════════
-  { id: 'mgh_b3_1', youtubeId: 'nlxgA7Wo5GQ', title: 'قصة سيدنا يوسف', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن' },
-  { id: 'mgh_b3_2', youtubeId: 'mKgsNBsHaDw', title: 'قصة موسى والخضر', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن' },
-  { id: 'mgh_b3_3', youtubeId: '5RDWv5gMxvM', title: 'قصة أصحاب الكهف', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن' },
-  { id: 'mgh_b3_4', youtubeId: 'hy-6gVXwS5A', title: 'قصة ذي القرنين', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن' },
-  { id: 'mgh_b3_5', youtubeId: 'T7jPsu3QvqA', title: 'قصة أصحاب الأخدود', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن' },
-  { id: 'mgh_b3_6', youtubeId: 'HVCHj7mkixE', title: 'قصة مريم والعبد الصالح', scholar: 'الشيخ صالح المغامسي', category: 'قصص القرآن' },
-  { id: 'mgh_b3_7', youtubeId: 'BMfMnS2mCfA', title: 'تأملات في سورة الفاتحة', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات' },
-  { id: 'mgh_b3_8', youtubeId: 'Y9vYrbL3fSs', title: 'تأملات في سورة الأحزاب', scholar: 'الشيخ صالح المغامسي', category: 'تدبر وتأملات' },
 
   // ═══════════════════════════════════════════
   // د. مساعد الطيار

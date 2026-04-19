@@ -9,7 +9,6 @@ export const additionalShorts: QuranShort[] = [
   // ═══════════════════════════════════════════
   // مواعظ قرآنية - إضافات
   // ═══════════════════════════════════════════
-  { id: 'mw_ext1', youtubeId: 'pxGP4a2I9Bk', title: 'من أراد الدنيا فعليه بالقرآن', scholar: 'الشيخ صالح المغامسي', category: 'مواعظ قرآنية' },
   { id: 'mw_ext2', youtubeId: 'QGf3RfsR3Ao', title: 'أصحاب القرآن', scholar: 'الشيخ سعد العتيق', category: 'مواعظ قرآنية' },
   { id: 'mw_ext3', youtubeId: 'nKwBrXHp6EE', title: 'هجر القرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'مواعظ قرآنية' },
   { id: 'mw_ext4', youtubeId: 'j9aj0QaIqyI', title: 'أهل القرآن هم أهل الله', scholar: 'الشيخ ابن باز', category: 'مواعظ قرآنية' },
@@ -23,7 +22,6 @@ export const additionalShorts: QuranShort[] = [
   // ═══════════════════════════════════════════
   { id: 'td_ext1', youtubeId: 'Mg5_V4E3UIw', title: 'تدبر قوله تعالى ولا تقنطوا من رحمة الله', scholar: 'د. محمد الخضيري', category: 'تدبرات' },
   { id: 'td_ext2', youtubeId: 'OKQqMOKdv3o', title: 'تدبر قوله تعالى ومن يتوكل على الله فهو حسبه', scholar: 'د. محمد الخضيري', category: 'تدبرات' },
-  { id: 'td_ext3', youtubeId: 'TthIiN3YyXo', title: 'تدبر آية إن مع العسر يسراً', scholar: 'الشيخ صالح المغامسي', category: 'تدبرات' },
   { id: 'td_ext4', youtubeId: 'zYNaQEXOgXA', title: 'تدبر سورة الضحى', scholar: 'د. عبد الله البصير', category: 'تدبرات' },
   { id: 'td_ext5', youtubeId: 'Gx_nE5vddXE', title: 'تدبر سورة الشرح', scholar: 'د. عبد الله البصير', category: 'تدبرات' },
   { id: 'td_ext6', youtubeId: 'ZuLb_MZ-F_w', title: 'تدبر سورة العصر', scholar: 'الشيخ خالد السبت', category: 'تدبرات' },
@@ -66,6 +64,5 @@ export const additionalShorts: QuranShort[] = [
   { id: 'kh_ext1', youtubeId: 'HYAa9mWpXpI', title: 'القرآن ربيع القلوب', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية' },
   { id: 'kh_ext2', youtubeId: 'sE4kiGe1D5E', title: 'حلاوة القرآن', scholar: 'الشيخ محمد المختار الشنقيطي', category: 'خواطر إيمانية' },
   { id: 'kh_ext3', youtubeId: 'p1uZcMO8mzE', title: 'آثار القرآن في القلب', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية' },
-  { id: 'kh_ext4', youtubeId: 'hQ6lHfbzoIE', title: 'لا تيأس من روح الله', scholar: 'الشيخ صالح المغامسي', category: 'خواطر إيمانية' },
   { id: 'kh_ext5', youtubeId: 'EYX9bsGKJSs', title: 'القلوب والقرآن', scholar: 'الشيخ عبد الرزاق البدر', category: 'خواطر إيمانية' },
 ];
