@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { booksCollections, type BookCategory, type BookVolume, type BookCollection } from '@/data/books';
-import { getProxiedUrl, shouldProxy, downloadWithProxy, checkBookUrl } from '@/lib/proxy';
+import { getProxiedUrl, shouldProxy, downloadWithProxy, checkBookUrl, checkBookUrls } from '@/lib/proxy';
 
 // ============================================
 // CATEGORY CONFIG
@@ -131,6 +131,10 @@ export function BooksLibrary() {
   const pdfLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
   // تتبع الكتب المفقودة لعرض بادج بجانبها (لا تؤثر على الأداء لأنها in-memory)
   const [missingBooks, setMissingBooks] = useState<Record<string, boolean>>({});
+  // تتبع الأجزاء (volumes) المفقودة بالضبط (volumeId -> true)
+  const [missingVolumes, setMissingVolumes] = useState<Record<string, boolean>>({});
+  // خيار المستخدم: إخفاء الكتب المفقودة من القائمة (مفعّل افتراضياً)
+  const [hideMissingBooks, setHideMissingBooks] = useState(true);
 
   // Reset pagination when filters change
   useEffect(() => {
@@ -171,8 +175,72 @@ export function BooksLibrary() {
           (book.description && book.description.toLowerCase().includes(query))
       );
     }
+    // إذا كان الخيار مفعّلاً: أخفِ الكتب التي ثبت أن كل أجزائها مفقودة من المصدر
+    if (hideMissingBooks) {
+      result = result.filter(book => {
+        // احتفظ بالكتاب إن كان له جزء واحد على الأقل غير مُعلّم كـ missing
+        return book.volumes.some(v => !missingVolumes[v.id]);
+      });
+    }
     return result;
-  }, [deferredSearchQuery, selectedCategory]);
+  }, [deferredSearchQuery, selectedCategory, hideMissingBooks, missingVolumes]);
+
+  // ⚡ فحص خلفي متدرج للكتب المعروضة حالياً (batch-check سريع للـ archive.org)
+  // يتحقق من أول 80 جزء في أول فئة/بحث، ثم يحدّث missingVolumes تدريجياً
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let cancelled = false;
+
+    // اجمع الأجزاء الظاهرة حالياً (أول 80 من الكتب المعروضة) — archive.org فقط
+    const urls: string[] = [];
+    const urlToVolumeId = new Map<string, string>();
+    outer: for (const book of filteredCollections) {
+      for (const v of book.volumes) {
+        // تجاهل ما فحصناه سابقاً
+        if (missingVolumes[v.id] !== undefined) continue;
+        if (!shouldProxy(v.pdfUrl)) continue;
+        urls.push(v.pdfUrl);
+        urlToVolumeId.set(v.pdfUrl, v.id);
+        if (urls.length >= 80) break outer;
+      }
+    }
+    if (urls.length === 0) return;
+
+    const t = setTimeout(async () => {
+      try {
+        const results = await checkBookUrls(urls, 8);
+        if (cancelled) return;
+        const updates: Record<string, boolean> = {};
+        const bookUpdates: Record<string, boolean> = {};
+        results.forEach((r, url) => {
+          const volId = urlToVolumeId.get(url);
+          if (!volId) return;
+          if (!r.ok) {
+            updates[volId] = true;
+            // علّم الكتاب كله إذا كان فيه volume مفقود (لعرض بادج)
+            for (const book of booksCollections) {
+              if (book.volumes.some(v => v.id === volId)) {
+                bookUpdates[book.id] = true;
+                break;
+              }
+            }
+          } else {
+            updates[volId] = false;
+          }
+        });
+        if (Object.keys(updates).length > 0) {
+          setMissingVolumes(prev => ({ ...prev, ...updates }));
+        }
+        if (Object.keys(bookUpdates).length > 0) {
+          setMissingBooks(prev => ({ ...prev, ...bookUpdates }));
+        }
+      } catch {
+        // تجاهل الأخطاء - لا نريد منع المستخدم من رؤية الكتب
+      }
+    }, 300); // تأخير صغير لتجنب الفحص أثناء الكتابة السريعة
+
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [filteredCollections.length, selectedCategory, deferredSearchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Group by category
   const booksByCategory = useMemo(() => {
@@ -939,6 +1007,26 @@ export function BooksLibrary() {
               <X className="w-5 h-5" />
             </button>
           )}
+        </div>
+
+        {/* Toggle: إخفاء الكتب غير المتوفرة */}
+        <div className="flex items-center justify-center gap-2">
+          <label className="flex items-center gap-2 cursor-pointer select-none bg-white dark:bg-slate-800 rounded-full px-4 py-2 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow transition-all">
+            <input
+              type="checkbox"
+              checked={hideMissingBooks}
+              onChange={(e) => setHideMissingBooks(e.target.checked)}
+              className="w-4 h-4 accent-purple-500 cursor-pointer"
+            />
+            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+              إخفاء الكتب غير المتوفرة تلقائياً
+            </span>
+            {Object.values(missingVolumes).filter(Boolean).length > 0 && (
+              <Badge variant="secondary" className="text-[10px] bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border-0">
+                {Object.values(missingVolumes).filter(Boolean).length} مفقود
+              </Badge>
+            )}
+          </label>
         </div>
 
         {/* Category Filter */}
