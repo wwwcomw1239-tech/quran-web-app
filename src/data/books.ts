@@ -61,7 +61,9 @@ function singleVol(id: string, title: string, pdfUrl: string): BookVolume[] {
 // BOOKS DATABASE
 // ============================================
 
-export const booksCollections: BookCollection[] = [
+import { additionalBooks } from './books-additions';
+
+const coreBooksCollections: BookCollection[] = [
   // ══════════════════════════════════════════════════════════════
   // ██ قسم التفسير - أكثر من 40 كتاب ██
   // ══════════════════════════════════════════════════════════════
@@ -3289,3 +3291,14 @@ export const booksCollections: BookCollection[] = [
     isSingleVolume: true,
   },
 ];
+
+// Deduplicate by id - additional books override core if duplicate id exists
+const allBooksMap = new Map<string, BookCollection>();
+for (const book of coreBooksCollections) {
+  allBooksMap.set(book.id, book);
+}
+for (const book of additionalBooks) {
+  allBooksMap.set(book.id, book);
+}
+
+export const booksCollections: BookCollection[] = Array.from(allBooksMap.values());
