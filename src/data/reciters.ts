@@ -618,7 +618,7 @@ export const reciters: Reciter[] = [
 ];
 
 // Cloudflare Worker proxy URL for low quality audio (64kbps)
-const LOW_QUALITY_PROXY_URL = 'https://quran-shorts-api.wwwcomw1239.workers.dev/audio';
+const LOW_QUALITY_PROXY_URL = 'https://quran-shorts-api.almuhasab9.workers.dev/audio';
 
 // Audio quality type
 export type AudioQuality = 'high' | 'low';

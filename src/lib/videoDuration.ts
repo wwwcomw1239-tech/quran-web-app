@@ -6,7 +6,7 @@
  * - duration == null → unknown (worker failed)
  */
 
-const WORKER = 'https://quran-shorts-api.wwwcomw1239.workers.dev';
+const WORKER = 'https://quran-shorts-api.almuhasab9.workers.dev';
 const CACHE_KEY = 'yt-duration-cache-v1';
 const UNAVAILABLE = -1;
 

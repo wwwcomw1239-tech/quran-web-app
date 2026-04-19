@@ -255,7 +255,7 @@ export function getWhatsAppShareUrl(videoId: string, title: string): string {
  * Mandatory: Low quality is the default option
  */
 export function getDownloadUrl(videoId: string, quality: 'low' | 'medium' | 'high' = 'low'): string {
-  const proxyUrl = 'https://quran-shorts-api.wwwcomw1239.workers.dev';
+  const proxyUrl = 'https://quran-shorts-api.almuhasab9.workers.dev';
   return `${proxyUrl}/youtube-download?id=${videoId}&quality=${quality}`;
 }
 

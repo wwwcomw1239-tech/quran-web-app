@@ -56,3 +56,13 @@ server.log
 /public/sw.js.map
 /public/workbox-*.js
 /public/workbox-*.js.map
+/public/worker-*.js
+/public/worker-*.js.map
+
+# Wrangler
+/worker/.wrangler/
+/.wrangler/
+
+# Next.js build output
+/.next/
+/out/

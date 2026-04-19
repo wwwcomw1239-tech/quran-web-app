@@ -370,7 +370,7 @@ export function QuranShorts() {
       try {
         // نستخدم worker endpoint الخاص بنا للحصول على مدة الفيديو
         const res = await fetch(
-          `https://quran-shorts-api.wwwcomw1239.workers.dev/duration?id=${currentShort.youtubeId}`,
+          `https://quran-shorts-api.almuhasab9.workers.dev/duration?id=${currentShort.youtubeId}`,
           { signal: AbortSignal.timeout(6000) }
         );
         if (cancelled) return;

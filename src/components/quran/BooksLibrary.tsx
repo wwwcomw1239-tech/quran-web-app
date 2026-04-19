@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef, useDeferredValue, memo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { booksCollections, type BookCategory, type BookVolume, type BookCollection } from '@/data/books';
-import { getProxiedUrl, shouldProxy, downloadWithProxy } from '@/lib/proxy';
+import { getProxiedUrl, shouldProxy, downloadWithProxy, checkBookUrl } from '@/lib/proxy';
 
 // ============================================
 // CATEGORY CONFIG
@@ -119,6 +119,9 @@ export function BooksLibrary() {
   const [pdfReaderTitle, setPdfReaderTitle] = useState<string>('');
   const [pdfLoading, setPdfLoading] = useState(true);
   const [pdfError, setPdfError] = useState(false);
+  // 'missing' = الكتاب مفقود تماماً من المصدر (Archive.org). نعرض نافذة بدائل ذكية
+  const [pdfMissing, setPdfMissing] = useState(false);
+  const [pdfBookName, setPdfBookName] = useState<string>('');
   // direct: يعرض الـ PDF مباشرة في iframe (أسرع على الأجهزة المكتبية)
   // google: Google Docs Viewer
   // pdfjs-proxy: Mozilla PDF.js (الأكثر توافقاً)
@@ -126,6 +129,8 @@ export function BooksLibrary() {
   const [viewerStrategy, setViewerStrategy] = useState<'direct' | 'google' | 'pdfjs-proxy' | 'archive'>('direct');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const pdfLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // تتبع الكتب المفقودة لعرض بادج بجانبها (لا تؤثر على الأداء لأنها in-memory)
+  const [missingBooks, setMissingBooks] = useState<Record<string, boolean>>({});
 
   // Reset pagination when filters change
   useEffect(() => {
@@ -148,14 +153,18 @@ export function BooksLibrary() {
     setExpandedBooks(prev => ({ ...prev, [bookId]: !prev[bookId] }));
   }, []);
 
-  // Filter books
+  // ⚡ useDeferredValue: يحافظ على سلاسة الكتابة في مربع البحث
+  // بتأجيل تطبيق الفلتر حتى يفرغ الـ main thread من الرسم
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+
+  // Filter books (يستخدم deferredSearchQuery ليكون الإدخال سريعاً)
   const filteredCollections = useMemo(() => {
     let result = booksCollections;
     if (selectedCategory !== 'all') {
       result = result.filter(book => book.category === selectedCategory);
     }
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
+    if (deferredSearchQuery.trim()) {
+      const query = deferredSearchQuery.toLowerCase();
       result = result.filter(
         book => book.name.toLowerCase().includes(query) ||
           book.author.toLowerCase().includes(query) ||
@@ -163,7 +172,7 @@ export function BooksLibrary() {
       );
     }
     return result;
-  }, [searchQuery, selectedCategory]);
+  }, [deferredSearchQuery, selectedCategory]);
 
   // Group by category
   const booksByCategory = useMemo(() => {
@@ -234,20 +243,41 @@ export function BooksLibrary() {
   };
 
   // Handle read with embedded PDF viewer
-  const handleRead = useCallback((volume: BookVolume, bookName?: string) => {
+  // ⚡ يتحقق أولاً من صحة رابط archive.org عبر worker (/check) قبل عرض الـ iframe.
+  // إذا كان الكتاب مفقوداً من المصدر، نعرض واجهة بدائل جميلة مع اقتراحات بحث
+  // (Shamela, Waqfeya, Google) بدلاً من عرض رسالة خطأ Archive.org القبيحة.
+  const handleRead = useCallback(async (volume: BookVolume, bookName?: string) => {
     const title = bookName ? `${bookName} - ${volume.title}` : volume.title;
     setPdfReaderTitle(title);
     setPdfReaderUrl(volume.pdfUrl);
+    setPdfBookName(bookName || volume.title);
     // ابدأ بالعرض المباشر (الأسرع)؛ إن فشل، يستطيع المستخدم التبديل
     setViewerStrategy('direct');
     setPdfLoading(true);
     setPdfError(false);
+    setPdfMissing(false);
 
-    // Set a timeout - if PDF doesn't load in 15s, show error (تقليص من 20s)
+    // Set a timeout - if PDF doesn't load in 15s, show error
     if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
     pdfLoadTimerRef.current = setTimeout(() => {
       setPdfLoading(false);
     }, 15000);
+
+    // ⚡ تحقق مسبق من صحة الرابط في الخلفية (سريع جداً مع التخزين المؤقت)
+    // إذا رجع ok=false، نعرض واجهة البدائل فوراً بدون إظهار iframe
+    if (shouldProxy(volume.pdfUrl)) {
+      try {
+        const check = await checkBookUrl(volume.pdfUrl);
+        if (!check.ok) {
+          if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
+          setPdfLoading(false);
+          setPdfMissing(true);
+          setMissingBooks(prev => ({ ...prev, [volume.id]: true }));
+        }
+      } catch {
+        // تجاهل الفشل في التحقق - دع الـ iframe يحاول على أي حال
+      }
+    }
   }, []);
 
   const handlePdfLoad = useCallback(() => {
@@ -267,6 +297,8 @@ export function BooksLibrary() {
     setPdfReaderTitle('');
     setPdfLoading(true);
     setPdfError(false);
+    setPdfMissing(false);
+    setPdfBookName('');
     if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
   }, []);
 
@@ -432,7 +464,7 @@ export function BooksLibrary() {
 
         {/* PDF Iframe */}
         <div className="flex-1 relative bg-slate-100 dark:bg-slate-900">
-          {!pdfError && (
+          {!pdfError && !pdfMissing && (
             <iframe
               ref={iframeRef}
               key={`${pdfReaderUrl}-${viewerStrategy}`}
@@ -446,9 +478,121 @@ export function BooksLibrary() {
               onError={handlePdfError}
             />
           )}
-          
+
+          {/* ⚡ Missing book - show smart alternatives UI */}
+          {pdfMissing && (() => {
+            const searchQ = encodeURIComponent(pdfBookName || pdfReaderTitle);
+            const alternatives = [
+              {
+                name: 'المكتبة الشاملة',
+                url: `https://shamela.ws/search?q=${searchQ}`,
+                desc: 'أضخم مكتبة إسلامية إلكترونية',
+                color: 'from-emerald-500 to-teal-600',
+                icon: Library,
+              },
+              {
+                name: 'الوقفية',
+                url: `https://waqfeya.net/search.php?Bk=${searchQ}`,
+                desc: 'مكتبة الوقفية للكتب المصورة',
+                color: 'from-blue-500 to-indigo-600',
+                icon: BookOpenCheck,
+              },
+              {
+                name: 'نور - الكتب الإسلامية',
+                url: `https://www.noor-book.com/search/${searchQ}`,
+                desc: 'كتب PDF مجانية',
+                color: 'from-purple-500 to-fuchsia-600',
+                icon: BookMarked,
+              },
+              {
+                name: 'Google',
+                url: `https://www.google.com/search?q=${searchQ}+pdf`,
+                desc: 'بحث شامل في الإنترنت',
+                color: 'from-amber-500 to-orange-600',
+                icon: Search,
+              },
+            ];
+            return (
+              <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900 overflow-auto p-4">
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 sm:p-7 shadow-xl flex flex-col items-center gap-4 max-w-lg w-full my-auto border border-slate-200 dark:border-slate-700">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center">
+                    <AlertCircle className="w-8 h-8 text-amber-500" />
+                  </div>
+                  <div className="text-center space-y-1.5">
+                    <h3 className="font-bold text-lg text-slate-900 dark:text-white">
+                      الكتاب غير متوفر حالياً
+                    </h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      للأسف هذا الكتاب تم إزالته من المصدر (Archive.org)
+                      <br />
+                      لكن يمكنك الوصول إليه من مصادر إسلامية موثوقة
+                    </p>
+                  </div>
+
+                  <div className="w-full space-y-2 mt-1">
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-semibold text-center">
+                      ابحث عن "{pdfBookName || pdfReaderTitle}" في:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {alternatives.map((alt) => {
+                        const Icon = alt.icon;
+                        return (
+                          <button
+                            key={alt.name}
+                            onClick={() => window.open(alt.url, '_blank', 'noopener,noreferrer')}
+                            className={`group relative overflow-hidden bg-gradient-to-br ${alt.color} text-white rounded-xl p-3 text-right hover:shadow-lg transition-all hover:-translate-y-0.5`}
+                          >
+                            <div className="flex items-start gap-2.5">
+                              <div className="w-9 h-9 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                                <Icon className="w-4.5 h-4.5 text-white" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-bold text-sm flex items-center gap-1.5">
+                                  {alt.name}
+                                  <ExternalLink className="w-3 h-3 opacity-70 group-hover:opacity-100" />
+                                </div>
+                                <div className="text-[11px] text-white/80 mt-0.5 line-clamp-1">
+                                  {alt.desc}
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="w-full pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center">
+                      أو جرب فتح الرابط الأصلي (قد لا يعمل):
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => { setPdfMissing(false); setPdfLoading(true); setViewerStrategy('pdfjs-proxy'); }}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 gap-1.5 text-xs"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        محاولة أخرى
+                      </Button>
+                      <Button
+                        onClick={closePdfReader}
+                        size="sm"
+                        className="flex-1 gap-1.5 text-xs bg-slate-500 hover:bg-slate-600"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        إغلاق
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Loading overlay */}
-          {pdfLoading && !pdfError && (
+          {pdfLoading && !pdfError && !pdfMissing && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-900/80">
               <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-3">
                 <div className="w-12 h-12 rounded-full border-4 border-purple-200 border-t-purple-500 animate-spin" />
@@ -459,7 +603,7 @@ export function BooksLibrary() {
           )}
 
           {/* Error state */}
-          {pdfError && (
+          {pdfError && !pdfMissing && (
             <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-slate-900 overflow-auto p-4">
               <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl flex flex-col items-center gap-4 max-w-md w-full my-auto">
                 <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -551,9 +695,10 @@ export function BooksLibrary() {
   const renderVolumeCard = (volume: BookVolume, bookName: string) => {
     const isDownloading = downloadingBooks[volume.id];
     const progress = downloadProgress[volume.id] ?? 0;
+    const isMissing = missingBooks[volume.id];
 
     return (
-      <div key={volume.id} className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-sm transition-all group overflow-hidden">
+      <div key={volume.id} className={`relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border hover:shadow-sm transition-all group overflow-hidden ${isMissing ? 'border-amber-200 dark:border-amber-900/50' : 'border-slate-100 dark:border-slate-700'}`}>
         {/* Progress bar background when downloading */}
         {isDownloading && (
           <div
@@ -569,6 +714,12 @@ export function BooksLibrary() {
           {isDownloading && (
             <span className="mr-2 text-[10px] text-blue-600 dark:text-blue-400 font-normal">
               {progress}%
+            </span>
+          )}
+          {isMissing && (
+            <span className="mr-2 inline-flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 font-normal">
+              <AlertCircle className="w-3 h-3" />
+              غير متوفر
             </span>
           )}
         </span>

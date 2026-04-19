@@ -1,33 +1,34 @@
 /**
- * Proxy utilities for bypassing regional blocks
- * Cloudflare Worker Proxy for archive.org and mp3quran.net URLs
+ * Proxy utilities for bypassing regional blocks + handling Archive.org outages
+ * Smart Cloudflare Worker Proxy with auto-resolution of direct archive servers
  */
 
-// The deployed Cloudflare Worker proxy URL (updated to new Worker)
-const PROXY_URL = 'https://quran-shorts-api.wwwcomw1239.workers.dev/cors';
+// The deployed Cloudflare Worker proxy URL (v4.0 with smart archive.org resolver)
+const PROXY_BASE = 'https://quran-shorts-api.almuhasab9.workers.dev';
+const PROXY_URL = `${PROXY_BASE}/cors`;
 
-// Domains that need to be proxied (blocked in some regions)
+// Domains that need to be proxied (blocked in some regions or unreliable)
 const PROXIED_DOMAINS = [
   'archive.org',
   'www.archive.org',
-  'ia800.us.archive.org',
-  'ia600.us.archive.org',
-  'ia700.us.archive.org',
-  'ia802.us.archive.org',
-  'ia803.us.archive.org',
-  'ia804.us.archive.org',
-  'ia902.us.archive.org',
-  'ia903.us.archive.org',
+  'ia600000.us.archive.org',
+  'ia700000.us.archive.org',
+  'ia800000.us.archive.org',
+  'ia900000.us.archive.org',
 ];
 
 /**
  * Check if a URL should be proxied
  */
 export function shouldProxy(url: string): boolean {
+  if (!url) return false;
   try {
     const urlObj = new URL(url);
-    return PROXIED_DOMAINS.some(domain =>
-      urlObj.hostname === domain || urlObj.hostname.endsWith('.' + domain)
+    const host = urlObj.hostname.toLowerCase();
+    // Catch any archive.org subdomain (ia800000, dn790000, etc.)
+    if (host.endsWith('.archive.org') || host === 'archive.org') return true;
+    return PROXIED_DOMAINS.some(
+      domain => host === domain || host.endsWith('.' + domain)
     );
   } catch {
     return false;
@@ -35,27 +36,86 @@ export function shouldProxy(url: string): boolean {
 }
 
 /**
- * Get the proxied URL for a given URL
- * If the URL should be proxied, return the proxy URL with the original URL as a query parameter
- * Otherwise, return the original URL
+ * Get the proxied URL for a given URL.
+ * For archive.org URLs, the worker auto-resolves to a direct server URL.
  */
 export function getProxiedUrl(url: string): string {
   if (!url) return url;
-
-  // Check if URL should be proxied
   if (shouldProxy(url)) {
-    // Encode the URL and pass it through the proxy
     return `${PROXY_URL}?url=${encodeURIComponent(url)}`;
   }
-
   return url;
 }
 
 /**
- * Get direct URL (without proxy) - for cases where proxy is not needed
+ * Get direct URL (without proxy)
  */
 export function getDirectUrl(url: string): string {
   return url;
+}
+
+// ──────────────────────────────────────────────────────────────────────
+// IN-MEMORY CACHES for link-health checks (no re-checks on every render)
+// ──────────────────────────────────────────────────────────────────────
+type CheckResult = { ok: boolean; reason?: string; checkedAt: number };
+const checkCache = new Map<string, CheckResult>();
+const CHECK_TTL_MS = 1000 * 60 * 30; // 30 min
+
+/**
+ * Quickly verify whether a PDF URL actually works (uses archive.org metadata API via the worker).
+ * Returns {ok: true} for non-archive URLs by default (they can't be statically validated).
+ */
+export async function checkBookUrl(url: string): Promise<CheckResult> {
+  if (!url) return { ok: false, reason: 'no_url', checkedAt: Date.now() };
+
+  // Only archive.org URLs can be validated via metadata API
+  if (!shouldProxy(url)) return { ok: true, checkedAt: Date.now() };
+
+  const cached = checkCache.get(url);
+  if (cached && Date.now() - cached.checkedAt < CHECK_TTL_MS) return cached;
+
+  try {
+    const res = await fetch(`${PROXY_BASE}/check?url=${encodeURIComponent(url)}`, {
+      // 8s timeout to avoid blocking UI
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) {
+      const fallback = { ok: true, reason: 'check_failed', checkedAt: Date.now() };
+      checkCache.set(url, fallback);
+      return fallback;
+    }
+    const json = (await res.json()) as { ok: boolean; reason?: string };
+    const result: CheckResult = {
+      ok: json.ok,
+      reason: json.reason,
+      checkedAt: Date.now(),
+    };
+    checkCache.set(url, result);
+    return result;
+  } catch {
+    // On network errors, assume ok - don't punish users for our validation failure
+    const fallback = { ok: true, reason: 'check_network_error', checkedAt: Date.now() };
+    checkCache.set(url, fallback);
+    return fallback;
+  }
+}
+
+/**
+ * Batch-check multiple book URLs efficiently (parallel with concurrency limit).
+ */
+export async function checkBookUrls(urls: string[], concurrency = 6): Promise<Map<string, CheckResult>> {
+  const result = new Map<string, CheckResult>();
+  const queue = [...new Set(urls)];
+  const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
+    while (queue.length > 0) {
+      const url = queue.shift();
+      if (!url) break;
+      const r = await checkBookUrl(url);
+      result.set(url, r);
+    }
+  });
+  await Promise.all(workers);
+  return result;
 }
 
 /**
@@ -70,7 +130,19 @@ export async function downloadWithProxy(
   const response = await fetch(proxiedUrl);
 
   if (!response.ok) {
-    throw new Error(`Download failed: ${response.status} ${response.statusText}`);
+    // Try to parse friendly error message from worker
+    try {
+      const errJson = (await response.clone().json()) as { message?: string };
+      throw new Error(errJson?.message || `Download failed: ${response.status}`);
+    } catch {
+      throw new Error(`Download failed: ${response.status} ${response.statusText}`);
+    }
+  }
+
+  const contentType = response.headers.get('Content-Type') || '';
+  // Defensive: worker should already reject HTML error pages, but double-check
+  if (contentType.toLowerCase().includes('text/html')) {
+    throw new Error('الملف غير متاح على المصدر حالياً');
   }
 
   const contentLength = response.headers.get('content-length');
@@ -97,7 +169,7 @@ export async function downloadWithProxy(
     }
   }
 
-  return new Blob(chunks);
+  return new Blob(chunks, { type: contentType || 'application/pdf' });
 }
 
 /**
@@ -113,4 +185,11 @@ export function openWithProxy(url: string): void {
  */
 export function getProxyUrl(): string {
   return PROXY_URL;
+}
+
+/**
+ * Get the proxy base URL for reference
+ */
+export function getProxyBase(): string {
+  return PROXY_BASE;
 }

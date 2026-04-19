@@ -114,7 +114,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://www.youtube-nocookie.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://yt3.ggpht.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://server.mp3quran.net" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://quran-shorts-api.wwwcomw1239.workers.dev" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://quran-shorts-api.almuhasab9.workers.dev" crossOrigin="anonymous" />
         {/* DNS prefetch for less-critical origins */}
         <link rel="dns-prefetch" href="https://archive.org" />
         <link rel="dns-prefetch" href="https://www.youtube.com" />
