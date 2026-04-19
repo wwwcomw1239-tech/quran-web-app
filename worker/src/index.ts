@@ -422,43 +422,72 @@ async function fetchYoutubeDuration(id: string): Promise<number | null> {
     if (typeof v?.duration === 'number') return v.duration;
   }
 
+  // ─── Strategy 1: YouTube oEmbed endpoint (fastest, never rate-limited for simple metadata) ───
+  // This confirms the video exists. If it doesn't, we can mark it unavailable.
+  // oEmbed returns 401 for unavailable/private videos.
   try {
-    const res = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
-      },
-      cf: { cacheTtl: 86400, cacheEverything: true } as any,
-    });
-    if (!res.ok) return null;
-    const html = await res.text();
-
-    let m = html.match(/"lengthSeconds"\s*:\s*"(\d+)"/);
-    if (m) {
-      const dur = parseInt(m[1], 10);
-      await cache.put(cacheKey, new Response(JSON.stringify({ duration: dur }), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' },
-      }));
-      return dur;
-    }
-    m = html.match(/"approxDurationMs"\s*:\s*"(\d+)"/);
-    if (m) {
-      const dur = Math.round(parseInt(m[1], 10) / 1000);
-      await cache.put(cacheKey, new Response(JSON.stringify({ duration: dur }), {
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' },
-      }));
-      return dur;
-    }
-    if (/Video unavailable|This video isn't available/i.test(html)) {
+    const oembedRes = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`,
+      {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Noor-Al-Quran-App/5.0)' },
+        cf: { cacheTtl: 86400, cacheEverything: true } as any,
+      }
+    );
+    if (oembedRes.status === 401 || oembedRes.status === 404) {
+      // Video unavailable - cache result
       await cache.put(cacheKey, new Response(JSON.stringify({ duration: -1 }), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' },
       }));
       return -1;
     }
-    return null;
   } catch {
-    return null;
+    // If oEmbed fails, continue to next strategy
   }
+
+  // ─── Strategy 2: Scrape watch page for lengthSeconds ───
+  try {
+    const res = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+      },
+      cf: { cacheTtl: 86400, cacheEverything: true } as any,
+    });
+    if (res.ok) {
+      const html = await res.text();
+
+      let m = html.match(/"lengthSeconds"\s*:\s*"(\d+)"/);
+      if (m) {
+        const dur = parseInt(m[1], 10);
+        await cache.put(cacheKey, new Response(JSON.stringify({ duration: dur }), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' },
+        }));
+        return dur;
+      }
+      m = html.match(/"approxDurationMs"\s*:\s*"(\d+)"/);
+      if (m) {
+        const dur = Math.round(parseInt(m[1], 10) / 1000);
+        await cache.put(cacheKey, new Response(JSON.stringify({ duration: dur }), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' },
+        }));
+        return dur;
+      }
+      if (/Video unavailable|This video isn't available/i.test(html)) {
+        await cache.put(cacheKey, new Response(JSON.stringify({ duration: -1 }), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' },
+        }));
+        return -1;
+      }
+    }
+  } catch {
+    // fall through
+  }
+
+  // ─── Strategy 3: oEmbed only confirmed it exists but we can't get duration ───
+  // Return null so frontend treats video as "unknown duration" (optimistic - lets it play)
+  return null;
 }
 
 async function handleDuration(request: Request): Promise<Response> {

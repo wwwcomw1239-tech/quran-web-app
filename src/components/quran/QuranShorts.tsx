@@ -356,7 +356,7 @@ export function QuranShorts() {
     return () => container.removeEventListener('wheel', h);
   }, [goNext, goPrev, viewMode]);
 
-  // فحص توفر ومدة الفيديو عبر Cloudflare Worker
+  // فحص توفر ومدة الفيديو عبر Cloudflare Worker + YouTube IFrame API
   useEffect(() => {
     if (!currentShort) return;
 
@@ -405,8 +405,58 @@ export function QuranShorts() {
 
     checkVideo();
 
+    // ⚡ فحص إضافي: استمع للـ postMessage من YouTube IFrame عند استقبال مدة الفيديو
+    // هذا يعمل محلياً في المتصفح وهو الطريقة الأوثق لأن YouTube يبث معلومات الفيديو
+    // مباشرة عبر postMessage. إذا كان الفيديو > 75 ثانية، نتخطاه فوراً.
+    const handleMessage = (e: MessageEvent) => {
+      try {
+        if (typeof e.data !== 'string') return;
+        const data = JSON.parse(e.data);
+        if (data.event === 'onReady' || data.event === 'infoDelivery' || data.info) {
+          const info = data.info || data;
+          if (typeof info.duration === 'number' && info.duration > 0) {
+            const dur = Math.round(info.duration);
+            setDurationMap(prev => ({ ...prev, [currentShort.youtubeId]: dur }));
+            // احفظ في الكاش المحلي أيضاً
+            try {
+              const raw = localStorage.getItem('yt-duration-cache-v1') || '{}';
+              const cache = JSON.parse(raw);
+              cache[currentShort.youtubeId] = dur;
+              localStorage.setItem('yt-duration-cache-v1', JSON.stringify(cache));
+            } catch {}
+
+            if (dur > MAX_SHORT_SECONDS) {
+              setLongVideoIds(prev => new Set([...prev, currentShort.youtubeId]));
+              videoCheckTimerRef.current = setTimeout(() => goNext(), 250);
+            }
+          }
+        }
+      } catch {
+        // ignore parse errors
+      }
+    };
+    window.addEventListener('message', handleMessage);
+
+    // أرسل للـ iframe طلب الحصول على مدة الفيديو
+    // ننتظر لحظة حتى يحمّل الـ iframe، ثم نطلب المدة
+    const requestDuration = setTimeout(() => {
+      if (cancelled || !iframeRef.current) return;
+      try {
+        iframeRef.current.contentWindow?.postMessage(
+          JSON.stringify({ event: 'listening', id: currentShort.youtubeId }),
+          '*'
+        );
+        iframeRef.current.contentWindow?.postMessage(
+          JSON.stringify({ event: 'command', func: 'getDuration', args: [] }),
+          '*'
+        );
+      } catch {}
+    }, 1500);
+
     return () => {
       cancelled = true;
+      window.removeEventListener('message', handleMessage);
+      clearTimeout(requestDuration);
       if (videoCheckTimerRef.current) clearTimeout(videoCheckTimerRef.current);
     };
   }, [currentShort?.youtubeId]); // eslint-disable-line react-hooks/exhaustive-deps
