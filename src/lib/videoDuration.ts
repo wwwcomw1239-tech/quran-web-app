@@ -132,3 +132,87 @@ export function isShort(duration: number | null | undefined, maxSeconds = 75): b
 export function isAvailable(duration: number | null | undefined): boolean {
   return duration !== UNAVAILABLE;
 }
+
+// ============================================
+// DYNAMIC CHANNEL SHORTS FETCHER
+// ============================================
+
+export interface ChannelShort {
+  id: string;      // youtubeId
+  title: string;
+  duration: number;
+  published?: string;
+}
+
+const CHANNEL_CACHE_KEY = 'yt-channel-shorts-v1';
+const CHANNEL_CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
+
+interface ChannelCacheEntry {
+  ts: number;
+  shorts: ChannelShort[];
+}
+type ChannelCache = Record<string, ChannelCacheEntry>;
+
+function loadChannelCache(): ChannelCache {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(CHANNEL_CACHE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveChannelCache(cache: ChannelCache) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(CHANNEL_CACHE_KEY, JSON.stringify(cache));
+  } catch {}
+}
+
+/**
+ * Fetches recent Shorts (<= maxSec seconds) from a YouTube channel RSS.
+ * Results are cached in localStorage for 6 hours.
+ */
+export async function fetchChannelShorts(
+  channelId: string,
+  maxSec = 75,
+  timeoutMs = 10000
+): Promise<ChannelShort[]> {
+  if (!/^UC[A-Za-z0-9_-]{22}$/.test(channelId)) return [];
+
+  const cache = loadChannelCache();
+  const existing = cache[channelId];
+  if (existing && Date.now() - existing.ts < CHANNEL_CACHE_TTL) {
+    return existing.shorts;
+  }
+
+  try {
+    const res = await fetch(
+      `${WORKER}/channel-shorts?channelId=${channelId}&maxSec=${maxSec}`,
+      { signal: AbortSignal.timeout(timeoutMs) }
+    );
+    if (!res.ok) return existing?.shorts || [];
+    const data = await res.json() as { shorts: ChannelShort[] };
+    const shorts = Array.isArray(data.shorts) ? data.shorts : [];
+    cache[channelId] = { ts: Date.now(), shorts };
+    saveChannelCache(cache);
+    return shorts;
+  } catch {
+    return existing?.shorts || [];
+  }
+}
+
+/**
+ * Fetches shorts from multiple channels in parallel.
+ */
+export async function fetchMultiChannelShorts(
+  channelIds: string[],
+  maxSec = 75
+): Promise<Record<string, ChannelShort[]>> {
+  const result: Record<string, ChannelShort[]> = {};
+  await Promise.all(channelIds.map(async id => {
+    result[id] = await fetchChannelShorts(id, maxSec);
+  }));
+  return result;
+}

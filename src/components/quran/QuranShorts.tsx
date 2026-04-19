@@ -13,7 +13,11 @@ import {
   Eye, Clock, Hash, Layers
 } from 'lucide-react';
 import { SERIES, QURAN_SHORTS, type ShortCategory, type QuranShort, type Series } from '@/data/shorts';
-import { getCachedDuration, getVideoDurationsBatch, isShort, isAvailable } from '@/lib/videoDuration';
+import { SHORTS_CHANNELS } from '@/data/shorts-channels';
+import {
+  getCachedDuration, getVideoDurationsBatch, isShort, isAvailable,
+  fetchMultiChannelShorts, type ChannelShort,
+} from '@/lib/videoDuration';
 
 type VideoQuality = '360p' | '480p' | '720p' | '1080p';
 
@@ -100,9 +104,25 @@ export function QuranShorts() {
   const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
   const [longVideoIds, setLongVideoIds] = useState<Set<string>>(new Set());
   const [durationMap, setDurationMap] = useState<Record<string, number>>({});
+  const [dynamicShorts, setDynamicShorts] = useState<QuranShort[]>([]);
+  const [isLoadingMoreShorts, setIsLoadingMoreShorts] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const videoCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const MAX_SHORT_SECONDS = 75; // أي فيديو أطول من 75 ثانية يُعد غير مناسب للشورتس
+
+  // قاعدة المقاطع = الثابتة + الديناميكية المُحمّلة
+  const ALL_SHORTS = useMemo<QuranShort[]>(() => {
+    // إزالة التكرار بناءً على youtubeId
+    const seen = new Set<string>();
+    const out: QuranShort[] = [];
+    for (const s of [...QURAN_SHORTS, ...dynamicShorts]) {
+      if (!seen.has(s.youtubeId)) {
+        seen.add(s.youtubeId);
+        out.push(s);
+      }
+    }
+    return out;
+  }, [dynamicShorts]);
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number>(0);
   const touchEndY = useRef<number>(0);
@@ -110,7 +130,7 @@ export function QuranShorts() {
 
   // Filter shorts - إزالة المقاطع الطويلة وغير المتاحة تلقائياً
   const filteredShorts = useMemo(() => {
-    let result = QURAN_SHORTS;
+    let result = ALL_SHORTS;
     // استبعاد المقاطع الطويلة (> 75 ثانية) والمقاطع غير المتاحة
     result = result.filter(s =>
       !longVideoIds.has(s.youtubeId) && !unavailableIds.has(s.youtubeId)
@@ -131,7 +151,7 @@ export function QuranShorts() {
       );
     }
     return result;
-  }, [selectedCategory, selectedSeries, searchQuery, longVideoIds, unavailableIds]);
+  }, [selectedCategory, selectedSeries, searchQuery, longVideoIds, unavailableIds, ALL_SHORTS]);
 
   // فحص مسبق للمدد من الكاش المحلي عند التحميل
   useEffect(() => {
@@ -139,7 +159,7 @@ export function QuranShorts() {
     const longs = new Set<string>();
     const unavail = new Set<string>();
     const map: Record<string, number> = {};
-    for (const s of QURAN_SHORTS) {
+    for (const s of ALL_SHORTS) {
       const d = getCachedDuration(s.youtubeId);
       if (d == null) continue;
       map[s.youtubeId] = d;
@@ -149,6 +169,56 @@ export function QuranShorts() {
     setDurationMap(map);
     if (longs.size) setLongVideoIds(longs);
     if (unavail.size) setUnavailableIds(prev => new Set([...prev, ...unavail]));
+  }, [ALL_SHORTS]);
+
+  // جلب ديناميكي للشورتس من قنوات موثوقة (في الخلفية)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let cancelled = false;
+
+    const loadDynamicShorts = async () => {
+      setIsLoadingMoreShorts(true);
+      try {
+        // اجلب بدفعات صغيرة لتجنب التحميل الزائد
+        const batches: (typeof SHORTS_CHANNELS)[] = [];
+        const batchSize = 4;
+        for (let i = 0; i < SHORTS_CHANNELS.length; i += batchSize) {
+          batches.push(SHORTS_CHANNELS.slice(i, i + batchSize));
+        }
+
+        for (const batch of batches) {
+          if (cancelled) return;
+          const ids = batch.map(c => c.id);
+          const resultMap = await fetchMultiChannelShorts(ids, MAX_SHORT_SECONDS);
+          const newShorts: QuranShort[] = [];
+          batch.forEach(ch => {
+            const list = resultMap[ch.id] || [];
+            list.forEach((s: ChannelShort) => {
+              newShorts.push({
+                id: `dyn_${ch.id.slice(-6)}_${s.id}`,
+                youtubeId: s.id,
+                title: s.title,
+                scholar: ch.scholar,
+                category: ch.category,
+              });
+            });
+          });
+          if (cancelled) return;
+          if (newShorts.length) {
+            setDynamicShorts(prev => {
+              const seen = new Set(prev.map(s => s.youtubeId));
+              return [...prev, ...newShorts.filter(s => !seen.has(s.youtubeId))];
+            });
+          }
+        }
+      } finally {
+        if (!cancelled) setIsLoadingMoreShorts(false);
+      }
+    };
+
+    // ابدأ التحميل بعد ثانية من تحميل المكون
+    const t = setTimeout(loadDynamicShorts, 1500);
+    return () => { cancelled = true; clearTimeout(t); };
   }, []);
 
   // فحص تدريجي لمدد المقاطع غير المفحوصة (في الخلفية، بدون عرقلة UI)
@@ -167,7 +237,7 @@ export function QuranShorts() {
         if (s && !(s.youtubeId in durationMap)) priorityIds.push(s.youtubeId);
       }
       // ثم المقاطع غير المفحوصة عموماً
-      const allUnknown = QURAN_SHORTS
+      const allUnknown = ALL_SHORTS
         .filter(s => !(s.youtubeId in durationMap))
         .map(s => s.youtubeId);
       const toCheck = [...new Set([...priorityIds, ...allUnknown])].slice(0, 50);
@@ -199,9 +269,9 @@ export function QuranShorts() {
   const categories = Object.keys(SHORT_CATEGORY_CONFIG) as ShortCategory[];
 
   const scholars = useMemo(() => {
-    const set = new Set(QURAN_SHORTS.map(s => s.scholar));
+    const set = new Set(ALL_SHORTS.map(s => s.scholar));
     return Array.from(set).sort();
-  }, []);
+  }, [ALL_SHORTS]);
 
   const seriesByCategory = useMemo(() => {
     const map: Record<string, Series[]> = {};
@@ -213,8 +283,8 @@ export function QuranShorts() {
   }, []);
 
   const getSeriesVideoCount = useCallback((seriesId: string) => {
-    return QURAN_SHORTS.filter(s => s.seriesId === seriesId).length;
-  }, []);
+    return ALL_SHORTS.filter(s => s.seriesId === seriesId).length;
+  }, [ALL_SHORTS]);
 
   // Navigate
   const goNext = useCallback(() => {
@@ -433,7 +503,7 @@ export function QuranShorts() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {catSeries.map(series => {
                 const count = getSeriesVideoCount(series.id);
-                const firstVideo = QURAN_SHORTS.find(s => s.seriesId === series.id);
+                const firstVideo = ALL_SHORTS.find(s => s.seriesId === series.id);
                 return (
                   <button
                     key={series.id}
@@ -509,10 +579,10 @@ export function QuranShorts() {
         <div className="flex flex-wrap gap-1.5">
           <button onClick={() => { setSelectedCategory('all'); setSelectedSeries(null); setLoadedCount(20); }}
             className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${selectedCategory === 'all' && !selectedSeries ? 'bg-purple-500 text-white shadow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}`}>
-            الكل ({QURAN_SHORTS.length})
+            الكل ({ALL_SHORTS.length})
           </button>
           {categories.map(cat => {
-            const count = QURAN_SHORTS.filter(s => s.category === cat).length;
+            const count = ALL_SHORTS.filter(s => s.category === cat).length;
             return (
               <button key={cat} onClick={() => { setSelectedCategory(cat); setSelectedSeries(null); setCurrentIndex(0); setLoadedCount(20); }}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${selectedCategory === cat && !selectedSeries ? 'bg-purple-500 text-white shadow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}`}>
@@ -610,10 +680,10 @@ export function QuranShorts() {
             <div className="flex flex-wrap justify-center gap-1.5 px-1">
               <button onClick={() => { setSelectedCategory('all'); setCurrentIndex(0); }}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${selectedCategory === 'all' ? 'bg-purple-500 text-white shadow-lg' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}`}>
-                الكل ({QURAN_SHORTS.length})
+                الكل ({ALL_SHORTS.length})
               </button>
               {categories.map(cat => {
-                const count = QURAN_SHORTS.filter(s => s.category === cat).length;
+                const count = ALL_SHORTS.filter(s => s.category === cat).length;
                 return (
                   <button key={cat} onClick={() => { setSelectedCategory(cat); setCurrentIndex(0); }}
                     className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${selectedCategory === cat ? 'bg-purple-500 text-white shadow-lg' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}`}>
@@ -816,7 +886,7 @@ export function QuranShorts() {
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               <div className="bg-white/15 backdrop-blur-sm rounded-lg px-2.5 py-1 text-xs flex items-center gap-1.5">
-                <Flame className="w-3 h-3" /> <span>{QURAN_SHORTS.length} مقطع</span>
+                <Flame className="w-3 h-3" /> <span>{ALL_SHORTS.length} مقطع</span>
               </div>
               <div className="bg-white/15 backdrop-blur-sm rounded-lg px-2.5 py-1 text-xs flex items-center gap-1.5">
                 <User className="w-3 h-3" /> <span>{scholars.length} عالم</span>

@@ -201,6 +201,119 @@ async function handleBatchDuration(request: Request): Promise<Response> {
 }
 
 // ----------------------------------------------------
+// YOUTUBE CHANNEL SHORTS FEED
+// Fetches recent videos from a channel RSS, filters shorts (<= 75s)
+// ----------------------------------------------------
+const CHANNEL_ID_RE = /^UC[A-Za-z0-9_-]{22}$/;
+
+async function handleChannelShorts(request: Request, ctx: ExecutionContext): Promise<Response> {
+  const url = new URL(request.url);
+  const channelId = url.searchParams.get('channelId') || '';
+  const maxSec = Math.min(300, parseInt(url.searchParams.get('maxSec') || '75', 10));
+
+  if (!CHANNEL_ID_RE.test(channelId)) {
+    return jsonResponse({ error: 'invalid channelId' }, 400);
+  }
+
+  try {
+    // Fetch RSS feed from YouTube
+    const rssRes = await fetch(
+      `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+      {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Noor-Al-Quran-App/3.1)' },
+        cf: { cacheTtl: 3600, cacheEverything: true } as any,
+      }
+    );
+    if (!rssRes.ok) return jsonResponse({ error: 'rss fetch failed', status: rssRes.status }, 502);
+    const xml = await rssRes.text();
+
+    // Parse entries
+    type Entry = { id: string; title: string; published: string };
+    const entries: Entry[] = [];
+    const entryRe = /<entry>([\s\S]*?)<\/entry>/g;
+    let m: RegExpExecArray | null;
+    while ((m = entryRe.exec(xml)) !== null) {
+      const block = m[1];
+      const idMatch = block.match(/<yt:videoId>([^<]+)<\/yt:videoId>/);
+      const titleMatch = block.match(/<title>([^<]+)<\/title>/);
+      const pubMatch = block.match(/<published>([^<]+)<\/published>/);
+      if (idMatch && titleMatch) {
+        entries.push({
+          id: idMatch[1],
+          title: titleMatch[1],
+          published: pubMatch?.[1] || '',
+        });
+      }
+    }
+
+    // Fetch durations for each (cached aggressively)
+    const withDurations = await Promise.all(entries.slice(0, 25).map(async e => {
+      const dur = await fetchYoutubeDuration(e.id);
+      return { ...e, duration: dur };
+    }));
+
+    const shorts = withDurations.filter(
+      e => typeof e.duration === 'number' && e.duration > 0 && e.duration <= maxSec
+    );
+
+    return jsonResponse({ channelId, total: entries.length, shorts }, 200, 3600);
+  } catch (error: any) {
+    return jsonResponse({ error: error.message || 'feed_failed' }, 500, 60);
+  }
+}
+
+// ----------------------------------------------------
+// YOUTUBE PLAYLIST FEED (similar to channel)
+// ----------------------------------------------------
+const PLAYLIST_ID_RE = /^(PL|UU|FL|OL|LL)[A-Za-z0-9_-]{10,40}$/;
+
+async function handlePlaylistShorts(request: Request, ctx: ExecutionContext): Promise<Response> {
+  const url = new URL(request.url);
+  const playlistId = url.searchParams.get('playlistId') || '';
+  const maxSec = Math.min(300, parseInt(url.searchParams.get('maxSec') || '75', 10));
+
+  if (!PLAYLIST_ID_RE.test(playlistId)) {
+    return jsonResponse({ error: 'invalid playlistId' }, 400);
+  }
+
+  try {
+    const rssRes = await fetch(
+      `https://www.youtube.com/feeds/videos.xml?playlist_id=${playlistId}`,
+      {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Noor-Al-Quran-App/3.1)' },
+        cf: { cacheTtl: 3600, cacheEverything: true } as any,
+      }
+    );
+    if (!rssRes.ok) return jsonResponse({ error: 'rss fetch failed' }, 502);
+    const xml = await rssRes.text();
+
+    type Entry = { id: string; title: string };
+    const entries: Entry[] = [];
+    const entryRe = /<entry>([\s\S]*?)<\/entry>/g;
+    let m: RegExpExecArray | null;
+    while ((m = entryRe.exec(xml)) !== null) {
+      const block = m[1];
+      const idMatch = block.match(/<yt:videoId>([^<]+)<\/yt:videoId>/);
+      const titleMatch = block.match(/<title>([^<]+)<\/title>/);
+      if (idMatch && titleMatch) entries.push({ id: idMatch[1], title: titleMatch[1] });
+    }
+
+    const withDurations = await Promise.all(entries.slice(0, 25).map(async e => {
+      const dur = await fetchYoutubeDuration(e.id);
+      return { ...e, duration: dur };
+    }));
+
+    const shorts = withDurations.filter(
+      e => typeof e.duration === 'number' && e.duration > 0 && e.duration <= maxSec
+    );
+
+    return jsonResponse({ playlistId, total: entries.length, shorts }, 200, 3600);
+  } catch (error: any) {
+    return jsonResponse({ error: error.message || 'feed_failed' }, 500, 60);
+  }
+}
+
+// ----------------------------------------------------
 // MAIN HANDLER
 // ----------------------------------------------------
 export default {
@@ -213,15 +326,19 @@ export default {
     if (path === '/cors') return handleCorsProxy(request, ctx);
     if (path === '/duration') return handleDuration(request);
     if (path === '/batch-duration') return handleBatchDuration(request);
+    if (path === '/channel-shorts') return handleChannelShorts(request, ctx);
+    if (path === '/playlist-shorts') return handlePlaylistShorts(request, ctx);
 
     return jsonResponse({
       name: 'Noor Al-Quran Proxy',
-      version: '3.1.0',
-      description: 'CORS proxy + YouTube duration checker',
+      version: '3.2.0',
+      description: 'CORS proxy + YouTube duration/shorts fetcher',
       endpoints: {
         '/cors?url=': 'GET - CORS proxy with Range support (PDF/audio)',
         '/duration?id=': 'GET - YouTube video duration in seconds',
         '/batch-duration?ids=id1,id2': 'GET - batch (max 50 ids)',
+        '/channel-shorts?channelId=UCxxxx&maxSec=75': 'GET - recent shorts from channel',
+        '/playlist-shorts?playlistId=PLxxxx&maxSec=75': 'GET - recent shorts from playlist',
       },
     });
   },
