@@ -1,6 +1,6 @@
 /**
- * Cloudflare Worker - Quran Audio & Video Proxy (v4.0)
- * 
+ * Cloudflare Worker - Quran Audio & Video Proxy (v5.0)
+ *
  * Endpoints:
  * - GET /cors?url=... → Smart CORS proxy for Archive.org, PDFs, and audio (supports Range requests)
  *   • Auto-resolves archive.org/download/ItemId/file.pdf → direct ia*.us.archive.org server
@@ -8,10 +8,12 @@
  *   • Detects Archive.org HTML error pages and returns a real 404 instead of silently
  *     passing through the error HTML
  * - GET /check?url=... → Returns {ok: boolean, reason?: string} to check if a PDF URL actually works
+ * - POST /batch-check → Body: {urls: string[]} — batch check multiple URLs in parallel (up to 80)
  * - GET /resolve?url=... → Resolves archive.org/download URL to direct server URL
  * - GET /duration?id=YOUTUBE_ID → returns duration (seconds) of a YouTube video
  * - GET /batch-duration?ids=ID1,ID2,... → returns map of ids to durations
- * - GET /channel-shorts, /playlist-shorts → YouTube feeds
+ * - GET /channel-shorts, /playlist-shorts → YouTube feeds (includes shorts < maxSec)
+ * - GET /multi-channel-shorts?channels=UC1,UC2,...&maxSec=75 → aggregate multiple channels (parallel)
  */
 
 // CORS headers
@@ -592,6 +594,125 @@ async function handlePlaylistShorts(request: Request, ctx: ExecutionContext): Pr
 }
 
 // ----------------------------------------------------
+// BATCH URL CHECKER - checks multiple URLs in parallel
+// Accepts GET /batch-check?urls=url1,url2,... OR POST /batch-check with JSON body
+// ----------------------------------------------------
+async function handleBatchCheck(request: Request): Promise<Response> {
+  let urls: string[] = [];
+  try {
+    if (request.method === 'POST') {
+      const body: any = await request.json();
+      if (Array.isArray(body?.urls)) urls = body.urls;
+    } else {
+      const u = new URL(request.url);
+      const raw = u.searchParams.get('urls') || '';
+      urls = raw.split(',').map(s => s.trim()).filter(Boolean);
+    }
+  } catch {
+    return jsonResponse({ error: 'invalid body' }, 400);
+  }
+
+  urls = urls.filter(u => /^https?:\/\//i.test(u)).slice(0, 80);
+  if (urls.length === 0) return jsonResponse({ results: {} }, 200, 60);
+
+  const results = await Promise.all(urls.map(async (u) => {
+    try {
+      const r = await resolveArchiveUrl(u);
+      return [u, { ok: r.itemExists, reason: r.itemExists ? undefined : 'item_missing' }] as const;
+    } catch {
+      return [u, { ok: true, reason: 'check_failed' }] as const;
+    }
+  }));
+  const map: Record<string, { ok: boolean; reason?: string }> = {};
+  for (const [u, v] of results) map[u] = v;
+  return jsonResponse({ results: map }, 200, 21600);
+}
+
+// ----------------------------------------------------
+// MULTI-CHANNEL SHORTS AGGREGATOR
+// Fetches shorts from multiple channels in parallel (edge-cached per channel)
+// ----------------------------------------------------
+async function handleMultiChannelShorts(request: Request, ctx: ExecutionContext): Promise<Response> {
+  const url = new URL(request.url);
+  const channelsParam = url.searchParams.get('channels') || '';
+  const maxSec = Math.min(300, parseInt(url.searchParams.get('maxSec') || '75', 10));
+  const channelIds = channelsParam.split(',')
+    .map(s => s.trim())
+    .filter(s => CHANNEL_ID_RE.test(s))
+    .slice(0, 20); // cap at 20 channels per request
+
+  if (channelIds.length === 0) return jsonResponse({ error: 'no valid channels' }, 400);
+
+  const cache = (caches as any).default;
+
+  const fetchOneChannel = async (channelId: string): Promise<{ channelId: string; shorts: any[] }> => {
+    // Edge-cache by channel for 1 hour
+    const cacheKey = new Request(`https://cache.local/channel-shorts/${channelId}?maxSec=${maxSec}`);
+    const cached = await cache.match(cacheKey);
+    if (cached) {
+      const data = await cached.json<any>();
+      if (data?.shorts) return { channelId, shorts: data.shorts };
+    }
+
+    try {
+      const rssRes = await fetch(
+        `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
+        {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Noor-Al-Quran-App/5.0)' },
+          cf: { cacheTtl: 3600, cacheEverything: true } as any,
+        }
+      );
+      if (!rssRes.ok) return { channelId, shorts: [] };
+      const xml = await rssRes.text();
+
+      type Entry = { id: string; title: string; published: string };
+      const entries: Entry[] = [];
+      const entryRe = /<entry>([\s\S]*?)<\/entry>/g;
+      let m: RegExpExecArray | null;
+      while ((m = entryRe.exec(xml)) !== null) {
+        const block = m[1];
+        const idMatch = block.match(/<yt:videoId>([^<]+)<\/yt:videoId>/);
+        const titleMatch = block.match(/<title>([^<]+)<\/title>/);
+        const pubMatch = block.match(/<published>([^<]+)<\/published>/);
+        if (idMatch && titleMatch) {
+          entries.push({
+            id: idMatch[1],
+            title: titleMatch[1],
+            published: pubMatch?.[1] || '',
+          });
+        }
+      }
+
+      const withDurations = await Promise.all(entries.slice(0, 25).map(async e => {
+        const dur = await fetchYoutubeDuration(e.id);
+        return { ...e, duration: dur };
+      }));
+
+      const shorts = withDurations.filter(
+        e => typeof e.duration === 'number' && e.duration > 0 && e.duration <= maxSec
+      );
+
+      // Cache for 1 hour
+      ctx.waitUntil(cache.put(cacheKey, new Response(JSON.stringify({ shorts }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' },
+      })));
+      return { channelId, shorts };
+    } catch {
+      return { channelId, shorts: [] };
+    }
+  };
+
+  const results = await Promise.all(channelIds.map(fetchOneChannel));
+  const byChannel: Record<string, any[]> = {};
+  let total = 0;
+  for (const r of results) {
+    byChannel[r.channelId] = r.shorts;
+    total += r.shorts.length;
+  }
+  return jsonResponse({ total, byChannel }, 200, 1800);
+}
+
+// ----------------------------------------------------
 // MAIN HANDLER
 // ----------------------------------------------------
 export default {
@@ -603,23 +724,27 @@ export default {
 
     if (path === '/cors') return handleCorsProxy(request, ctx);
     if (path === '/check') return handleCheck(request);
+    if (path === '/batch-check') return handleBatchCheck(request);
     if (path === '/resolve') return handleResolve(request);
     if (path === '/duration') return handleDuration(request);
     if (path === '/batch-duration') return handleBatchDuration(request);
     if (path === '/channel-shorts') return handleChannelShorts(request, ctx);
+    if (path === '/multi-channel-shorts') return handleMultiChannelShorts(request, ctx);
     if (path === '/playlist-shorts') return handlePlaylistShorts(request, ctx);
 
     return jsonResponse({
       name: 'Noor Al-Quran Proxy',
-      version: '4.0.0',
-      description: 'Smart CORS proxy with Archive.org resolver + YouTube duration/shorts fetcher',
+      version: '5.0.0',
+      description: 'Smart CORS proxy with Archive.org resolver + YouTube duration/shorts fetcher + batch check',
       endpoints: {
         '/cors?url=': 'GET - Smart CORS proxy (auto-resolves archive.org items, detects HTML errors)',
         '/check?url=': 'GET - Returns {ok: boolean} to validate a PDF URL',
+        '/batch-check': 'GET/POST - batch check up to 80 URLs (much faster than individual /check calls)',
         '/resolve?url=': 'GET - Resolves archive.org URL to direct server URL',
         '/duration?id=': 'GET - YouTube video duration in seconds',
         '/batch-duration?ids=id1,id2': 'GET - batch (max 50 ids)',
         '/channel-shorts?channelId=UCxxxx&maxSec=75': 'GET - recent shorts from channel',
+        '/multi-channel-shorts?channels=UC1,UC2&maxSec=75': 'GET - batched channel shorts',
         '/playlist-shorts?playlistId=PLxxxx&maxSec=75': 'GET - recent shorts from playlist',
       },
     });
