@@ -20,6 +20,7 @@ export interface QuranVideo {
 }
 
 import { additionalVideos } from './videos-additions';
+import { additionalVideosBatch2 } from './videos-batch2';
 
 const coreVideos: QuranVideo[] = [
   // ═══════════════════════════════════════════
@@ -527,6 +528,9 @@ const coreVideos: QuranVideo[] = [
 const videosByYoutubeId = new Map<string, QuranVideo>();
 for (const v of coreVideos) videosByYoutubeId.set(v.youtubeId, v);
 for (const v of additionalVideos) {
+  if (!videosByYoutubeId.has(v.youtubeId)) videosByYoutubeId.set(v.youtubeId, v);
+}
+for (const v of additionalVideosBatch2) {
   if (!videosByYoutubeId.has(v.youtubeId)) videosByYoutubeId.set(v.youtubeId, v);
 }
 

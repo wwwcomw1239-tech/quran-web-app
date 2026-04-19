@@ -39,6 +39,7 @@ export interface KidsVideo {
 // ============================================
 
 import { additionalArabicKids, additionalEnglishKids } from './kids-additions';
+import { additionalArabicKidsBatch2, additionalEnglishKidsBatch2 } from './kids-batch2';
 
 const coreArabic: KidsVideo[] = [
   // ═══════════════════════════════════════════
@@ -232,5 +233,5 @@ function dedupKidsVideos(...lists: KidsVideo[][]): KidsVideo[] {
   return Array.from(m.values());
 }
 
-export const ARABIC_VIDEOS: KidsVideo[] = dedupKidsVideos(coreArabic, additionalArabicKids);
-export const ENGLISH_VIDEOS: KidsVideo[] = dedupKidsVideos(coreEnglish, additionalEnglishKids);
+export const ARABIC_VIDEOS: KidsVideo[] = dedupKidsVideos(coreArabic, additionalArabicKids, additionalArabicKidsBatch2);
+export const ENGLISH_VIDEOS: KidsVideo[] = dedupKidsVideos(coreEnglish, additionalEnglishKids, additionalEnglishKidsBatch2);
