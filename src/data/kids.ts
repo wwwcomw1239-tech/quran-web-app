@@ -38,7 +38,9 @@ export interface KidsVideo {
 // ARABIC VIDEOS
 // ============================================
 
-export const ARABIC_VIDEOS: KidsVideo[] = [
+import { additionalArabicKids, additionalEnglishKids } from './kids-additions';
+
+const coreArabic: KidsVideo[] = [
   // ═══════════════════════════════════════════
   // قصص الأنبياء
   // ═══════════════════════════════════════════
@@ -142,7 +144,7 @@ export const ARABIC_VIDEOS: KidsVideo[] = [
 // ENGLISH VIDEOS
 // ============================================
 
-export const ENGLISH_VIDEOS: KidsVideo[] = [
+const coreEnglish: KidsVideo[] = [
   // ═══════════════════════════════════════════
   // Stories of the Prophets
   // ═══════════════════════════════════════════
@@ -222,3 +224,13 @@ export const ENGLISH_VIDEOS: KidsVideo[] = [
   { id: 'e44', youtubeId: 'Wu86iLXHmrc', titleAr: 'تعلم التجويد - الطريقة السهلة', titleEn: 'Learn Tajweed - the Easy Way', sourceAr: 'فري قرآن إيديوكيشن', sourceEn: 'FreeQuranEducation', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
   { id: 'e45', youtubeId: 'eym3nxelg0c', titleAr: 'دعاء الأطفال للاستغفار', titleEn: 'Kids Dua for Forgiveness - Quranic Dua Series', sourceAr: 'إقرأ كرتون', sourceEn: 'IQRA Cartoon', categoryAr: 'تعليم القرآن للأطفال', categoryEn: 'Learn Quran for Kids' },
 ];
+
+// Aggregate core + additional videos (dedup by youtubeId)
+function dedupKidsVideos(...lists: KidsVideo[][]): KidsVideo[] {
+  const m = new Map<string, KidsVideo>();
+  for (const l of lists) for (const v of l) if (!m.has(v.youtubeId)) m.set(v.youtubeId, v);
+  return Array.from(m.values());
+}
+
+export const ARABIC_VIDEOS: KidsVideo[] = dedupKidsVideos(coreArabic, additionalArabicKids);
+export const ENGLISH_VIDEOS: KidsVideo[] = dedupKidsVideos(coreEnglish, additionalEnglishKids);

@@ -67,7 +67,9 @@ export const SERIES: Series[] = [
 // SHORTS DATABASE
 // ============================================
 
-export const QURAN_SHORTS: QuranShort[] = [
+import { additionalShorts } from './shorts-additions';
+
+const coreShorts: QuranShort[] = [
 
   // ═══════════════════════════════════════════
   // سلسلة: الموت وما بعده - الشيخ محمد العريفي
@@ -394,3 +396,12 @@ export const QURAN_SHORTS: QuranShort[] = [
   { id: 'sh_ext48', youtubeId: '2DgRfSJ5TUE', title: 'أسرار البدء بصفة الرحمة', scholar: 'د. فاضل السامرائي', category: 'أسرار القرآن', description: 'الحكمة من البدء بالبسملة' },
 
 ];
+
+// Combine core + additional shorts (dedup by youtubeId)
+const shortsByYoutubeId = new Map<string, QuranShort>();
+for (const s of coreShorts) shortsByYoutubeId.set(s.youtubeId, s);
+for (const s of additionalShorts) {
+  if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
+}
+
+export const QURAN_SHORTS: QuranShort[] = Array.from(shortsByYoutubeId.values());
