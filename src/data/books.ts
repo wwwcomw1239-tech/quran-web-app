@@ -62,6 +62,7 @@ function singleVol(id: string, title: string, pdfUrl: string): BookVolume[] {
 // ============================================
 
 import { additionalBooks } from './books-additions';
+import { additionalBooksBatch2 } from './books-batch2';
 
 const coreBooksCollections: BookCollection[] = [
   // ══════════════════════════════════════════════════════════════
@@ -3298,6 +3299,9 @@ for (const book of coreBooksCollections) {
   allBooksMap.set(book.id, book);
 }
 for (const book of additionalBooks) {
+  allBooksMap.set(book.id, book);
+}
+for (const book of additionalBooksBatch2) {
   allBooksMap.set(book.id, book);
 }
 
