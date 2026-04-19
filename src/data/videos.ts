@@ -19,7 +19,9 @@ export interface QuranVideo {
   description?: string;
 }
 
-export const QURAN_VIDEOS: QuranVideo[] = [
+import { additionalVideos } from './videos-additions';
+
+const coreVideos: QuranVideo[] = [
   // ═══════════════════════════════════════════
   // تفسير القرآن
   // ═══════════════════════════════════════════
@@ -520,3 +522,12 @@ export const QURAN_VIDEOS: QuranVideo[] = [
   { id: 'ij_ext8', youtubeId: 'VKuE4KkqPzM', title: 'دقائق الفروق القرآنية', scholar: 'د. فاضل السامرائي', category: 'إعجاز القرآن', description: 'الفروق الدقيقة بين الآيات المتشابهة' },
 
 ];
+
+// Combine core + additional videos (dedup by youtubeId)
+const videosByYoutubeId = new Map<string, QuranVideo>();
+for (const v of coreVideos) videosByYoutubeId.set(v.youtubeId, v);
+for (const v of additionalVideos) {
+  if (!videosByYoutubeId.has(v.youtubeId)) videosByYoutubeId.set(v.youtubeId, v);
+}
+
+export const QURAN_VIDEOS: QuranVideo[] = Array.from(videosByYoutubeId.values());
