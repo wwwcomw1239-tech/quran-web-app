@@ -329,6 +329,9 @@ export function QuranVideos() {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; playsinline"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
+                loading="eager"
+                // @ts-ignore - fetchpriority is a valid iframe attribute
+                fetchpriority="high"
                 onError={() => setVideoError(true)}
               />
             )}
@@ -456,6 +459,27 @@ export function QuranVideos() {
   // VIDEO CARD
   // ============================================
 
+  // تحسين: warmup عند hover لتسريع بدء التشغيل (preconnect + prefetch iframe origin)
+  const warmupYoutube = useCallback(() => {
+    if (typeof document === 'undefined') return;
+    if ((window as any).__ytWarmedUp) return;
+    (window as any).__ytWarmedUp = true;
+    const origins = [
+      'https://www.youtube-nocookie.com',
+      'https://www.youtube.com',
+      'https://i.ytimg.com',
+      'https://yt3.ggpht.com',
+      'https://googlevideo.com',
+    ];
+    origins.forEach(origin => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = origin;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    });
+  }, []);
+
   const renderVideoCard = (video: QuranVideo) => {
     const isActive = activeVideo?.id === video.id;
     const catInfo = CATEGORY_CONFIG[video.category];
@@ -467,15 +491,18 @@ export function QuranVideos() {
           isActive ? 'ring-2 ring-emerald-500 shadow-emerald-100 dark:shadow-emerald-900/30' : ''
         }`}
         onClick={() => playVideo(video)}
+        onMouseEnter={warmupYoutube}
+        onTouchStart={warmupYoutube}
       >
         <CardContent className="p-0">
           {/* Thumbnail */}
           <div className="relative aspect-video bg-slate-200 dark:bg-slate-700 overflow-hidden">
             <img
-              src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
+              src={`https://i.ytimg.com/vi/${video.youtubeId}/mqdefault.jpg`}
               alt={video.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
+              decoding="async"
             />
             {/* Play overlay */}
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center">

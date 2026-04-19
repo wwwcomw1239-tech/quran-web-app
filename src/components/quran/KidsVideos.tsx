@@ -126,11 +126,15 @@ export function KidsVideos() {
       <div ref={playerRef} className={`relative bg-black rounded-2xl overflow-hidden shadow-2xl ${isFullscreen ? 'fixed inset-0 z-50 rounded-none' : ''}`}>
         <div className={`relative ${isFullscreen ? 'h-screen' : 'aspect-video'}`}>
           <iframe
-            src={`https://www.youtube.com/embed/${activeVideo.youtubeId}?autoplay=1&rel=0`}
+            src={`https://www.youtube-nocookie.com/embed/${activeVideo.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
             title={title}
             className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; playsinline"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
+            loading="eager"
+            // @ts-ignore - fetchpriority is a valid iframe attribute
+            fetchpriority="high"
           />
         </div>
         <div className={`p-4 bg-gradient-to-t from-black/90 to-black/50 text-white ${isFullscreen ? 'absolute bottom-0 left-0 right-0' : ''}`}>
@@ -172,7 +176,7 @@ export function KidsVideos() {
       >
         <CardContent className="p-0">
           <div className="relative aspect-video bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30">
-            <img src={`https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`} alt={title} className="w-full h-full object-cover" loading="lazy" />
+            <img src={`https://i.ytimg.com/vi/${video.youtubeId}/mqdefault.jpg`} alt={title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-orange-500/90 group-hover:bg-orange-500 flex items-center justify-center transition-all group-hover:scale-110 shadow-lg">
                 <Play className="w-5 h-5 text-white mr-[-2px]" fill="white" />

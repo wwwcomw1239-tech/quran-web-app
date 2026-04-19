@@ -105,21 +105,21 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
-        {/* Preconnect to external resources */}
+        {/* Preconnect to external resources - critical for video/audio startup speed */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* DNS prefetch and preconnect for media resources used by the app */}
-        <link rel="dns-prefetch" href="https://server.mp3quran.net" />
-        <link rel="dns-prefetch" href="https://archive.org" />
-        <link rel="dns-prefetch" href="https://i.ytimg.com" />
-        <link rel="dns-prefetch" href="https://img.youtube.com" />
-        <link rel="dns-prefetch" href="https://www.youtube.com" />
-        <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
-        <link rel="dns-prefetch" href="https://quran-shorts-api.wwwcomw1239.workers.dev" />
-        <link rel="dns-prefetch" href="https://mozilla.github.io" />
+        {/* Preconnect to the most-critical media origins (reduces handshake time ~200-500ms per first play) */}
         <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://img.youtube.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.youtube-nocookie.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://yt3.ggpht.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://server.mp3quran.net" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://quran-shorts-api.wwwcomw1239.workers.dev" crossOrigin="anonymous" />
+        {/* DNS prefetch for less-critical origins */}
+        <link rel="dns-prefetch" href="https://archive.org" />
+        <link rel="dns-prefetch" href="https://www.youtube.com" />
+        <link rel="dns-prefetch" href="https://googlevideo.com" />
+        <link rel="dns-prefetch" href="https://mozilla.github.io" />
         {/* Load Arabic fonts non-blockingly (swap to system font while loading) */}
         <link
           href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"
