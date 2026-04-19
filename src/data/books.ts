@@ -69,6 +69,7 @@ import { additionalBooksBatch5 } from './books-batch5';
 import { additionalBooksBatch6 } from './books-batch6';
 import { additionalBooksBatch7 } from './books-batch7';
 import { additionalBooksBatch8 } from './books-batch8';
+import { additionalBooksBatch9 } from './books-batch9';
 
 const coreBooksCollections: BookCollection[] = [
   // ══════════════════════════════════════════════════════════════
@@ -3326,6 +3327,9 @@ for (const book of additionalBooksBatch7) {
   allBooksMap.set(book.id, book);
 }
 for (const book of additionalBooksBatch8) {
+  allBooksMap.set(book.id, book);
+}
+for (const book of additionalBooksBatch9) {
   allBooksMap.set(book.id, book);
 }
 
