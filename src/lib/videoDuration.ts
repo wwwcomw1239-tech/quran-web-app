@@ -205,14 +205,59 @@ export async function fetchChannelShorts(
 
 /**
  * Fetches shorts from multiple channels in parallel.
+ * Uses the new /multi-channel-shorts worker endpoint which batches up to 20 channels
+ * per request with edge-level caching, making it much faster than individual fetches.
+ * Falls back to per-channel fetches on error.
  */
 export async function fetchMultiChannelShorts(
   channelIds: string[],
   maxSec = 75
 ): Promise<Record<string, ChannelShort[]>> {
+  if (channelIds.length === 0) return {};
+
+  // Fetch cached results from localStorage first (6h TTL)
+  const cache = loadChannelCache();
   const result: Record<string, ChannelShort[]> = {};
-  await Promise.all(channelIds.map(async id => {
-    result[id] = await fetchChannelShorts(id, maxSec);
+  const missing: string[] = [];
+  for (const id of channelIds) {
+    const entry = cache[id];
+    if (entry && Date.now() - entry.ts < CHANNEL_CACHE_TTL) {
+      result[id] = entry.shorts;
+    } else {
+      missing.push(id);
+    }
+  }
+  if (missing.length === 0) return result;
+
+  // Batch missing channels into groups of 20 (worker cap) and fetch in parallel
+  const batches: string[][] = [];
+  for (let i = 0; i < missing.length; i += 20) batches.push(missing.slice(i, i + 20));
+
+  await Promise.all(batches.map(async (batch) => {
+    try {
+      const res = await fetch(
+        `${WORKER}/multi-channel-shorts?channels=${batch.join(',')}&maxSec=${maxSec}`,
+        { signal: AbortSignal.timeout(25000) }
+      );
+      if (!res.ok) {
+        // Fallback to individual calls
+        await Promise.all(batch.map(async id => {
+          result[id] = await fetchChannelShorts(id, maxSec);
+        }));
+        return;
+      }
+      const data = await res.json() as { byChannel: Record<string, ChannelShort[]> };
+      for (const [id, shorts] of Object.entries(data.byChannel || {})) {
+        result[id] = Array.isArray(shorts) ? shorts : [];
+        cache[id] = { ts: Date.now(), shorts: result[id] };
+      }
+    } catch {
+      // Fallback to individual calls on timeout/error
+      await Promise.all(batch.map(async id => {
+        result[id] = await fetchChannelShorts(id, maxSec);
+      }));
+    }
   }));
+  saveChannelCache(cache);
   return result;
 }

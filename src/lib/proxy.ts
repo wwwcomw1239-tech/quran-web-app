@@ -102,19 +102,67 @@ export async function checkBookUrl(url: string): Promise<CheckResult> {
 
 /**
  * Batch-check multiple book URLs efficiently (parallel with concurrency limit).
+ * Uses the new /batch-check worker endpoint for much faster bulk validation (up to 80 URLs/request).
+ * Falls back to individual /check calls on error.
  */
 export async function checkBookUrls(urls: string[], concurrency = 6): Promise<Map<string, CheckResult>> {
   const result = new Map<string, CheckResult>();
-  const queue = [...new Set(urls)];
-  const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
-    while (queue.length > 0) {
-      const url = queue.shift();
-      if (!url) break;
-      const r = await checkBookUrl(url);
-      result.set(url, r);
+  const unique = [...new Set(urls)].filter(Boolean);
+
+  // Split URLs: archive.org ones need validation, others are assumed ok
+  const toCheck: string[] = [];
+  for (const u of unique) {
+    if (!shouldProxy(u)) {
+      result.set(u, { ok: true, checkedAt: Date.now() });
+      continue;
     }
-  });
-  await Promise.all(workers);
+    const cached = checkCache.get(u);
+    if (cached && Date.now() - cached.checkedAt < CHECK_TTL_MS) {
+      result.set(u, cached);
+      continue;
+    }
+    toCheck.push(u);
+  }
+  if (toCheck.length === 0) return result;
+
+  // Batch in groups of 80 (worker cap)
+  const batches: string[][] = [];
+  for (let i = 0; i < toCheck.length; i += 80) batches.push(toCheck.slice(i, i + 80));
+
+  await Promise.all(batches.map(async (batch) => {
+    try {
+      const res = await fetch(`${PROXY_BASE}/batch-check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls: batch }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!res.ok) throw new Error('batch_failed');
+      const data = await res.json() as { results: Record<string, { ok: boolean; reason?: string }> };
+      const now = Date.now();
+      for (const [u, r] of Object.entries(data.results || {})) {
+        const entry: CheckResult = { ok: r.ok, reason: r.reason, checkedAt: now };
+        checkCache.set(u, entry);
+        result.set(u, entry);
+      }
+      // Any URLs missing from the response are assumed ok (optimistic)
+      for (const u of batch) {
+        if (!result.has(u)) result.set(u, { ok: true, checkedAt: now });
+      }
+    } catch {
+      // Fallback to individual checks with concurrency
+      const queue = [...batch];
+      const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
+        while (queue.length > 0) {
+          const url = queue.shift();
+          if (!url) break;
+          const r = await checkBookUrl(url);
+          result.set(url, r);
+        }
+      });
+      await Promise.all(workers);
+    }
+  }));
   return result;
 }
 
