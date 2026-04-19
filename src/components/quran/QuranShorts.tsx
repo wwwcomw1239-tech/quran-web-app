@@ -13,6 +13,7 @@ import {
   Eye, Clock, Hash, Layers
 } from 'lucide-react';
 import { SERIES, QURAN_SHORTS, type ShortCategory, type QuranShort, type Series } from '@/data/shorts';
+import { getCachedDuration, getVideoDurationsBatch, isShort, isAvailable } from '@/lib/videoDuration';
 
 type VideoQuality = '360p' | '480p' | '720p' | '1080p';
 
@@ -97,16 +98,23 @@ export function QuranShorts() {
   const [showSearch, setShowSearch] = useState(false);
   const [loadedCount, setLoadedCount] = useState(20);
   const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
+  const [longVideoIds, setLongVideoIds] = useState<Set<string>>(new Set());
+  const [durationMap, setDurationMap] = useState<Record<string, number>>({});
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const videoCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const MAX_SHORT_SECONDS = 75; // أي فيديو أطول من 75 ثانية يُعد غير مناسب للشورتس
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number>(0);
   const touchEndY = useRef<number>(0);
   const lastWheelTime = useRef<number>(0);
 
-  // Filter shorts
+  // Filter shorts - إزالة المقاطع الطويلة وغير المتاحة تلقائياً
   const filteredShorts = useMemo(() => {
     let result = QURAN_SHORTS;
+    // استبعاد المقاطع الطويلة (> 75 ثانية) والمقاطع غير المتاحة
+    result = result.filter(s =>
+      !longVideoIds.has(s.youtubeId) && !unavailableIds.has(s.youtubeId)
+    );
     if (selectedSeries) {
       result = result.filter(s => s.seriesId === selectedSeries);
     } else {
@@ -123,7 +131,69 @@ export function QuranShorts() {
       );
     }
     return result;
-  }, [selectedCategory, selectedSeries, searchQuery]);
+  }, [selectedCategory, selectedSeries, searchQuery, longVideoIds, unavailableIds]);
+
+  // فحص مسبق للمدد من الكاش المحلي عند التحميل
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const longs = new Set<string>();
+    const unavail = new Set<string>();
+    const map: Record<string, number> = {};
+    for (const s of QURAN_SHORTS) {
+      const d = getCachedDuration(s.youtubeId);
+      if (d == null) continue;
+      map[s.youtubeId] = d;
+      if (d === -1) unavail.add(s.youtubeId);
+      else if (d > MAX_SHORT_SECONDS) longs.add(s.youtubeId);
+    }
+    setDurationMap(map);
+    if (longs.size) setLongVideoIds(longs);
+    if (unavail.size) setUnavailableIds(prev => new Set([...prev, ...unavail]));
+  }, []);
+
+  // فحص تدريجي لمدد المقاطع غير المفحوصة (في الخلفية، بدون عرقلة UI)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let cancelled = false;
+
+    const run = async () => {
+      // أولوية: المقاطع الحالية + القريبة منها
+      const priorityIds: string[] = [];
+      const windowSize = 10;
+      const start = Math.max(0, currentIndex - 2);
+      const end = Math.min(filteredShorts.length, start + windowSize);
+      for (let i = start; i < end; i++) {
+        const s = filteredShorts[i];
+        if (s && !(s.youtubeId in durationMap)) priorityIds.push(s.youtubeId);
+      }
+      // ثم المقاطع غير المفحوصة عموماً
+      const allUnknown = QURAN_SHORTS
+        .filter(s => !(s.youtubeId in durationMap))
+        .map(s => s.youtubeId);
+      const toCheck = [...new Set([...priorityIds, ...allUnknown])].slice(0, 50);
+
+      if (toCheck.length === 0) return;
+      const results = await getVideoDurationsBatch(toCheck, 15000);
+      if (cancelled) return;
+
+      const longs = new Set(longVideoIds);
+      const unavail = new Set(unavailableIds);
+      const newMap = { ...durationMap };
+      for (const [id, dur] of Object.entries(results)) {
+        if (typeof dur !== 'number') continue;
+        newMap[id] = dur;
+        if (dur === -1) unavail.add(id);
+        else if (dur > MAX_SHORT_SECONDS) longs.add(id);
+      }
+      setDurationMap(newMap);
+      setLongVideoIds(longs);
+      setUnavailableIds(unavail);
+    };
+
+    // debounce + خلفية
+    const timer = setTimeout(run, 600);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [currentIndex, filteredShorts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const currentShort = filteredShorts[currentIndex] || filteredShorts[0];
   const categories = Object.keys(SHORT_CATEGORY_CONFIG) as ShortCategory[];
@@ -209,45 +279,58 @@ export function QuranShorts() {
     return () => container.removeEventListener('wheel', h);
   }, [goNext, goPrev, viewMode]);
 
-  // Video availability check using YouTube oEmbed API
+  // فحص توفر ومدة الفيديو عبر Cloudflare Worker
   useEffect(() => {
     if (!currentShort) return;
-    
-    // If we already know this video is unavailable, skip immediately
-    if (unavailableIds.has(currentShort.youtubeId)) {
+
+    // إذا كنا نعلم أنه غير متاح أو طويل، تخطَّ فوراً
+    if (unavailableIds.has(currentShort.youtubeId) || longVideoIds.has(currentShort.youtubeId)) {
       goNext();
       return;
     }
 
-    // Check video availability via oEmbed (CORS-safe)
+    // إن كانت المدة معروفة مسبقاً ومناسبة، لا حاجة للفحص
+    const cachedDur = durationMap[currentShort.youtubeId] ?? getCachedDuration(currentShort.youtubeId);
+    if (typeof cachedDur === 'number' && cachedDur > 0 && cachedDur <= MAX_SHORT_SECONDS) {
+      return;
+    }
+
+    let cancelled = false;
     const checkVideo = async () => {
       try {
-        const response = await fetch(
-          `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${currentShort.youtubeId}`,
-          { signal: AbortSignal.timeout(5000) }
+        // نستخدم worker endpoint الخاص بنا للحصول على مدة الفيديو
+        const res = await fetch(
+          `https://quran-shorts-api.wwwcomw1239.workers.dev/duration?id=${currentShort.youtubeId}`,
+          { signal: AbortSignal.timeout(6000) }
         );
-        const data = await response.json();
-        
-        if (data.error || !data.title) {
-          // Video is unavailable
+        if (cancelled) return;
+        if (!res.ok) return;
+        const data = await res.json() as { duration: number | null };
+        const dur = data.duration;
+
+        if (typeof dur !== 'number') return;
+
+        setDurationMap(prev => ({ ...prev, [currentShort.youtubeId]: dur }));
+
+        if (dur === -1) {
           setUnavailableIds(prev => new Set([...prev, currentShort.youtubeId]));
           setVideoError(true);
-          // Auto-skip after 1.5 seconds
-          videoCheckTimerRef.current = setTimeout(() => {
-            goNext();
-          }, 1500);
+          videoCheckTimerRef.current = setTimeout(() => goNext(), 1200);
+        } else if (dur > MAX_SHORT_SECONDS) {
+          // فيديو طويل - أضفه للقائمة السوداء وانتقل للتالي
+          setLongVideoIds(prev => new Set([...prev, currentShort.youtubeId]));
+          videoCheckTimerRef.current = setTimeout(() => goNext(), 300);
         }
       } catch {
-        // On error, don't auto-skip - let the user decide
+        // في حال الفشل، لا نفعل شيئاً ونترك الفيديو يحاول التشغيل
       }
     };
 
     checkVideo();
 
     return () => {
-      if (videoCheckTimerRef.current) {
-        clearTimeout(videoCheckTimerRef.current);
-      }
+      cancelled = true;
+      if (videoCheckTimerRef.current) clearTimeout(videoCheckTimerRef.current);
     };
   }, [currentShort?.youtubeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -288,8 +371,13 @@ export function QuranShorts() {
       fs: '0', iv_load_policy: '3', cc_load_policy: '0', vq: qMap[videoQuality],
       mute: '0', loop: '0', origin: typeof window !== 'undefined' ? window.location.origin : '',
     });
+    // إذا كان الفيديو طويلاً نسبياً (> 60s) وعُرِف، نُوقف التشغيل عند 60 ثانية
+    const dur = durationMap[youtubeId];
+    if (typeof dur === 'number' && dur > 60 && dur <= MAX_SHORT_SECONDS) {
+      p.set('end', '60');
+    }
     return `https://www.youtube-nocookie.com/embed/${youtubeId}?${p.toString()}`;
-  }, [videoQuality]);
+  }, [videoQuality, durationMap]);
 
   const playFromBrowse = useCallback((index: number) => {
     setCurrentIndex(index);

@@ -1,17 +1,20 @@
 /**
- * Cloudflare Worker - Quran Audio Proxy
+ * Cloudflare Worker - Quran Audio & Video Proxy
  * 
  * Endpoints:
- * - GET /cors?url=... → CORS proxy for Archive.org and audio files
+ * - GET /cors?url=... → CORS proxy for Archive.org, PDFs, and audio files (supports Range requests)
+ * - GET /duration?id=YOUTUBE_ID → returns duration (seconds) of a YouTube video
+ * - GET /batch-duration?ids=ID1,ID2,... → returns map of ids to durations
  * 
  * This Worker serves as a CORS proxy for the static Next.js app
  */
 
 // CORS headers
-const corsHeaders = {
+const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Range, Accept',
+  'Access-Control-Expose-Headers': 'Content-Length, Content-Range, Accept-Ranges, Content-Type',
   'Access-Control-Max-Age': '86400',
 };
 
@@ -21,78 +24,204 @@ function handleOptions(): Response {
 }
 
 // JSON response helper
-function jsonResponse(data: any, status = 200): Response {
+function jsonResponse(data: any, status = 200, cacheSeconds = 3600): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json',
-      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      'Cache-Control': `public, s-maxage=${cacheSeconds}, stale-while-revalidate=86400`,
       ...corsHeaders,
     },
   });
 }
 
-// Handle /cors endpoint (general CORS proxy)
-async function handleCorsProxy(request: Request): Promise<Response> {
+// ----------------------------------------------------
+// CORS PROXY (supports Range requests for PDF streaming)
+// ----------------------------------------------------
+async function handleCorsProxy(request: Request, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
   const targetUrl = url.searchParams.get('url');
-  
+
   if (!targetUrl) {
     return jsonResponse({ error: 'Missing url parameter' }, 400);
   }
 
+  // Basic safety: only allow http(s)
+  if (!/^https?:\/\//i.test(targetUrl)) {
+    return jsonResponse({ error: 'Invalid url protocol' }, 400);
+  }
+
   try {
+    // Forward Range & User-Agent headers for partial content (essential for PDF streaming)
+    const upstreamHeaders: HeadersInit = {
+      'User-Agent': 'Mozilla/5.0 (Noor-Al-Quran-App/3.1)',
+      'Accept': request.headers.get('Accept') || '*/*',
+    };
+    const range = request.headers.get('Range');
+    if (range) upstreamHeaders['Range'] = range;
+
+    // Build cache key; only cache full GETs (no Range) to avoid partial cache poisoning
+    const cache = (caches as any).default;
+    let cacheKey: Request | null = null;
+    if (request.method === 'GET' && !range) {
+      cacheKey = new Request(targetUrl, { method: 'GET' });
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        const cachedHeaders = new Headers(cached.headers);
+        for (const [k, v] of Object.entries(corsHeaders)) cachedHeaders.set(k, v);
+        return new Response(cached.body, { status: cached.status, headers: cachedHeaders });
+      }
+    }
+
     const response = await fetch(targetUrl, {
-      headers: {
-        'User-Agent': 'Noor-Al-Quran-App/1.0',
-      },
+      method: request.method === 'HEAD' ? 'HEAD' : 'GET',
+      headers: upstreamHeaders,
+      redirect: 'follow',
+      cf: {
+        // Cache at Cloudflare edge for 1 hour for repeat requests
+        cacheTtl: 3600,
+        cacheEverything: true,
+      } as any,
     });
 
-    const contentType = response.headers.get('Content-Type') || 'application/octet-stream';
+    // Passthrough important headers
+    const outHeaders = new Headers();
+    const contentType = response.headers.get('Content-Type');
     const contentLength = response.headers.get('Content-Length');
     const contentRange = response.headers.get('Content-Range');
     const acceptRanges = response.headers.get('Accept-Ranges');
+    const lastModified = response.headers.get('Last-Modified');
+    const etag = response.headers.get('ETag');
 
-    const headers: HeadersInit = {
-      'Content-Type': contentType,
-      'Access-Control-Allow-Origin': '*',
-      'Cache-Control': 'public, max-age=3600',
-    };
+    if (contentType) outHeaders.set('Content-Type', contentType);
+    if (contentLength) outHeaders.set('Content-Length', contentLength);
+    if (contentRange) outHeaders.set('Content-Range', contentRange);
+    if (acceptRanges) outHeaders.set('Accept-Ranges', acceptRanges);
+    else outHeaders.set('Accept-Ranges', 'bytes'); // Tell clients we support ranges
+    if (lastModified) outHeaders.set('Last-Modified', lastModified);
+    if (etag) outHeaders.set('ETag', etag);
 
-    if (contentLength) headers['Content-Length'] = contentLength;
-    if (contentRange) headers['Content-Range'] = contentRange;
-    if (acceptRanges) headers['Accept-Ranges'] = acceptRanges;
+    outHeaders.set('Cache-Control', 'public, max-age=86400, s-maxage=86400');
+    for (const [k, v] of Object.entries(corsHeaders)) outHeaders.set(k, v);
 
-    return new Response(response.body, { headers });
+    const out = new Response(response.body, { status: response.status, headers: outHeaders });
 
+    // Put full responses in cache in background
+    if (cacheKey && response.ok && response.status === 200) {
+      ctx.waitUntil(cache.put(cacheKey, out.clone()));
+    }
+    return out;
   } catch (error: any) {
-    return jsonResponse({ error: error.message }, 500);
+    return jsonResponse({ error: error.message || 'proxy_failed' }, 502, 60);
   }
 }
 
-// Main request handler
+// ----------------------------------------------------
+// YOUTUBE VIDEO DURATION
+// Scrapes YouTube oEmbed + watch page to extract duration
+// ----------------------------------------------------
+const ID_RE = /^[A-Za-z0-9_-]{11}$/;
+
+async function fetchYoutubeDuration(id: string): Promise<number | null> {
+  if (!ID_RE.test(id)) return null;
+
+  // Check cache first
+  const cache = (caches as any).default;
+  const cacheKey = new Request(`https://cache.local/yt-duration/${id}`);
+  const cached = await cache.match(cacheKey);
+  if (cached) {
+    const v = await cached.json<any>();
+    if (typeof v?.duration === 'number') return v.duration;
+  }
+
+  try {
+    // Try the watch page and parse approxDurationMs or lengthSeconds
+    const res = await fetch(`https://www.youtube.com/watch?v=${id}&hl=en`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      cf: { cacheTtl: 86400, cacheEverything: true } as any,
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+
+    // Pattern 1: "lengthSeconds":"123"
+    let m = html.match(/"lengthSeconds"\s*:\s*"(\d+)"/);
+    if (m) {
+      const dur = parseInt(m[1], 10);
+      await cache.put(cacheKey, new Response(JSON.stringify({ duration: dur }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' },
+      }));
+      return dur;
+    }
+    // Pattern 2: approxDurationMs
+    m = html.match(/"approxDurationMs"\s*:\s*"(\d+)"/);
+    if (m) {
+      const dur = Math.round(parseInt(m[1], 10) / 1000);
+      await cache.put(cacheKey, new Response(JSON.stringify({ duration: dur }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=604800' },
+      }));
+      return dur;
+    }
+    // If video is unavailable/private
+    if (/Video unavailable|This video isn't available/i.test(html)) {
+      await cache.put(cacheKey, new Response(JSON.stringify({ duration: -1 }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' },
+      }));
+      return -1;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function handleDuration(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const id = url.searchParams.get('id') || '';
+  if (!ID_RE.test(id)) return jsonResponse({ error: 'invalid id' }, 400);
+  const duration = await fetchYoutubeDuration(id);
+  return jsonResponse({ id, duration }, 200, 604800);
+}
+
+async function handleBatchDuration(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const idsParam = url.searchParams.get('ids') || '';
+  const ids = idsParam.split(',').map(s => s.trim()).filter(s => ID_RE.test(s)).slice(0, 50);
+  if (ids.length === 0) return jsonResponse({ error: 'no valid ids' }, 400);
+
+  const results = await Promise.all(ids.map(async id => {
+    const d = await fetchYoutubeDuration(id);
+    return [id, d] as const;
+  }));
+  const map: Record<string, number | null> = {};
+  for (const [id, d] of results) map[id] = d;
+  return jsonResponse({ durations: map }, 200, 604800);
+}
+
+// ----------------------------------------------------
+// MAIN HANDLER
+// ----------------------------------------------------
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Handle OPTIONS preflight
-    if (request.method === 'OPTIONS') {
-      return handleOptions();
-    }
+    if (request.method === 'OPTIONS') return handleOptions();
 
-    // Route requests
-    if (path === '/cors') {
-      return handleCorsProxy(request);
-    }
+    if (path === '/cors') return handleCorsProxy(request, ctx);
+    if (path === '/duration') return handleDuration(request);
+    if (path === '/batch-duration') return handleBatchDuration(request);
 
-    // Default response
     return jsonResponse({
       name: 'Noor Al-Quran Proxy',
-      version: '3.0.0',
-      description: 'CORS proxy for Quran audio streaming',
+      version: '3.1.0',
+      description: 'CORS proxy + YouTube duration checker',
       endpoints: {
-        '/cors?url=': 'GET - General CORS proxy for audio files',
+        '/cors?url=': 'GET - CORS proxy with Range support (PDF/audio)',
+        '/duration?id=': 'GET - YouTube video duration in seconds',
+        '/batch-duration?ids=id1,id2': 'GET - batch (max 50 ids)',
       },
     });
   },
