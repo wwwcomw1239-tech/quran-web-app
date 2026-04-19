@@ -38,6 +38,22 @@ const withPWA = withPWAInit({
         },
       },
     },
+    // Cache proxy responses (PDFs, audio) - major speed boost for repeat downloads
+    {
+      urlPattern: /^https:\/\/quran-shorts-api\.wwwcomw1239\.workers\.dev\/cors.*\.pdf/i,
+      handler: "CacheFirst" as const,
+      options: {
+        cacheName: "proxied-pdfs",
+        expiration: {
+          maxEntries: 80,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200, 206],
+        },
+        rangeRequests: true, // support partial content
+      },
+    },
   ],
   runtimeCaching: [
     {

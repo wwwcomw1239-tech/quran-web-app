@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { booksCollections, type BookCategory, type BookVolume, type BookCollection } from '@/data/books';
-import { getProxiedUrl, shouldProxy } from '@/lib/proxy';
+import { getProxiedUrl, shouldProxy, downloadWithProxy } from '@/lib/proxy';
 
 // ============================================
 // CATEGORY CONFIG
@@ -94,6 +94,7 @@ const CATEGORY_INFO: Record<BookCategory, { icon: any; color: string; bgColor: s
 // ============================================
 
 interface DownloadState { [key: string]: boolean; }
+interface DownloadProgressState { [key: string]: number; } // 0-100
 
 // ============================================
 // MAIN COMPONENT
@@ -101,6 +102,7 @@ interface DownloadState { [key: string]: boolean; }
 
 export function BooksLibrary() {
   const [downloadingBooks, setDownloadingBooks] = useState<DownloadState>({});
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgressState>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<BookCategory | 'all'>('all');
   const [expandedBooks, setExpandedBooks] = useState<Record<string, boolean>>({});
@@ -117,7 +119,11 @@ export function BooksLibrary() {
   const [pdfReaderTitle, setPdfReaderTitle] = useState<string>('');
   const [pdfLoading, setPdfLoading] = useState(true);
   const [pdfError, setPdfError] = useState(false);
-  const [viewerStrategy, setViewerStrategy] = useState<'pdfjs-proxy' | 'google' | 'archive'>('pdfjs-proxy');
+  // direct: يعرض الـ PDF مباشرة في iframe (أسرع على الأجهزة المكتبية)
+  // google: Google Docs Viewer
+  // pdfjs-proxy: Mozilla PDF.js (الأكثر توافقاً)
+  // archive: عارض archive.org الأصلي
+  const [viewerStrategy, setViewerStrategy] = useState<'direct' | 'google' | 'pdfjs-proxy' | 'archive'>('direct');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const pdfLoadTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -178,9 +184,16 @@ export function BooksLibrary() {
   // ============================================
 
   // Strategy types
-  type ViewerStrategy = 'pdfjs-proxy' | 'google' | 'archive';
+  type ViewerStrategy = 'direct' | 'google' | 'pdfjs-proxy' | 'archive';
 
-  // Strategy 1 (DEFAULT): Mozilla PDF.js viewer with Cloudflare proxy
+  // Strategy 1 (NEW DEFAULT): عرض مباشر عبر بروكسي Cloudflare - الأسرع
+  // لأن Worker يعالج CORS + Range ويكاش النتيجة عالمياً
+  const getDirectViewerUrl = (pdfUrl: string): string => {
+    // #toolbar=0 لإخفاء شريط PDF الافتراضي، view=FitH لملاءمة العرض
+    return shouldProxy(pdfUrl) ? getProxiedUrl(pdfUrl) + '#view=FitH' : pdfUrl + '#view=FitH';
+  };
+
+  // Strategy 2: Mozilla PDF.js viewer with Cloudflare proxy
   // Works globally including regions where archive.org is blocked
   const getPdfJsViewerUrl = (pdfUrl: string): string => {
     // Use proxied URL if archive.org (to bypass geo-blocks)
@@ -189,12 +202,12 @@ export function BooksLibrary() {
     return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(proxiedPdfUrl)}`;
   };
 
-  // Strategy 2: Google Docs viewer (sometimes faster but less reliable)
+  // Strategy 3: Google Docs viewer (سريع لكن يتطلب أن يكون الرابط public)
   const getGoogleViewerUrl = (pdfUrl: string): string => {
     return `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
   };
 
-  // Strategy 3: Archive.org's own viewer (if the URL is from archive.org)
+  // Strategy 4: Archive.org's own viewer (if the URL is from archive.org)
   const getArchiveViewerUrl = (pdfUrl: string): string | null => {
     const match = pdfUrl.match(/archive\.org\/download\/([^/]+)\//);
     if (match) {
@@ -207,6 +220,8 @@ export function BooksLibrary() {
   // Get viewer URL by strategy
   const getViewerUrl = (pdfUrl: string, strategy: ViewerStrategy): string | null => {
     switch (strategy) {
+      case 'direct':
+        return getDirectViewerUrl(pdfUrl);
       case 'pdfjs-proxy':
         return getPdfJsViewerUrl(pdfUrl);
       case 'google':
@@ -223,15 +238,16 @@ export function BooksLibrary() {
     const title = bookName ? `${bookName} - ${volume.title}` : volume.title;
     setPdfReaderTitle(title);
     setPdfReaderUrl(volume.pdfUrl);
-    setViewerStrategy('pdfjs-proxy'); // Start with PDF.js + proxy (most reliable)
+    // ابدأ بالعرض المباشر (الأسرع)؛ إن فشل، يستطيع المستخدم التبديل
+    setViewerStrategy('direct');
     setPdfLoading(true);
     setPdfError(false);
 
-    // Set a timeout - if PDF doesn't load in 20s, show error
+    // Set a timeout - if PDF doesn't load in 15s, show error (تقليص من 20s)
     if (pdfLoadTimerRef.current) clearTimeout(pdfLoadTimerRef.current);
     pdfLoadTimerRef.current = setTimeout(() => {
       setPdfLoading(false);
-    }, 20000);
+    }, 15000);
   }, []);
 
   const handlePdfLoad = useCallback(() => {
@@ -261,31 +277,60 @@ export function BooksLibrary() {
     };
   }, []);
 
-  // Handle download - use proxy for archive.org URLs to bypass regional blocks
+  // Handle download - uses Cloudflare Worker proxy with real progress tracking
   const handleDownload = useCallback(async (volume: BookVolume, bookName: string) => {
     if (downloadingBooks[volume.id]) return;
     setDownloadingBooks(prev => ({ ...prev, [volume.id]: true }));
+    setDownloadProgress(prev => ({ ...prev, [volume.id]: 0 }));
+
+    const fileName = `${bookName} - ${volume.title}.pdf`.replace(/[\\/:*?"<>|]/g, '_');
+    const toastId = `dl-${volume.id}`;
 
     try {
-      // Use proxied URL for archive.org (bypasses regional blocks)
-      const downloadUrl = getProxiedUrl(volume.pdfUrl);
+      toast.loading('جاري تحضير التنزيل...', { id: toastId });
+
+      // تحميل فعلي عبر Worker مع progress
+      const blob = await downloadWithProxy(volume.pdfUrl, (progress) => {
+        setDownloadProgress(prev => ({ ...prev, [volume.id]: progress }));
+        toast.loading(`جاري التحميل: ${progress}%`, { id: toastId });
+      });
+
+      // أنشئ رابط بلوب للتحميل
+      const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.download = `${bookName} - ${volume.title}.pdf`;
+      link.href = blobUrl;
+      link.download = fileName;
+      link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      toast.success('جاري تنزيل الكتاب...');
+      // نظّف بعد لحظات
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+
+      toast.success(`تم تنزيل "${fileName}" بنجاح`, { id: toastId });
     } catch (error) {
       console.error('Download error:', error);
-      // Fallback: open in new tab (proxied)
-      window.open(getProxiedUrl(volume.pdfUrl), '_blank', 'noopener,noreferrer');
+      // Fallback: افتح الرابط المباشر عبر البروكسي
+      try {
+        const proxied = getProxiedUrl(volume.pdfUrl);
+        window.open(proxied, '_blank', 'noopener,noreferrer');
+        toast.error('تعذر التحميل المباشر - تم فتحه في تبويب جديد', { id: toastId });
+      } catch {
+        toast.error('تعذر التحميل. حاول لاحقاً.', { id: toastId });
+      }
     } finally {
       setTimeout(() => {
-        setDownloadingBooks(prev => ({ ...prev, [volume.id]: false }));
-      }, 2000);
+        setDownloadingBooks(prev => {
+          const n = { ...prev };
+          delete n[volume.id];
+          return n;
+        });
+        setDownloadProgress(prev => {
+          const n = { ...prev };
+          delete n[volume.id];
+          return n;
+        });
+      }, 1500);
     }
   }, [downloadingBooks]);
 
@@ -323,12 +368,42 @@ export function BooksLibrary() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            {/* مبدل الاستراتيجية */}
+            <div className="hidden md:flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
+              <button
+                onClick={() => { setViewerStrategy('direct'); setPdfError(false); setPdfLoading(true); }}
+                title="عرض سريع مباشر"
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-all ${
+                  viewerStrategy === 'direct' ? 'bg-emerald-500 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
+                }`}
+              >
+                سريع
+              </button>
+              <button
+                onClick={() => { setViewerStrategy('pdfjs-proxy'); setPdfError(false); setPdfLoading(true); }}
+                title="PDF.js"
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-all ${
+                  viewerStrategy === 'pdfjs-proxy' ? 'bg-emerald-500 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
+                }`}
+              >
+                PDF.js
+              </button>
+              <button
+                onClick={() => { setViewerStrategy('google'); setPdfError(false); setPdfLoading(true); }}
+                title="Google Docs Viewer"
+                className={`px-2 py-1 rounded text-[11px] font-medium transition-all ${
+                  viewerStrategy === 'google' ? 'bg-emerald-500 text-white shadow' : 'text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700'
+                }`}
+              >
+                Google
+              </button>
+            </div>
             {archiveUrl && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => window.open(archiveUrl, '_blank', 'noopener,noreferrer')}
-                className="gap-1.5 text-xs hidden sm:flex"
+                className="gap-1.5 text-xs hidden lg:flex"
               >
                 <Library className="w-3.5 h-3.5" />
                 <span>Archive.org</span>
@@ -337,7 +412,7 @@ export function BooksLibrary() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.open(pdfReaderUrl, '_blank', 'noopener,noreferrer')}
+              onClick={() => window.open(getProxiedUrl(pdfReaderUrl), '_blank', 'noopener,noreferrer')}
               className="gap-1.5 text-xs"
             >
               <ExternalLink className="w-3.5 h-3.5" />
@@ -400,7 +475,16 @@ export function BooksLibrary() {
                 {/* Try different viewer */}
                 <div className="w-full space-y-2">
                   <p className="text-xs text-slate-400 dark:text-slate-500 font-semibold">جرب قارئاً آخر:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <Button
+                      variant={viewerStrategy === 'direct' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => { setViewerStrategy('direct'); setPdfError(false); setPdfLoading(true); }}
+                      className="gap-1.5 text-xs"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      سريع
+                    </Button>
                     <Button
                       variant={viewerStrategy === 'pdfjs-proxy' ? 'default' : 'outline'}
                       size="sm"
@@ -408,7 +492,7 @@ export function BooksLibrary() {
                       className="gap-1.5 text-xs"
                     >
                       <BookText className="w-3.5 h-3.5" />
-                      PDF.js (سريع)
+                      PDF.js
                     </Button>
                     <Button
                       variant={viewerStrategy === 'google' ? 'default' : 'outline'}
@@ -466,16 +550,29 @@ export function BooksLibrary() {
 
   const renderVolumeCard = (volume: BookVolume, bookName: string) => {
     const isDownloading = downloadingBooks[volume.id];
-    
+    const progress = downloadProgress[volume.id] ?? 0;
+
     return (
-      <div key={volume.id} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-sm transition-all group">
-        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0 text-xs font-bold text-slate-500 dark:text-slate-400">
+      <div key={volume.id} className="relative flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-sm transition-all group overflow-hidden">
+        {/* Progress bar background when downloading */}
+        {isDownloading && (
+          <div
+            className="absolute inset-y-0 right-0 bg-blue-500/10 transition-all duration-200"
+            style={{ width: `${progress}%` }}
+          />
+        )}
+        <div className="relative w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0 text-xs font-bold text-slate-500 dark:text-slate-400">
           {volume.volumeNumber || <FileText className="w-4 h-4" />}
         </div>
-        <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate font-medium">
+        <span className="relative flex-1 text-sm text-slate-700 dark:text-slate-300 truncate font-medium">
           {volume.title}
+          {isDownloading && (
+            <span className="mr-2 text-[10px] text-blue-600 dark:text-blue-400 font-normal">
+              {progress}%
+            </span>
+          )}
         </span>
-        <div className="flex items-center gap-1.5 flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+        <div className="relative flex items-center gap-1.5 flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => handleRead(volume, bookName)}
             className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
@@ -484,7 +581,7 @@ export function BooksLibrary() {
             <Eye className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
           </button>
           <button
-            onClick={() => window.open(volume.pdfUrl, '_blank', 'noopener,noreferrer')}
+            onClick={() => window.open(getProxiedUrl(volume.pdfUrl), '_blank', 'noopener,noreferrer')}
             className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
             title="فتح في تبويب جديد"
           >
@@ -573,7 +670,7 @@ export function BooksLibrary() {
                   قراءة
                 </Button>
                 <Button 
-                  onClick={(e) => { e.stopPropagation(); window.open(collection.volumes[0].pdfUrl, '_blank', 'noopener,noreferrer'); }} 
+                  onClick={(e) => { e.stopPropagation(); window.open(getProxiedUrl(collection.volumes[0].pdfUrl), '_blank', 'noopener,noreferrer'); }} 
                   variant="outline" 
                   className="h-9 rounded-xl text-xs px-3"
                   title="فتح في تبويب جديد"
@@ -583,16 +680,28 @@ export function BooksLibrary() {
                 <Button 
                   onClick={(e) => { e.stopPropagation(); handleDownload(collection.volumes[0], collection.name); }} 
                   disabled={downloadingBooks[collection.volumes[0].id]}
-                  className="flex-1 h-9 rounded-xl text-xs bg-blue-500 hover:bg-blue-600 text-white gap-1.5"
+                  className="flex-1 h-9 rounded-xl text-xs bg-blue-500 hover:bg-blue-600 text-white gap-1.5 relative overflow-hidden"
                 >
-                  {downloadingBooks[collection.volumes[0].id] ? (
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                  ) : (
-                    <>
-                      <Download className="w-3.5 h-3.5" />
-                      تنزيل PDF
-                    </>
+                  {/* Progress fill */}
+                  {downloadingBooks[collection.volumes[0].id] && (
+                    <div
+                      className="absolute inset-y-0 right-0 bg-blue-400/60 transition-all duration-200"
+                      style={{ width: `${downloadProgress[collection.volumes[0].id] ?? 0}%` }}
+                    />
                   )}
+                  <span className="relative flex items-center gap-1.5">
+                    {downloadingBooks[collection.volumes[0].id] ? (
+                      <>
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        {downloadProgress[collection.volumes[0].id] ?? 0}%
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-3.5 h-3.5" />
+                        تنزيل PDF
+                      </>
+                    )}
+                  </span>
                 </Button>
               </div>
             )}
