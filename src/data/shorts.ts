@@ -69,6 +69,7 @@ export const SERIES: Series[] = [
 
 import { additionalShorts } from './shorts-additions';
 import { additionalShortsBatch2 } from './shorts-batch2';
+import { additionalShortsBatch3 } from './shorts-batch3';
 
 const coreShorts: QuranShort[] = [
 
@@ -405,6 +406,9 @@ for (const s of additionalShorts) {
   if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
 }
 for (const s of additionalShortsBatch2) {
+  if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
+}
+for (const s of additionalShortsBatch3) {
   if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
 }
 
