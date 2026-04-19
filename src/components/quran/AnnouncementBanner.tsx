@@ -20,9 +20,9 @@ interface AnnouncementBannerProps {
 // Developer announcements - can be edited
 const announcements: Announcement[] = [
   {
-    id: 'new_content_apr26',
-    messageAr: '🌟 تحديث جديد: 796 كتاب • 644 مقطع مرئي • 341 مقطع قصير • 214 مقطع للأطفال',
-    messageEn: '🌟 New update: 796 books • 644 videos • 341 shorts • 214 kids videos',
+    id: 'new_content_apr26_v2',
+    messageAr: '🌟 تحديث ضخم: +2248 كتاب (~8995 جزء) • 644 مقطع مرئي • 341 مقطع قصير • 214 مقطع للأطفال',
+    messageEn: '🌟 Massive update: +2248 books (~8995 volumes) • 644 videos • 341 shorts • 214 kids videos',
     type: 'update',
     isActive: true,
     createdAt: new Date().toISOString(),
