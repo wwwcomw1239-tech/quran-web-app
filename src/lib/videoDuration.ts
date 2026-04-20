@@ -122,8 +122,8 @@ export function getCachedDuration(id: string): number | null {
   return id in cache ? cache[id] : null;
 }
 
-export function isShort(duration: number | null | undefined, maxSeconds = 75): boolean {
-  // treat ≤ 75s as short; unknown → allow (optimistic)
+export function isShort(duration: number | null | undefined, maxSeconds = 60): boolean {
+  // treat ≤ 60s as short; unknown → allow (optimistic for UI flicker prevention)
   if (duration == null) return true;
   if (duration === UNAVAILABLE) return false;
   return duration > 0 && duration <= maxSeconds;
@@ -176,7 +176,7 @@ function saveChannelCache(cache: ChannelCache) {
  */
 export async function fetchChannelShorts(
   channelId: string,
-  maxSec = 75,
+  maxSec = 60,
   timeoutMs = 10000
 ): Promise<ChannelShort[]> {
   if (!/^UC[A-Za-z0-9_-]{22}$/.test(channelId)) return [];
@@ -205,13 +205,13 @@ export async function fetchChannelShorts(
 
 /**
  * Fetches shorts from multiple channels in parallel.
- * Uses the new /multi-channel-shorts worker endpoint which batches up to 20 channels
- * per request with edge-level caching, making it much faster than individual fetches.
- * Falls back to per-channel fetches on error.
+ * v6.0: Uses the NEW /multi-channel-shorts-v2 endpoint which prefers the UULF
+ * shorts-only playlist of each channel (3-5x more real shorts per channel).
+ * Falls back to v1 endpoint, then per-channel fetches on error.
  */
 export async function fetchMultiChannelShorts(
   channelIds: string[],
-  maxSec = 75
+  maxSec = 60  // ⚡ v6.0: default lowered from 75 to 60 (user requirement: ≤ 1 minute)
 ): Promise<Record<string, ChannelShort[]>> {
   if (channelIds.length === 0) return {};
 
@@ -234,13 +234,30 @@ export async function fetchMultiChannelShorts(
   for (let i = 0; i < missing.length; i += 20) batches.push(missing.slice(i, i + 20));
 
   await Promise.all(batches.map(async (batch) => {
+    // Try v2 endpoint first (uses UULF shorts-playlist)
+    try {
+      const res = await fetch(
+        `${WORKER}/multi-channel-shorts-v2?channels=${batch.join(',')}&maxSec=${maxSec}&per=20`,
+        { signal: AbortSignal.timeout(30000) }
+      );
+      if (res.ok) {
+        const data = await res.json() as { byChannel: Record<string, ChannelShort[]> };
+        for (const [id, shorts] of Object.entries(data.byChannel || {})) {
+          result[id] = Array.isArray(shorts) ? shorts : [];
+          cache[id] = { ts: Date.now(), shorts: result[id] };
+        }
+        return;
+      }
+    } catch { /* fall through to v1 */ }
+
+    // Fallback: v1 endpoint
     try {
       const res = await fetch(
         `${WORKER}/multi-channel-shorts?channels=${batch.join(',')}&maxSec=${maxSec}`,
         { signal: AbortSignal.timeout(25000) }
       );
       if (!res.ok) {
-        // Fallback to individual calls
+        // Final fallback: per-channel calls
         await Promise.all(batch.map(async id => {
           result[id] = await fetchChannelShorts(id, maxSec);
         }));

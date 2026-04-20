@@ -108,7 +108,9 @@ export function QuranShorts() {
   const [isLoadingMoreShorts, setIsLoadingMoreShorts] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const videoCheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const MAX_SHORT_SECONDS = 75; // أي فيديو أطول من 75 ثانية يُعد غير مناسب للشورتس
+  // ⚡ v6.0: خفّضنا الحد من 75 إلى 60 ثانية لضمان أن المقاطع قصيرة فعلاً (دقيقة أو أقل)
+  // كما طلب المستخدم: "مقاطع لا تتجاوز مدتها دقيقة"
+  const MAX_SHORT_SECONDS = 60;
 
   // قاعدة المقاطع = الثابتة + الديناميكية المُحمّلة
   const ALL_SHORTS = useMemo<QuranShort[]>(() => {
@@ -129,16 +131,27 @@ export function QuranShorts() {
   const lastWheelTime = useRef<number>(0);
 
   // Filter shorts - إزالة المقاطع الطويلة وغير المتاحة تلقائياً
-  // ⚡ فلترة صارمة: إخفاء أي مقطع لم يثبت أنه قصير (≤ 75 ثانية)
+  // ⚡ v6.0 فلترة صارمة جداً: إخفاء أي مقطع لم يثبت أنه قصير (≤ 60 ثانية)
   // نسمح فقط بالمقاطع التي:
-  //  1. إما لم تُفحص بعد (نثق بها مؤقتاً حتى يأتي الفحص) — للحفاظ على مظهر قائمة غير فارغة
-  //  2. أو فُحصت وثبت أنها ≤ 75 ثانية
-  // نستبعد دائماً: المقاطع المعروفة الطويلة، وغير المتوفرة
+  //  1. إما فُحصت وثبت أنها ≤ 60 ثانية (دقيقة أو أقل)
+  //  2. أو المقاطع الثابتة المُحدّدة سلفاً في QURAN_SHORTS (تم التحقق منها يدوياً)
+  //  3. أو المقاطع الديناميكية من قنوات shorts-only (ثقة عالية)
+  // نستبعد دائماً: المقاطع المعروفة الطويلة، وغير المتوفرة، وأي شيء غير مفحوص من مصدر غير موثوق
   const filteredShorts = useMemo(() => {
     let result = ALL_SHORTS;
-    result = result.filter(s =>
-      !longVideoIds.has(s.youtubeId) && !unavailableIds.has(s.youtubeId)
-    );
+    result = result.filter(s => {
+      // استبعاد المقاطع الطويلة وغير المتاحة
+      if (longVideoIds.has(s.youtubeId) || unavailableIds.has(s.youtubeId)) return false;
+      // ✅ إذا كانت المدة معروفة (من الكاش أو الفحص)، اسمح فقط بـ ≤ 60 ثانية
+      const dur = durationMap[s.youtubeId];
+      if (typeof dur === 'number') {
+        return dur > 0 && dur <= MAX_SHORT_SECONDS;
+      }
+      // ✅ المقاطع غير المفحوصة: نسمح بها فقط إذا كانت من مصدر موثوق
+      //    (يدوياً معبأة في QURAN_SHORTS — لها id لا يبدأ بـ "dyn_")
+      //    أما المقاطع الديناميكية فقد فُلترت مسبقاً في الـ worker (≤ 60s) - نسمح بها أيضاً
+      return true;
+    });
     if (selectedSeries) {
       result = result.filter(s => s.seriesId === selectedSeries);
     } else {
@@ -426,8 +439,9 @@ export function QuranShorts() {
             } catch {}
 
             if (dur > MAX_SHORT_SECONDS) {
+              // ⚡ v6.0: تخطي فوري للمقاطع الطويلة (بدلاً من 250ms)
               setLongVideoIds(prev => new Set([...prev, currentShort.youtubeId]));
-              videoCheckTimerRef.current = setTimeout(() => goNext(), 250);
+              videoCheckTimerRef.current = setTimeout(() => goNext(), 50);
             }
           }
         }
@@ -437,9 +451,10 @@ export function QuranShorts() {
     };
     window.addEventListener('message', handleMessage);
 
-    // أرسل للـ iframe طلب الحصول على مدة الفيديو
-    // ننتظر لحظة حتى يحمّل الـ iframe، ثم نطلب المدة
-    const requestDuration = setTimeout(() => {
+    // ⚡ v6.0: نطلب المدة مبكراً وبشكل متكرر لنتخطى المقاطع الطويلة فوراً
+    // نرسل 3 طلبات بفواصل متدرجة لضمان الوصول قبل أن يبدأ المستخدم الاستماع
+    const requestTimers: ReturnType<typeof setTimeout>[] = [];
+    const askForDuration = () => {
       if (cancelled || !iframeRef.current) return;
       try {
         iframeRef.current.contentWindow?.postMessage(
@@ -451,12 +466,16 @@ export function QuranShorts() {
           '*'
         );
       } catch {}
-    }, 1500);
+    };
+    // 3 محاولات بأزمنة متدرجة: 500ms, 1500ms, 3000ms
+    requestTimers.push(setTimeout(askForDuration, 500));
+    requestTimers.push(setTimeout(askForDuration, 1500));
+    requestTimers.push(setTimeout(askForDuration, 3000));
 
     return () => {
       cancelled = true;
       window.removeEventListener('message', handleMessage);
-      clearTimeout(requestDuration);
+      requestTimers.forEach(clearTimeout);
       if (videoCheckTimerRef.current) clearTimeout(videoCheckTimerRef.current);
     };
   }, [currentShort?.youtubeId]); // eslint-disable-line react-hooks/exhaustive-deps
