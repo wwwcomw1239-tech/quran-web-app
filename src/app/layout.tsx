@@ -114,7 +114,6 @@ export default function RootLayout({
         {/* DNS prefetch للأصول التي تُستخدم فقط بعد تفاعل المستخدم */}
         <link rel="dns-prefetch" href="https://i.ytimg.com" />
         <link rel="dns-prefetch" href="https://img.youtube.com" />
-        <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
         <link rel="dns-prefetch" href="https://yt3.ggpht.com" />
         <link rel="dns-prefetch" href="https://archive.org" />
         <link rel="dns-prefetch" href="https://www.youtube.com" />

@@ -516,16 +516,14 @@ export function QuranShorts() {
       playsinline: '1', modestbranding: '1', rel: '0', autoplay: '1', controls: '1',
       fs: '0', iv_load_policy: '3', cc_load_policy: '0', vq: qMap[videoQuality],
       mute: '0', loop: '0',
-      // origin لا يُرسل إلا بعد التحميل، لكن إضافته تمنع تحذير YouTube وتحسن التحميل
-      origin: typeof window !== 'undefined' ? window.location.origin : '',
-      enablejsapi: '1',
     });
     // إذا كان الفيديو أطول نسبياً (> 60s) وضمن الحد المسموح، نوقفه عند 60 ثانية
     const dur = durationMap[youtubeId];
     if (typeof dur === 'number' && dur > 60 && dur <= MAX_SHORT_SECONDS) {
       p.set('end', '60');
     }
-    return `https://www.youtube-nocookie.com/embed/${youtubeId}?${p.toString()}`;
+    // ⚠️ استخدام youtube.com مباشرة (ليس nocookie) لتفادي الشاشة السوداء
+    return `https://www.youtube.com/embed/${youtubeId}?${p.toString()}`;
   }, [videoQuality, durationMap]);
 
   // ملاحظة: preconnect إلى YouTube موجود في RootLayout لذا لا حاجة لتكراره هنا

@@ -101,7 +101,7 @@ export function QuranVideos() {
     const schedule = (window as any).requestIdleCallback || ((cb: any) => setTimeout(cb, 500));
     schedule(() => {
       const origins = [
-        'https://www.youtube-nocookie.com',
+        'https://www.youtube.com',
         'https://i.ytimg.com',
       ];
       origins.forEach(origin => {
@@ -228,9 +228,9 @@ export function QuranVideos() {
     setIsFullscreen(prev => !prev);
   }, []);
 
-  // Get embed URL - youtube-nocookie.com for privacy
-  // IMPORTANT: No sandbox attribute to allow proper YouTube playback
-  // ⚡ تحسين الأداء: enablejsapi يفعّل الواجهة السريعة، html5=1 يجبر استخدام مشغل HTML5
+  // Get embed URL - استخدام youtube.com/embed مباشرة لضمان التشغيل بدون شاشة سوداء
+  // ⚠️ تم إزالة youtube-nocookie.com لأنه يسبب شاشة سوداء مع بعض الفيديوهات
+  // ⚠️ تم إزالة origin و enablejsapi لتفادي قيود CORS/postMessage
   const getEmbedUrl = (youtubeId: string): string => {
     const params = new URLSearchParams({
       playsinline: '1',
@@ -242,11 +242,8 @@ export function QuranVideos() {
       iv_load_policy: '3',
       disablekb: '0',
       cc_load_policy: '0',
-      enablejsapi: '1',
-      html5: '1',
-      origin: typeof window !== 'undefined' ? window.location.origin : '',
     });
-    return `https://www.youtube-nocookie.com/embed/${youtubeId}?${params.toString()}`;
+    return `https://www.youtube.com/embed/${youtubeId}?${params.toString()}`;
   };
 
   // ============================================
@@ -331,13 +328,18 @@ export function QuranVideos() {
           {/* Video Frame */}
           <div className={`relative bg-black ${isFullscreen ? 'flex-1' : 'aspect-video'}`}>
             {videoError ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 text-center">
                 <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-4">
                   <AlertCircle className="w-10 h-10 text-amber-400" />
                 </div>
                 <p className="text-base font-bold mb-1">تعذّر تحميل الفيديو</p>
-                <p className="text-xs text-slate-400 mb-5">قد يكون الفيديو غير متاح حالياً</p>
-                <div className="flex gap-2">
+                <p className="text-xs text-slate-400 mb-5">جرّب فتحه على يوتيوب مباشرة</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <Button variant="default" size="sm"
+                    onClick={() => window.open(`https://www.youtube.com/watch?v=${activeVideo.youtubeId}`, '_blank', 'noopener,noreferrer')}
+                    className="gap-2 bg-red-600 hover:bg-red-700 text-white rounded-xl">
+                    <ExternalLink className="w-4 h-4" /> افتح على يوتيوب
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => setVideoError(false)}
                     className="gap-2 text-white border-white/20 hover:bg-white/10 rounded-xl">
                     <RefreshCw className="w-4 h-4" /> إعادة المحاولة

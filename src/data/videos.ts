@@ -23,6 +23,7 @@ import { additionalVideos } from './videos-additions';
 import { additionalVideosBatch2 } from './videos-batch2';
 import { additionalVideosBatch3 } from './videos-batch3';
 import { additionalVideosBatch4 } from './videos-batch4';
+import { additionalVideosBatch5 } from './videos-batch5';
 
 const coreVideos: QuranVideo[] = [
   // ═══════════════════════════════════════════
@@ -365,6 +366,9 @@ for (const v of additionalVideosBatch3) {
   if (!videosByYoutubeId.has(v.youtubeId)) videosByYoutubeId.set(v.youtubeId, v);
 }
 for (const v of additionalVideosBatch4) {
+  if (!videosByYoutubeId.has(v.youtubeId)) videosByYoutubeId.set(v.youtubeId, v);
+}
+for (const v of additionalVideosBatch5) {
   if (!videosByYoutubeId.has(v.youtubeId)) videosByYoutubeId.set(v.youtubeId, v);
 }
 

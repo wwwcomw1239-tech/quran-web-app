@@ -198,7 +198,7 @@ export function clearCache(): void {
 
 /**
  * Get YouTube embed URL with parameters for inline playback
- * Uses youtube-nocookie.com for better embedding support
+ * Uses youtube.com directly to avoid black screen issues with nocookie
  * CRITICAL: playsinline=1 ensures videos play inline, NOT in YouTube app
  */
 export function getEmbedUrl(videoId: string): string {
@@ -208,20 +208,20 @@ export function getEmbedUrl(videoId: string): string {
     return '';
   }
   
-  // Use youtube-nocookie.com for better embedding compatibility
+  // استخدام youtube.com مباشرة لتفادي الشاشة السوداء
+  // إزالة origin و enablejsapi لتفادي قيود CORS
   const params = new URLSearchParams({
     playsinline: '1',      // CRITICAL: Prevents YouTube app redirect
     modestbranding: '1',   // Reduce YouTube branding
     rel: '0',              // No related videos
     autoplay: '0',         // Don't autoplay initially
     controls: '1',         // Show controls
-    enablejsapi: '1',      // Enable JS API for control
     fs: '0',               // Disable fullscreen button
     iv_load_policy: '3',   // Hide annotations
-    origin: typeof window !== 'undefined' ? window.location.origin : '',
+    cc_load_policy: '0',
   });
   
-  return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
+  return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
 }
 
 /**
