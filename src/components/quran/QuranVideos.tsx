@@ -91,31 +91,26 @@ export function QuranVideos() {
     setVisiblePerCategory({});
   }, [searchQuery, selectedCategory, selectedScholar]);
 
-  // ⚡ تحسين: warmup تلقائي لمضيف YouTube عند أول تحميل للصفحة
-  // يقلل زمن بدء تشغيل أي فيديو بـ 300-800ms
+  // ⚡ تحسين: warmup لمضيف YouTube فقط عند فتح تبويب الفيديوهات (لا يحدث للصفحة الرئيسية)
+  // يقلل زمن بدء تشغيل أي فيديو بـ 300-800ms، ولا يضيف عبئاً على الصفحة الأولى
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if ((window as any).__ytVideosWarmedUp) return;
     (window as any).__ytVideosWarmedUp = true;
-    const origins = [
-      'https://www.youtube-nocookie.com',
-      'https://www.youtube.com',
-      'https://i.ytimg.com',
-      'https://yt3.ggpht.com',
-      'https://googlevideo.com',
-      'https://s.ytimg.com',
-    ];
-    origins.forEach(origin => {
-      const link = document.createElement('link');
-      link.rel = 'preconnect';
-      link.href = origin;
-      link.crossOrigin = 'anonymous';
-      document.head.appendChild(link);
-      // إضافة dns-prefetch كاحتياط للمتصفحات التي تتجاهل preconnect
-      const dns = document.createElement('link');
-      dns.rel = 'dns-prefetch';
-      dns.href = origin;
-      document.head.appendChild(dns);
+    // استخدم requestIdleCallback لتأجيل إضافة روابط preconnect حتى لا تؤثر على وقت الرسم الأولي
+    const schedule = (window as any).requestIdleCallback || ((cb: any) => setTimeout(cb, 500));
+    schedule(() => {
+      const origins = [
+        'https://www.youtube-nocookie.com',
+        'https://i.ytimg.com',
+      ];
+      origins.forEach(origin => {
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = origin;
+        link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+      });
     });
   }, []);
 
@@ -178,24 +173,28 @@ export function QuranVideos() {
       return;
     }
 
-    const checkVideo = async () => {
-      try {
-        const response = await fetch(
-          `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${activeVideo.youtubeId}`,
-          { signal: AbortSignal.timeout(5000) }
-        );
-        const data = await response.json();
-        
-        if (data.error || !data.title) {
-          setUnavailableIds(prev => new Set([...prev, activeVideo.youtubeId]));
-          setVideoError(true);
-        }
-      } catch {
-        // On error, don't mark as unavailable
+    // فحص توفر الفيديو عبر ترويسة الصورة المصغّرة (أسرع وأكثر موثوقية)
+    // نستخدم image load event بدلاً من fetch لتفادي مشاكل CORS
+    const img = new Image();
+    const timeoutId = setTimeout(() => {
+      img.onerror = img.onload = null;
+    }, 4000);
+    img.onerror = () => {
+      clearTimeout(timeoutId);
+      setUnavailableIds(prev => new Set([...prev, activeVideo.youtubeId]));
+      setVideoError(true);
+    };
+    img.onload = () => {
+      clearTimeout(timeoutId);
+      // YouTube placeholder ~120x90 for dead videos. Any thumbnail returned with
+      // naturalWidth<200 treated as dead. mqdefault should be 320x180.
+      if (img.naturalWidth < 200 || img.naturalHeight < 100) {
+        setUnavailableIds(prev => new Set([...prev, activeVideo.youtubeId]));
+        setVideoError(true);
       }
     };
-
-    checkVideo();
+    // استخدم mqdefault (أسرع تحميلاً وأدق في كشف الفيديوهات المحذوفة)
+    img.src = `https://i.ytimg.com/vi/${activeVideo.youtubeId}/mqdefault.jpg`;
 
     return () => {
       if (videoCheckTimerRef.current) {

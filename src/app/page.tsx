@@ -101,17 +101,11 @@ function QuranWebAppContent() {
 
   const footerRef = useRef<HTMLElement | null>(null);
 
-  // التحميل الكسول الذكي: بعد أن يصبح المتصفح خاملاً، نحمل المكونات الأكثر احتمالاً
-  // (Videos + Shorts خفيفة نسبياً، Books أثقل لذلك نحملها آخراً)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const schedule = (window as any).requestIdleCallback || ((cb: any) => setTimeout(cb, 2000));
-    schedule(() => prefetchTab('videos'));
-    schedule(() => prefetchTab('shorts'));
-    schedule(() => prefetchTab('kids'));
-    // Books يُحمّل أخيراً لأنه chunk كبير
-    schedule(() => prefetchTab('books'), { timeout: 5000 });
-  }, []);
+  // ⚡ تحسين الأداء: لا نقوم بـ prefetch تلقائي لأي تبويبات عند الفتح الأول
+  // كل تبويب يُحمّل فقط عند: 1) hover على زر التبويب، 2) النقر على التبويب
+  // هذا يقلل الحزمة الأولية بشكل كبير ويُسرّع الفتح الأول بعشرات الأضعاف
+  // يتم استدعاء prefetchTab تلقائياً عبر onMouseEnter/onFocus/onTouchStart
+  // المُعرَّفة على كل TabsTrigger أدناه.
 
   // Get selected reciter info
   const currentReciter = useMemo(() => {

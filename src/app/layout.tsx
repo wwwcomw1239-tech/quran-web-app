@@ -105,21 +105,20 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
-        {/* Preconnect to external resources - critical for video/audio startup speed */}
+        {/* ⚡ تحسين الأداء: نستخدم preconnect فقط للأصول الحرجة (الخطوط)
+           و dns-prefetch للأصول الأخرى - preconnect يستهلك موارد الشبكة،
+           فإذا كثرنا منها سنبطّئ بدل أن نسرّع */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Preconnect to the most-critical media origins (reduces handshake time ~200-500ms per first play) */}
-        <link rel="preconnect" href="https://i.ytimg.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://img.youtube.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.youtube-nocookie.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://yt3.ggpht.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://server.mp3quran.net" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://quran-shorts-api.almuhasab9.workers.dev" crossOrigin="anonymous" />
-        {/* DNS prefetch for less-critical origins */}
+        {/* DNS prefetch للأصول التي تُستخدم فقط بعد تفاعل المستخدم */}
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
+        <link rel="dns-prefetch" href="https://img.youtube.com" />
+        <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
+        <link rel="dns-prefetch" href="https://yt3.ggpht.com" />
         <link rel="dns-prefetch" href="https://archive.org" />
         <link rel="dns-prefetch" href="https://www.youtube.com" />
-        <link rel="dns-prefetch" href="https://googlevideo.com" />
-        <link rel="dns-prefetch" href="https://mozilla.github.io" />
+        <link rel="dns-prefetch" href="https://quran-shorts-api.almuhasab9.workers.dev" />
         {/* Load Arabic fonts non-blockingly (swap to system font while loading) */}
         <link
           href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap"

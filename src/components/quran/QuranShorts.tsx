@@ -528,25 +528,8 @@ export function QuranShorts() {
     return `https://www.youtube-nocookie.com/embed/${youtubeId}?${p.toString()}`;
   }, [videoQuality, durationMap]);
 
-  // Preconnect إلى YouTube عند تحميل مكون الشورتس لأول مرة (تحسين سرعة iframe)
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    if ((window as any).__ytShortsWarmedUp) return;
-    (window as any).__ytShortsWarmedUp = true;
-    const origins = [
-      'https://www.youtube-nocookie.com',
-      'https://i.ytimg.com',
-      'https://yt3.ggpht.com',
-      'https://googlevideo.com',
-    ];
-    origins.forEach(origin => {
-      const link = document.createElement('link');
-      link.rel = 'preconnect';
-      link.href = origin;
-      link.crossOrigin = 'anonymous';
-      document.head.appendChild(link);
-    });
-  }, []);
+  // ملاحظة: preconnect إلى YouTube موجود في RootLayout لذا لا حاجة لتكراره هنا
+  // هذا يُقلل العبء على كود الـ chunk ويجنب إضافة روابط مكررة للـ DOM
 
   const playFromBrowse = useCallback((index: number) => {
     setCurrentIndex(index);
