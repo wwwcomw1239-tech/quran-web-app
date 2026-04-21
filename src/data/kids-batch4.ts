@@ -7,8 +7,6 @@
 import type { KidsVideo } from './kids';
 
 export const additionalKidsBatch4: KidsVideo[] = [
-  { id: 'b4_k1', youtubeId: 'b-rXyDkHiIQ', titleAr: 'قصص القرآن للأطفال | قصة قابيل وهابيل | رسوم متحركة 2D', titleEn: 'قصص الأنبياء كرتون', sourceAr: 'دار البلاغ Daralbalagh', sourceEn: 'Islamic Kids Channel', categoryAr: 'قصص الأنبياء', categoryEn: 'Stories of the Prophets' },
-  { id: 'b4_k2', youtubeId: 'qB6QpoUlaXA', titleAr: 'قصص الأنبياء للأطفال | كارتون | قصة النبي محمد عليه الصلاة والسلام', titleEn: 'قصص الأنبياء كرتون', sourceAr: 'دار البلاغ Daralbalagh', sourceEn: 'Islamic Kids Channel', categoryAr: 'قصص الأنبياء', categoryEn: 'Stories of the Prophets' },
   { id: 'b4_k3', youtubeId: 'Yk1BlRjPKw0', titleAr: 'كرتون اسلامي بدون موسيقي قصة أهل الكهف', titleEn: 'قصص الأنبياء كرتون', sourceAr: 'واحة المنوعات الجميلة والهادفة', sourceEn: 'Islamic Kids Channel', categoryAr: 'قصص الأنبياء', categoryEn: 'Stories of the Prophets' },
   { id: 'b4_k4', youtubeId: 'EwmqYf-OdCQ', titleAr: 'قصص الانبياء قصه سيدنا محمد عليه افضل الصلاه والسلام', titleEn: 'قصص الأنبياء كرتون', sourceAr: 'acc ahmed', sourceEn: 'Islamic Kids Channel', categoryAr: 'قصص الأنبياء', categoryEn: 'Stories of the Prophets' },
   { id: 'b4_k5', youtubeId: 'b_5NDPPVERU', titleAr: '02- فلم كرتون قصة نبي الله يحيى عليه السلام', titleEn: 'قصص الأنبياء كرتون', sourceAr: 'حدائق الرحمن Hadaek Rahman', sourceEn: 'Islamic Kids Channel', categoryAr: 'قصص الأنبياء', categoryEn: 'Stories of the Prophets' },

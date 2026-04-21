@@ -69,3 +69,9 @@ server.log
 # Build artifacts of video-verification scripts (large intermediate files)
 scripts/candidates.json
 scripts/verified-new.json
+scripts/new-videos-candidates.json
+scripts/selected-200.json
+scripts/verified-new.json
+scripts/candidates.json
+scripts/full-check-unavailable.json
+scripts/batch8-unavailable.json
