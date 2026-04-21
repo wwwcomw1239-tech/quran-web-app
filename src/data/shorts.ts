@@ -72,6 +72,7 @@ import { additionalShortsBatch2 } from './shorts-batch2';
 import { additionalShortsBatch3 } from './shorts-batch3';
 import { additionalShortsBatch4 } from './shorts-batch4';
 import { QURAN_SHORTS_BATCH5 } from './shorts-batch5';
+import { additionalShortsBatch6 } from './shorts-batch6';
 
 const coreShorts: QuranShort[] = [
 
@@ -332,6 +333,9 @@ for (const s of additionalShortsBatch4) {
   if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
 }
 for (const s of QURAN_SHORTS_BATCH5) {
+  if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
+}
+for (const s of additionalShortsBatch6) {
   if (!shortsByYoutubeId.has(s.youtubeId)) shortsByYoutubeId.set(s.youtubeId, s);
 }
 
