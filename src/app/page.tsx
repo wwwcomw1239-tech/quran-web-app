@@ -16,7 +16,7 @@ import {
   FloatingScrollButtons,
 } from '@/components/quran';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library, Video, Flame, Baby, Loader2 } from 'lucide-react';
+import { Headphones, BookOpen, Download, ChevronLeft, ChevronRight, Library, Video, Baby, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { useAudioQuality } from '@/lib/audioQuality';
 import { useAudioPlayer } from '@/lib/AudioPlayerContext';
@@ -33,7 +33,6 @@ function TabLoadingSpinner() {
 // Factory functions للحصول على Promise للاستيراد (نعيد استخدامه في التحميل المسبق عند hover)
 const importBooksLibrary = () => import('@/components/quran/BooksLibrary').then(m => ({ default: m.BooksLibrary }));
 const importQuranVideos = () => import('@/components/quran/QuranVideos').then(m => ({ default: m.QuranVideos }));
-const importQuranShorts = () => import('@/components/quran/QuranShorts').then(m => ({ default: m.QuranShorts }));
 const importKidsVideos = () => import('@/components/quran/KidsVideos').then(m => ({ default: m.KidsVideos }));
 
 const BooksLibrary = dynamic(importBooksLibrary, {
@@ -41,10 +40,6 @@ const BooksLibrary = dynamic(importBooksLibrary, {
   ssr: false,
 });
 const QuranVideos = dynamic(importQuranVideos, {
-  loading: () => <TabLoadingSpinner />,
-  ssr: false,
-});
-const QuranShorts = dynamic(importQuranShorts, {
   loading: () => <TabLoadingSpinner />,
   ssr: false,
 });
@@ -61,7 +56,6 @@ function prefetchTab(tab: string) {
   switch (tab) {
     case 'books': importBooksLibrary(); break;
     case 'videos': importQuranVideos(); break;
-    case 'shorts': importQuranShorts(); break;
     case 'kids': importKidsVideos(); break;
   }
 }
@@ -285,16 +279,6 @@ function QuranWebAppContent() {
               <span className="font-medium hidden sm:inline">{isRTL ? 'مقاطع مرئية' : 'Videos'}</span>
             </TabsTrigger>
             <TabsTrigger
-              value="shorts"
-              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-violet-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
-              onMouseEnter={() => prefetchTab('shorts')}
-              onFocus={() => prefetchTab('shorts')}
-              onTouchStart={() => prefetchTab('shorts')}
-            >
-              <Flame className="w-5 h-5" />
-              <span className="font-medium hidden sm:inline">{isRTL ? 'مقاطع قصيرة' : 'Shorts'}</span>
-            </TabsTrigger>
-            <TabsTrigger
               value="kids"
               className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl data-[state=active]:bg-orange-500 data-[state=active]:text-white transition-all ${isRTL ? 'flex-row-reverse' : ''}`}
               onMouseEnter={() => prefetchTab('kids')}
@@ -376,11 +360,6 @@ function QuranWebAppContent() {
           {/* Quran Videos Tab */}
           <TabsContent value="videos" className="outline-none">
             <QuranVideos />
-          </TabsContent>
-
-          {/* Quran Shorts Tab */}
-          <TabsContent value="shorts" className="outline-none">
-            <QuranShorts />
           </TabsContent>
 
           {/* Kids Videos Tab */}
