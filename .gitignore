@@ -66,3 +66,6 @@ server.log
 # Next.js build output
 /.next/
 /out/
+# Build artifacts of video-verification scripts (large intermediate files)
+scripts/candidates.json
+scripts/verified-new.json
