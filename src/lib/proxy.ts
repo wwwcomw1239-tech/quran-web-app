@@ -217,7 +217,7 @@ export async function downloadWithProxy(
     }
   }
 
-  return new Blob(chunks, { type: contentType || 'application/pdf' });
+  return new Blob(chunks as BlobPart[], { type: contentType || 'application/pdf' });
 }
 
 /**

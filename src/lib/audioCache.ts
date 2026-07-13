@@ -314,7 +314,7 @@ export async function saveAudioOffline(
     onProgress?.(90);
     
     // Create blob from chunks
-    const blob = new Blob(chunks, { type: 'audio/mpeg' });
+    const blob = new Blob(chunks as BlobPart[], { type: 'audio/mpeg' });
     console.log('[Cache] Downloaded blob size:', blob.size);
     
     // Create a new response with the blob
