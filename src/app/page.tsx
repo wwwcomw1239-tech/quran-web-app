@@ -213,7 +213,7 @@ function QuranWebAppContent() {
         }
       }
 
-      const blob = new Blob(chunks, { type: 'audio/mpeg' });
+      const blob = new Blob(chunks as BlobPart[], { type: 'audio/mpeg' });
       const blobUrl = URL.createObjectURL(blob);
 
       const link = document.createElement('a');

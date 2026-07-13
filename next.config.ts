@@ -8,8 +8,9 @@ const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,
+  workboxOptions: {
   skipWaiting: true,
-  ranges: [
+  runtimeCaching: [
     {
       urlPattern: /^https:\/\/server\.mp3quran\.net\/.*/i,
       handler: "CacheFirst" as const,
@@ -54,8 +55,6 @@ const withPWA = withPWAInit({
         rangeRequests: true, // support partial content
       },
     },
-  ],
-  runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
       handler: "CacheFirst" as const,
@@ -101,6 +100,7 @@ const withPWA = withPWAInit({
       },
     },
   ],
+  },
 });
 
 const nextConfig: NextConfig = {
